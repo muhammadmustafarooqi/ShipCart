@@ -1,66 +1,63 @@
 import Link from "next/link";
 import { PRODUCT_CATEGORIES } from "@/lib/utils";
 
-const categoryIcons: Record<string, string> = {
+const categoryEmojis: Record<string, string> = {
   "kitchen-cooking": "🍳",
-  "personal-care-beauty": "💆‍♀️",
+  "personal-care-beauty": "💆",
   "home-cleaning": "🏠",
-  "fitness-health": "💪",
-  "electronics-gadgets": "⚡",
+  "fitness-health": "🏋️",
+  "electronics-gadgets": "🔌",
   "baby-kids": "👶",
-};
-
-const categoryColors: Record<string, string> = {
-  "kitchen-cooking": "linear-gradient(135deg, #ff6b00, #ff8533)",
-  "personal-care-beauty": "linear-gradient(135deg, #ec4899, #f43f5e)",
-  "home-cleaning": "linear-gradient(135deg, #06b6d4, #0284c7)",
-  "fitness-health": "linear-gradient(135deg, #10b981, #059669)",
-  "electronics-gadgets": "linear-gradient(135deg, #8b5cf6, #6d28d9)",
-  "baby-kids": "linear-gradient(135deg, #f59e0b, #d97706)",
 };
 
 export default function CategoryGrid() {
   return (
-    <section style={{ padding: "60px 0" }}>
+    <section style={{ padding: "80px 0", background: "var(--bg-card)", borderBottom: "1px solid var(--border-default)" }}>
       <div className="page-container">
-        <div className="section-header">
-          <p style={{ color: "#ff6b00", fontWeight: 600, fontSize: "14px", letterSpacing: "2px", textTransform: "uppercase", marginBottom: "8px" }}>
-            Browse by Category
-          </p>
-          <h2>Shop What You Need</h2>
-          <div className="section-divider" />
-          <p>Explore our wide range of quality products for every need</p>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "40px", flexWrap: "wrap", gap: "16px" }}>
+          <div>
+            <div className="section-tag">🗂️ Browse by</div>
+            <h2 className="section-title">Shop by Category</h2>
+          </div>
+          <Link href="/products" style={{ fontSize: "14px", color: "var(--color-brand)", textDecoration: "none", fontWeight: 600, fontFamily: "Plus Jakarta Sans, sans-serif" }}>
+            See All Categories &rarr;
+          </Link>
         </div>
 
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-          gap: "16px",
-        }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(6,1fr)", gap: "20px" }}>
           {PRODUCT_CATEGORIES.map((cat) => (
-            <Link
-              key={cat.slug}
-              href={`/products?category=${cat.slug}`}
-              className="category-card"
-            >
-              <div
-                className="cat-icon"
-                style={{
-                  background: categoryColors[cat.slug] || "linear-gradient(135deg, #ff6b00, #ff8533)",
-                  fontSize: "32px",
-                  width: "70px",
-                  height: "70px",
-                }}
-              >
-                {categoryIcons[cat.slug]}
-              </div>
-              <span style={{ fontWeight: 600, fontSize: "13px", textAlign: "center", lineHeight: 1.3 }}>
-                {cat.name}
-              </span>
+            <Link key={cat.slug} href={`/products?category=${cat.slug}`} className="category-card">
+              <span className="cat-emoji">{categoryEmojis[cat.slug] || cat.icon}</span>
+              <span className="cat-name">{cat.name}</span>
             </Link>
           ))}
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 1024px) {
+          section > div > div:last-child {
+            grid-template-columns: repeat(4,1fr) !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .category-card { min-width: 120px; padding: 20px 12px; }
+          section > div > div:last-child {
+            display: flex !important;
+            overflow-x: auto;
+            gap: 16px !important;
+            padding-bottom: 12px;
+            grid-template-columns: none !important;
+            scrollbar-width: none;
+            margin: 0 -24px;
+            padding: 0 24px 16px;
+          }
+          section > div > div:last-child::-webkit-scrollbar { display: none; }
+        }
+        @media (max-width: 480px) {
+          section > div > div:last-child { grid-template-columns: repeat(2,1fr) !important; display: grid !important; margin: 0; padding: 0; }
+        }
+      `}</style>
     </section>
   );
 }

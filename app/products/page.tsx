@@ -9,18 +9,9 @@ import { Search, SlidersHorizontal, X, ChevronLeft, ChevronRight } from "lucide-
 import { PRODUCT_CATEGORIES } from "@/lib/utils";
 
 interface Product {
-  _id: string;
-  name: string;
-  slug: string;
-  price: number;
-  comparePrice?: number;
-  images: string[];
-  category: string;
-  isFeatured?: boolean;
-  isNewArrival?: boolean;
-  rating?: number;
-  reviewCount?: number;
-  stock?: number;
+  _id: string; name: string; slug: string; price: number; comparePrice?: number;
+  images: string[]; category: string; isFeatured?: boolean; isNewArrival?: boolean;
+  rating?: number; reviewCount?: number; stock?: number;
 }
 
 function ProductsContent() {
@@ -30,14 +21,10 @@ function ProductsContent() {
   const [pages, setPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   const [filters, setFilters] = useState({
     category: searchParams.get("category") || "",
     search: searchParams.get("search") || "",
-    sort: "createdAt",
-    order: "desc",
-    page: 1,
-    limit: 12,
+    sort: "createdAt", order: "desc", page: 1, limit: 12,
   });
 
   const fetchProducts = useCallback(async () => {
@@ -46,321 +33,147 @@ function ProductsContent() {
       const params = new URLSearchParams();
       if (filters.category) params.set("category", filters.category);
       if (filters.search) params.set("search", filters.search);
-      params.set("sort", filters.sort);
-      params.set("order", filters.order);
-      params.set("page", String(filters.page));
-      params.set("limit", String(filters.limit));
+      params.set("sort", filters.sort); params.set("order", filters.order);
+      params.set("page", String(filters.page)); params.set("limit", String(filters.limit));
       if (searchParams.get("featured")) params.set("featured", "true");
       if (searchParams.get("newArrival")) params.set("newArrival", "true");
-
       const res = await fetch(`/api/products?${params}`);
       const data = await res.json();
-      setProducts(data.products || []);
-      setTotal(data.total || 0);
-      setPages(data.pages || 1);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+      setProducts(data.products || []); setTotal(data.total || 0); setPages(data.pages || 1);
+    } catch (err) { console.error(err); } finally { setLoading(false); }
   }, [filters, searchParams]);
 
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+  useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
   const sortOptions = [
     { label: "Newest First", sort: "createdAt", order: "desc" },
-    { label: "Oldest First", sort: "createdAt", order: "asc" },
     { label: "Price: Low to High", sort: "price", order: "asc" },
     { label: "Price: High to Low", sort: "price", order: "desc" },
   ];
 
+  const inputStyle = {
+    background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "12px",
+    color: "var(--text-primary)", padding: "12px 16px", fontSize: "14px", outline: "none",
+    cursor: "pointer", fontFamily: "Plus Jakarta Sans, sans-serif", fontWeight: 500,
+    boxShadow: "var(--shadow-sm)", transition: "all 0.2s ease"
+  };
+
   return (
-    <div>
+    <div style={{ background: "var(--bg-primary)", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Navbar />
 
-      {/* Page Header */}
-      <div style={{
-        background: "linear-gradient(135deg, #1a1a2e, #16213e)",
-        padding: "48px 0",
-        marginBottom: "0",
-      }}>
-        <div className="page-container">
-          <h1 style={{ fontSize: "36px", fontWeight: 800, color: "white", marginBottom: "8px" }}>
-            All Products
-          </h1>
-          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "16px" }}>
-            {total} products available • Pakistan&apos;s Best Gadgets Store
-          </p>
+      {/* Header */}
+      <div style={{ background: "var(--bg-card)", padding: "64px 0", borderBottom: "1px solid var(--border-default)" }}>
+        <div className="page-container" style={{ textAlign: "center" }}>
+          <h1 style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 800, color: "var(--text-primary)", marginBottom: "8px", fontFamily: "Outfit, sans-serif" }}>Premium Collection</h1>
+          <p style={{ color: "var(--text-secondary)", fontSize: "16px", fontWeight: 500 }}>Explore our curated selection of {total} high-end products.</p>
         </div>
       </div>
 
-      <div className="page-container" style={{ padding: "32px 16px" }}>
+      <div className="page-container" style={{ padding: "40px 24px", flex: 1 }}>
         {/* Toolbar */}
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: "16px",
-          marginBottom: "24px",
-          flexWrap: "wrap",
-        }}>
-          {/* Search */}
-          <div className="search-input" style={{ flex: 1, minWidth: "200px", maxWidth: "340px" }}>
-            <Search size={16} color="#9ca3af" />
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={filters.search}
-              onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value, page: 1 }))}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", marginBottom: "32px", flexWrap: "wrap" }}>
+          <div className="search-bar" style={{ flex: 1, minWidth: "240px", maxWidth: "400px", background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "12px", padding: "12px 16px", display: "flex", alignItems: "center", gap: "10px", boxShadow: "var(--shadow-sm)" }}>
+            <Search size={18} color="var(--text-secondary)" />
+            <input type="text" placeholder="Search our collection..." value={filters.search}
+              onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value, page: 1 }))} 
+              style={{ border: "none", outline: "none", background: "transparent", flex: 1, fontSize: "15px", fontFamily: "Plus Jakarta Sans, sans-serif", color: "var(--text-primary)" }}
             />
             {filters.search && (
-              <button
-                onClick={() => setFilters((f) => ({ ...f, search: "", page: 1 }))}
-                style={{ background: "none", border: "none", cursor: "pointer", padding: "0" }}
-              >
-                <X size={14} color="#9ca3af" />
+              <button onClick={() => setFilters((f) => ({ ...f, search: "", page: 1 }))} style={{ background: "var(--bg-card-hover)", border: "none", borderRadius: "50%", width: "24px", height: "24px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <X size={14} color="var(--text-secondary)" />
               </button>
             )}
           </div>
-
-          <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
-            {/* Sort */}
+          <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
             <select
               value={`${filters.sort}-${filters.order}`}
-              onChange={(e) => {
-                const [sort, order] = e.target.value.split("-");
-                setFilters((f) => ({ ...f, sort, order, page: 1 }));
-              }}
-              style={{
-                padding: "10px 16px",
-                borderRadius: "10px",
-                border: "2px solid #e5e7eb",
-                fontSize: "14px",
-                cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
-                background: "white",
-              }}
+              onChange={(e) => { const [sort, order] = e.target.value.split("-"); setFilters((f) => ({ ...f, sort, order, page: 1 })); }}
+              style={inputStyle}
             >
-              {sortOptions.map((opt) => (
-                <option key={opt.label} value={`${opt.sort}-${opt.order}`}>
-                  {opt.label}
-                </option>
-              ))}
+              {sortOptions.map((o) => <option key={o.label} value={`${o.sort}-${o.order}`}>{o.label}</option>)}
             </select>
-
-            {/* Filter Toggle */}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "10px 16px",
-                borderRadius: "10px",
-                border: "2px solid #e5e7eb",
-                background: sidebarOpen ? "#ff6b00" : "white",
-                color: sidebarOpen ? "white" : "#374151",
-                cursor: "pointer",
-                fontFamily: "Poppins, sans-serif",
-                fontWeight: 600,
-                fontSize: "14px",
-              }}
+              style={{ ...inputStyle, display: "flex", alignItems: "center", gap: "8px", border: sidebarOpen ? "1px solid var(--text-primary)" : "1px solid var(--border-default)", background: sidebarOpen ? "var(--text-primary)" : "var(--bg-card)", color: sidebarOpen ? "white" : "var(--text-primary)" }}
             >
               <SlidersHorizontal size={16} /> Filters
             </button>
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: "24px" }}>
-          {/* Sidebar Filters */}
-          {sidebarOpen && (
-            <div style={{
-              width: "220px",
-              flexShrink: 0,
-              background: "white",
-              borderRadius: "16px",
-              padding: "20px",
-              border: "1px solid #f0f0f0",
-              alignSelf: "flex-start",
-              position: "sticky",
-              top: "80px",
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                <h3 style={{ fontWeight: 700, fontSize: "16px" }}>Filters</h3>
-                <button
-                  onClick={() => setFilters((f) => ({ ...f, category: "", page: 1 }))}
-                  style={{ fontSize: "12px", color: "#ff6b00", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}
-                >
-                  Clear All
+        {/* Active Tags */}
+        {(filters.category || filters.search) && (
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "24px" }}>
+            {filters.category && (
+              <span style={{ background: "var(--color-brand-dim)", color: "var(--color-brand)", padding: "6px 16px", borderRadius: "100px", fontSize: "13px", fontWeight: 600, display: "flex", alignItems: "center", gap: "8px" }}>
+                {PRODUCT_CATEGORIES.find(c => c.slug === filters.category)?.name || filters.category}
+                <button onClick={() => setFilters((f) => ({ ...f, category: "", page: 1 }))} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }}>
+                  <X size={14} color="var(--color-brand)" />
                 </button>
-              </div>
+              </span>
+            )}
+            {filters.search && (
+              <span style={{ background: "var(--color-brand-dim)", color: "var(--color-brand)", padding: "6px 16px", borderRadius: "100px", fontSize: "13px", fontWeight: 600, display: "flex", alignItems: "center", gap: "8px" }}>
+                &quot;{filters.search}&quot;
+                <button onClick={() => setFilters((f) => ({ ...f, search: "", page: 1 }))} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }}>
+                  <X size={14} color="var(--color-brand)" />
+                </button>
+              </span>
+            )}
+          </div>
+        )}
 
-              <div>
-                <h4 style={{ fontSize: "13px", fontWeight: 600, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "12px" }}>
-                  Category
-                </h4>
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <button
-                    onClick={() => setFilters((f) => ({ ...f, category: "", page: 1 }))}
-                    style={{
-                      textAlign: "left",
-                      padding: "8px 12px",
-                      borderRadius: "8px",
-                      border: "none",
-                      background: !filters.category ? "rgba(255,107,0,0.1)" : "transparent",
-                      color: !filters.category ? "#ff6b00" : "#374151",
-                      cursor: "pointer",
-                      fontFamily: "Poppins, sans-serif",
-                      fontSize: "14px",
-                      fontWeight: !filters.category ? 600 : 400,
-                    }}
-                  >
-                    All Categories
+        <div style={{ display: "flex", gap: "32px", alignItems: "flex-start" }}>
+          {/* Sidebar */}
+          {sidebarOpen && (
+            <div style={{ width: "240px", flexShrink: 0, background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "var(--radius-lg)", padding: "24px", position: "sticky", top: "100px", boxShadow: "var(--shadow-md)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+                <span style={{ fontWeight: 700, fontSize: "16px", color: "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>Filters</span>
+                <button onClick={() => setFilters((f) => ({ ...f, category: "", page: 1 }))} style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-secondary)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>Clear</button>
+              </div>
+              <div style={{ fontSize: "11px", color: "var(--text-secondary)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", marginBottom: "16px" }}>Category</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <button onClick={() => setFilters((f) => ({ ...f, category: "", page: 1 }))} style={{ textAlign: "left", padding: "10px 14px", borderRadius: "8px", border: "none", background: !filters.category ? "var(--text-primary)" : "transparent", color: !filters.category ? "white" : "var(--text-secondary)", cursor: "pointer", fontSize: "14px", fontWeight: 500, transition: "all 0.2s ease" }}>All Categories</button>
+                {PRODUCT_CATEGORIES.map((cat) => (
+                  <button key={cat.slug} onClick={() => setFilters((f) => ({ ...f, category: cat.slug, page: 1 }))} style={{ textAlign: "left", padding: "10px 14px", borderRadius: "8px", border: "none", background: filters.category === cat.slug ? "var(--text-primary)" : "transparent", color: filters.category === cat.slug ? "white" : "var(--text-secondary)", cursor: "pointer", fontSize: "14px", fontWeight: 500, transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "10px" }}>
+                    <span style={{ fontSize: "16px" }}>{cat.icon}</span> {cat.name}
                   </button>
-                  {PRODUCT_CATEGORIES.map((cat) => (
-                    <button
-                      key={cat.slug}
-                      onClick={() => setFilters((f) => ({ ...f, category: cat.slug, page: 1 }))}
-                      style={{
-                        textAlign: "left",
-                        padding: "8px 12px",
-                        borderRadius: "8px",
-                        border: "none",
-                        background: filters.category === cat.slug ? "rgba(255,107,0,0.1)" : "transparent",
-                        color: filters.category === cat.slug ? "#ff6b00" : "#374151",
-                        cursor: "pointer",
-                        fontFamily: "Poppins, sans-serif",
-                        fontSize: "14px",
-                        fontWeight: filters.category === cat.slug ? 600 : 400,
-                      }}
-                    >
-                      {cat.icon} {cat.name}
-                    </button>
-                  ))}
-                </div>
+                ))}
               </div>
             </div>
           )}
 
-          {/* Products Grid */}
+          {/* Products */}
           <div style={{ flex: 1 }}>
-            {/* Active Filter Tags */}
-            {(filters.category || filters.search) && (
-              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "16px" }}>
-                {filters.category && (
-                  <span style={{
-                    background: "rgba(255,107,0,0.1)",
-                    color: "#ff6b00",
-                    padding: "6px 14px",
-                    borderRadius: "20px",
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                  }}>
-                    {filters.category}
-                    <button
-                      onClick={() => setFilters((f) => ({ ...f, category: "", page: 1 }))}
-                      style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }}
-                    >
-                      <X size={12} color="#ff6b00" />
-                    </button>
-                  </span>
-                )}
-                {filters.search && (
-                  <span style={{
-                    background: "rgba(255,107,0,0.1)",
-                    color: "#ff6b00",
-                    padding: "6px 14px",
-                    borderRadius: "20px",
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                  }}>
-                    &quot;{filters.search}&quot;
-                    <button
-                      onClick={() => setFilters((f) => ({ ...f, search: "", page: 1 }))}
-                      style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }}
-                    >
-                      <X size={12} color="#ff6b00" />
-                    </button>
-                  </span>
-                )}
-              </div>
-            )}
-
             {loading ? (
-              <div style={{ display: "flex", justifyContent: "center", padding: "80px 0" }}>
+              <div style={{ display: "flex", justifyContent: "center", padding: "100px 0" }}>
                 <div className="spinner" />
               </div>
             ) : products.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "80px 0" }}>
-                <div style={{ fontSize: "64px", marginBottom: "16px" }}>🔍</div>
-                <h3 style={{ fontSize: "22px", fontWeight: 700, color: "#1f2937", marginBottom: "8px" }}>No Products Found</h3>
-                <p style={{ color: "#6b7280", marginBottom: "24px" }}>Try adjusting your filters or search terms.</p>
-                <button
-                  onClick={() => setFilters((f) => ({ ...f, category: "", search: "", page: 1 }))}
-                  className="btn-primary"
-                >
-                  Clear Filters
-                </button>
+              <div style={{ textAlign: "center", padding: "100px 0", background: "var(--bg-card)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--border-hover)" }}>
+                <div style={{ fontSize: "56px", marginBottom: "20px" }}>🔍</div>
+                <h3 style={{ fontSize: "24px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "12px", fontFamily: "Outfit, sans-serif" }}>No Products Found</h3>
+                <p style={{ color: "var(--text-secondary)", marginBottom: "28px", fontSize: "16px" }}>Try adjusting your filters or search terms to find what you&apos;re looking for.</p>
+                <button onClick={() => setFilters((f) => ({ ...f, category: "", search: "", page: 1 }))} className="btn-primary">Clear All Filters</button>
               </div>
             ) : (
               <>
                 <div className="products-grid">
-                  {products.map((product) => (
-                    <ProductCard key={product._id} product={product} />
-                  ))}
+                  {products.map((p) => <ProductCard key={p._id} product={p} />)}
                 </div>
-
-                {/* Pagination */}
                 {pages > 1 && (
-                  <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginTop: "40px", alignItems: "center" }}>
-                    <button
-                      onClick={() => setFilters((f) => ({ ...f, page: Math.max(1, f.page - 1) }))}
-                      disabled={filters.page === 1}
-                      style={{
-                        width: "40px", height: "40px", borderRadius: "10px", border: "2px solid #e5e7eb",
-                        background: "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                        opacity: filters.page === 1 ? 0.5 : 1,
-                      }}
-                    >
-                      <ChevronLeft size={18} />
+                  <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginTop: "48px", alignItems: "center" }}>
+                    <button onClick={() => setFilters((f) => ({ ...f, page: Math.max(1, f.page - 1) }))} disabled={filters.page === 1} style={{ width: "44px", height: "44px", borderRadius: "12px", border: "1px solid var(--border-default)", background: "var(--bg-card)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-primary)", opacity: filters.page === 1 ? 0.4 : 1, transition: "all 0.2s ease" }}>
+                      <ChevronLeft size={20} />
                     </button>
                     {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
-                      <button
-                        key={p}
-                        onClick={() => setFilters((f) => ({ ...f, page: p }))}
-                        style={{
-                          width: "40px", height: "40px", borderRadius: "10px",
-                          border: "2px solid",
-                          borderColor: p === filters.page ? "#ff6b00" : "#e5e7eb",
-                          background: p === filters.page ? "#ff6b00" : "white",
-                          color: p === filters.page ? "white" : "#374151",
-                          cursor: "pointer",
-                          fontWeight: 600,
-                          fontSize: "14px",
-                          fontFamily: "Poppins, sans-serif",
-                        }}
-                      >
+                      <button key={p} onClick={() => setFilters((f) => ({ ...f, page: p }))} style={{ width: "44px", height: "44px", borderRadius: "12px", border: "1px solid", borderColor: p === filters.page ? "var(--text-primary)" : "var(--border-default)", background: p === filters.page ? "var(--text-primary)" : "var(--bg-card)", color: p === filters.page ? "white" : "var(--text-primary)", cursor: "pointer", fontWeight: p === filters.page ? 700 : 500, fontSize: "15px", transition: "all 0.2s ease" }}>
                         {p}
                       </button>
                     ))}
-                    <button
-                      onClick={() => setFilters((f) => ({ ...f, page: Math.min(pages, f.page + 1) }))}
-                      disabled={filters.page === pages}
-                      style={{
-                        width: "40px", height: "40px", borderRadius: "10px", border: "2px solid #e5e7eb",
-                        background: "white", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                        opacity: filters.page === pages ? 0.5 : 1,
-                      }}
-                    >
-                      <ChevronRight size={18} />
+                    <button onClick={() => setFilters((f) => ({ ...f, page: Math.min(pages, f.page + 1) }))} disabled={filters.page === pages} style={{ width: "44px", height: "44px", borderRadius: "12px", border: "1px solid var(--border-default)", background: "var(--bg-card)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-primary)", opacity: filters.page === pages ? 0.4 : 1, transition: "all 0.2s ease" }}>
+                      <ChevronRight size={20} />
                     </button>
                   </div>
                 )}
@@ -369,7 +182,6 @@ function ProductsContent() {
           </div>
         </div>
       </div>
-
       <Footer />
     </div>
   );
@@ -377,7 +189,7 @@ function ProductsContent() {
 
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<div style={{ display: "flex", justifyContent: "center", padding: "100px" }}><div className="spinner" /></div>}>
+    <Suspense fallback={<div style={{ display: "flex", justifyContent: "center", padding: "150px", background: "var(--bg-primary)", minHeight: "100vh" }}><div className="spinner" /></div>}>
       <ProductsContent />
     </Suspense>
   );

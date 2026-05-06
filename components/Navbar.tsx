@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Search, ShoppingCart, Menu, X, Phone } from "lucide-react";
+import { Search, ShoppingCart, Menu, X, ArrowRight } from "lucide-react";
 import { useCart } from "./CartProvider";
 
 export default function Navbar() {
   const { totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
 
@@ -18,229 +17,177 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923001234567";
-
   const navLinks = [
     { label: "Home", href: "/" },
-    { label: "Products", href: "/products" },
+    { label: "Shop All", href: "/products" },
     { label: "Kitchen", href: "/products?category=kitchen-cooking" },
     { label: "Personal Care", href: "/products?category=personal-care-beauty" },
     { label: "Electronics", href: "/products?category=electronics-gadgets" },
   ];
 
+  const handleSearch = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && searchQuery.trim()) {
+      window.location.href = `/products?search=${encodeURIComponent(searchQuery)}`;
+    }
+  };
+
   return (
-    <nav className="navbar" style={{ boxShadow: scrolled ? "0 4px 30px rgba(0,0,0,0.12)" : "0 2px 20px rgba(0,0,0,0.08)" }}>
-      <div className="page-container">
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 0" }}>
-          {/* Logo */}
-          <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "10px" }}>
-            <div style={{
-              background: "var(--primary)",
-              color: "white",
-              width: "42px",
-              height: "42px",
-              borderRadius: "12px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 800,
-              fontSize: "18px",
-              letterSpacing: "-0.5px",
-              flexShrink: 0,
-              fontFamily: "Outfit, sans-serif"
-            }}>
-              AIO
-            </div>
-            <div>
-              <div style={{ fontWeight: 800, fontSize: "20px", color: "var(--secondary)", lineHeight: 1.1, fontFamily: "Outfit, sans-serif" }}>
-                ALLIn<span style={{ color: "var(--primary)" }}>ONE</span>
+    <>
+      <nav
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 100,
+          background: scrolled ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.95)",
+          backdropFilter: scrolled ? "blur(24px) saturate(150%)" : "none",
+          WebkitBackdropFilter: scrolled ? "blur(24px) saturate(150%)" : "none",
+          boxShadow: scrolled ? "var(--shadow-sm)" : "none",
+          borderBottom: "1px solid var(--border-default)",
+          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+        }}
+      >
+        <div className="page-container">
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "72px" }}>
+            
+            {/* Logo */}
+            <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
+              <div style={{ 
+                width: "40px", height: "40px", 
+                background: "var(--text-primary)", 
+                borderRadius: "10px",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: "white", fontFamily: "Outfit, sans-serif", fontSize: "20px", fontWeight: 800,
+                boxShadow: "var(--shadow-sm)"
+              }}>
+                A
               </div>
-              <div style={{ fontSize: "10px", color: "var(--gray-600)", fontWeight: 600, letterSpacing: "1.5px" }}>
-                STORE
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 800, fontSize: "20px", color: "var(--text-primary)", lineHeight: 1.1, letterSpacing: "-0.02em" }}>
+                  AllInOne
+                </span>
+                <span style={{ fontSize: "10px", color: "var(--text-secondary)", letterSpacing: "1.5px", fontWeight: 700, textTransform: "uppercase" }}>
+                  Premium Store
+                </span>
               </div>
+            </Link>
+
+            {/* Desktop Nav Links */}
+            <div style={{ display: "flex", gap: "8px", flex: 1, justifyContent: "center" }} className="desktop-nav-links">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  style={{
+                    textDecoration: "none", color: "var(--text-secondary)", fontWeight: 600,
+                    fontSize: "14px", padding: "8px 16px", borderRadius: "100px",
+                    transition: "all 0.2s ease",
+                    whiteSpace: "nowrap",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
+                    (e.currentTarget as HTMLElement).style.background = "var(--bg-card-hover)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+                    (e.currentTarget as HTMLElement).style.background = "transparent";
+                  }}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
-          </Link>
 
-          {/* Desktop Search */}
-          <div className="search-input" style={{ flex: 1, maxWidth: "420px", margin: "0 24px", display: "flex" }}>
-            <Search size={18} color="var(--gray-400)" />
-            <input
-              type="text"
-              placeholder="Search modern gadgets & more..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && searchQuery.trim()) {
-                  window.location.href = `/products?search=${encodeURIComponent(searchQuery)}`;
-                }
-              }}
-            />
-          </div>
+            {/* Right Actions */}
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <div className="search-bar" style={{ display: "none" }}>
+                <Search size={16} color="var(--text-secondary)" />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleSearch}
+                />
+              </div>
 
-          {/* Desktop Nav Links */}
-          <div style={{ display: "none" }} className="desktop-nav">
-            {navLinks.map((link) => (
+              {/* Cart */}
               <Link
-                key={link.href}
-                href={link.href}
+                href="/cart"
                 style={{
-                  textDecoration: "none",
-                  color: "var(--gray-600)",
-                  fontWeight: 600,
-                  fontSize: "14px",
-                  transition: "color 0.2s ease",
-                  padding: "6px 0",
-                  borderBottom: "2px solid transparent",
+                  position: "relative",
+                  background: "var(--bg-card)",
+                  border: "1px solid var(--border-default)",
+                  color: "var(--text-primary)",
+                  width: "44px", height: "44px", borderRadius: "12px",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  textDecoration: "none", flexShrink: 0,
+                  transition: "all 0.2s ease",
+                  boxShadow: "var(--shadow-sm)"
                 }}
                 onMouseEnter={(e) => {
-                  (e.target as HTMLElement).style.color = "var(--primary)";
-                  (e.target as HTMLElement).style.borderBottom = "2px solid var(--primary)";
+                  (e.currentTarget.style.borderColor = "var(--border-hover)");
+                  (e.currentTarget.style.transform = "translateY(-2px)");
                 }}
                 onMouseLeave={(e) => {
-                  (e.target as HTMLElement).style.color = "var(--gray-600)";
-                  (e.target as HTMLElement).style.borderBottom = "2px solid transparent";
+                  (e.currentTarget.style.borderColor = "var(--border-default)");
+                  (e.currentTarget.style.transform = "translateY(0)");
                 }}
               >
-                {link.label}
+                <ShoppingCart size={18} />
+                {totalItems > 0 && (
+                  <span style={{
+                    position: "absolute", top: "-6px", right: "-6px",
+                    background: "var(--color-brand)", color: "white",
+                    borderRadius: "50%", width: "20px", height: "20px",
+                    fontSize: "11px", fontWeight: 700,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    border: "2px solid #ffffff",
+                    fontFamily: "Outfit, sans-serif"
+                  }}>
+                    {totalItems > 9 ? "9+" : totalItems}
+                  </span>
+                )}
               </Link>
-            ))}
+
+              {/* Hamburger */}
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="hamburger-btn"
+                style={{ 
+                  background: "transparent", border: "1px solid var(--border-default)", 
+                  width: "44px", height: "44px", borderRadius: "12px",
+                  cursor: "pointer", color: "var(--text-primary)", 
+                  display: "none", alignItems: "center", justifyContent: "center",
+                  transition: "all 0.2s ease"
+                }}
+              >
+                {menuOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </div>
           </div>
+        </div>
+      </nav>
 
-          {/* Right Icons */}
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            {/* WhatsApp */}
-            <a
-              href={`https://wa.me/${whatsappNumber}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                background: "#25D366",
-                color: "white",
-                width: "42px",
-                height: "42px",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                textDecoration: "none",
-                transition: "transform 0.2s ease",
-                flexShrink: 0,
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-              title="WhatsApp"
-            >
-              <Phone size={18} />
-            </a>
-
-            {/* Cart */}
-            <Link
-              href="/cart"
-              style={{
-                position: "relative",
-                background: "var(--primary)",
-                color: "white",
-                width: "42px",
-                height: "42px",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                textDecoration: "none",
-                transition: "transform 0.2s ease",
-                flexShrink: 0,
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            >
-              <ShoppingCart size={18} />
-              {totalItems > 0 && (
-                <span style={{
-                  position: "absolute",
-                  top: "-4px",
-                  right: "-4px",
-                  background: "var(--secondary)",
-                  color: "white",
-                  borderRadius: "50%",
-                  width: "22px",
-                  height: "22px",
-                  fontSize: "11px",
-                  fontWeight: 800,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  border: "2px solid var(--surface)",
-                  fontFamily: "Outfit, sans-serif"
-                }}>
-                  {totalItems > 99 ? "99+" : totalItems}
-                </span>
-              )}
-            </Link>
-
-            {/* Mobile Menu Toggle */}
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                padding: "4px",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              {menuOpen ? <X size={24} color="#1a1a2e" /> : <Menu size={24} color="#1a1a2e" />}
+      {/* Mobile Drawer */}
+      <div className={`mobile-drawer ${menuOpen ? "open" : ""}`}>
+        <div style={{ padding: "24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
+            <div style={{ fontFamily: "Outfit, sans-serif", fontWeight: 800, fontSize: "20px", color: "var(--text-primary)" }}>
+              AllInOne
+            </div>
+            <button onClick={() => setMenuOpen(false)} style={{ 
+              background: "var(--bg-card-hover)", border: "none", borderRadius: "50%",
+              width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center",
+              color: "var(--text-primary)", cursor: "pointer" 
+            }}>
+              <X size={16} />
             </button>
           </div>
-        </div>
-
-        {/* Desktop Nav Row */}
-        <div style={{
-          display: "flex",
-          gap: "24px",
-          paddingBottom: "12px",
-          borderTop: "1px solid #f3f4f6",
-          paddingTop: "12px",
-          overflowX: "auto",
-        }}>
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              style={{
-                textDecoration: "none",
-                color: "#4b5563",
-                fontWeight: 500,
-                fontSize: "13px",
-                whiteSpace: "nowrap",
-                transition: "color 0.2s ease",
-              }}
-              onMouseEnter={(e) => {
-                (e.target as HTMLElement).style.color = "#ff6b00";
-              }}
-              onMouseLeave={(e) => {
-                (e.target as HTMLElement).style.color = "#4b5563";
-              }}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      {menuOpen && (
-        <div style={{
-          background: "white",
-          borderTop: "1px solid #f3f4f6",
-          padding: "16px",
-        }}>
-          {/* Mobile Search */}
-          <div className="search-input" style={{ marginBottom: "16px" }}>
-            <Search size={18} color="#9ca3af" />
+          
+          <div className="search-bar" style={{ marginBottom: "24px", display: "flex" }}>
+            <Search size={16} color="var(--text-secondary)" />
             <input
-              type="text"
-              placeholder="Search products..."
+              type="text" placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
@@ -249,29 +196,44 @@ export default function Navbar() {
                   setMenuOpen(false);
                 }
               }}
+              style={{ padding: "10px 0" }}
             />
           </div>
 
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              style={{
-                display: "block",
-                padding: "12px 8px",
-                textDecoration: "none",
-                color: "#374151",
-                fontWeight: 500,
-                fontSize: "15px",
-                borderBottom: "1px solid #f3f4f6",
-              }}
-            >
-              {link.label}
-            </Link>
-          ))}
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  display: "flex", justifyContent: "space-between", alignItems: "center",
+                  padding: "14px 16px", borderRadius: "12px",
+                  textDecoration: "none", color: "var(--text-primary)",
+                  fontWeight: 600, fontSize: "15px",
+                  background: "var(--bg-card-hover)",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                {link.label}
+                <ArrowRight size={14} color="var(--text-secondary)" />
+              </Link>
+            ))}
+          </div>
         </div>
-      )}
-    </nav>
+      </div>
+      {menuOpen && <div className="overlay" onClick={() => setMenuOpen(false)} />}
+
+      <style>{`
+        @media (max-width: 1024px) {
+          .desktop-nav-links { display: none !important; }
+          .hamburger-btn { display: flex !important; }
+          .search-bar { display: none !important; }
+        }
+        @media (min-width: 1025px) {
+          .search-bar { display: flex !important; flex: 1; max-width: 280px; }
+        }
+      `}</style>
+    </>
   );
 }

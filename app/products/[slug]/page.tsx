@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,35 +8,26 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { useCart } from "@/components/CartProvider";
-import { ShoppingCart, MessageCircle, Star, ChevronLeft, Truck, Shield, RotateCcw, Minus, Plus } from "lucide-react";
+import { ShoppingCart, ChevronLeft, Minus, Plus, Package, Zap, ShieldCheck } from "lucide-react";
 
 interface Product {
-  _id: string;
-  name: string;
-  slug: string;
-  price: number;
-  comparePrice?: number;
-  images: string[];
-  category: string;
-  description: string;
-  shortDescription: string;
-  isFeatured?: boolean;
-  isNewArrival?: boolean;
-  rating?: number;
-  reviewCount?: number;
-  stock?: number;
-  tags?: string[];
+  _id: string; name: string; slug: string; price: number; comparePrice?: number;
+  images: string[]; category: string; description: string; shortDescription: string;
+  isFeatured?: boolean; isNewArrival?: boolean; rating?: number;
+  reviewCount?: number; stock?: number; tags?: string[];
 }
 
 export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
   const { addItem } = useCart();
+  const cartBtnRef = useRef<HTMLButtonElement>(null);
 
   const [product, setProduct] = useState<Product | null>(null);
   const [related, setRelated] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [imgFade, setImgFade] = useState(true);
 
   useEffect(() => {
     async function fetchProduct() {
@@ -45,118 +36,134 @@ export default function ProductDetailPage() {
         if (!res.ok) throw new Error("Not found");
         const data = await res.json();
         setProduct(data.product);
-
-        // Fetch related
-        const relRes = await fetch(`/api/products?category=${data.product.category}&limit=4`);
+        const relRes = await fetch(`/api/products?category=${data.product.category}&limit=5`);
         const relData = await relRes.json();
         setRelated(relData.products?.filter((p: Product) => p.slug !== slug) || []);
-      } catch {
-        setProduct(null);
-      } finally {
-        setLoading(false);
-      }
+      } catch { setProduct(null); }
+      finally { setLoading(false); }
     }
     if (slug) fetchProduct();
   }, [slug]);
 
-  if (loading) {
-    return (
-      <div>
-        <Navbar />
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
-          <div className="spinner" />
-        </div>
-        <Footer />
+  const switchImage = (i: number) => {
+    setImgFade(false);
+    setTimeout(() => { setSelectedImage(i); setImgFade(true); }, 200);
+  };
+
+  const handleAddToCart = () => {
+    if (!product) return;
+    addItem({ productId: product._id, name: product.name, price: product.price, quantity, image: images[0], slug: product.slug });
+    if (cartBtnRef.current) {
+      cartBtnRef.current.style.background = "var(--color-success)";
+      cartBtnRef.current.style.borderColor = "var(--color-success)";
+      cartBtnRef.current.style.color = "white";
+      setTimeout(() => {
+        if (cartBtnRef.current) {
+          cartBtnRef.current.style.background = "";
+          cartBtnRef.current.style.borderColor = "";
+          cartBtnRef.current.style.color = "";
+        }
+      }, 500);
+    }
+  };
+
+  const s = { background: "var(--bg-primary)", minHeight: "100vh" };
+
+  if (loading) return (
+    <div style={s}><Navbar />
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "70vh" }}><div className="spinner" /></div>
+      <Footer /></div>
+  );
+
+  if (!product) return (
+    <div style={s}><Navbar />
+      <div style={{ textAlign: "center", padding: "120px 20px" }}>
+        <div style={{ fontSize: "64px", marginBottom: "24px" }}>😕</div>
+        <h2 style={{ fontSize: "28px", fontWeight: 800, color: "var(--text-primary)", marginBottom: "16px", fontFamily: "Outfit, sans-serif" }}>Product Not Found</h2>
+        <p style={{ color: "var(--text-secondary)", marginBottom: "32px", fontSize: "16px" }}>This product doesn&apos;t exist or has been removed from our catalog.</p>
+        <Link href="/products" className="btn-primary">Browse Collection</Link>
       </div>
-    );
-  }
+      <Footer /></div>
+  );
 
-  if (!product) {
-    return (
-      <div>
-        <Navbar />
-        <div style={{ textAlign: "center", padding: "100px 20px" }}>
-          <div style={{ fontSize: "64px", marginBottom: "16px" }}>😕</div>
-          <h2 style={{ fontSize: "28px", fontWeight: 700, marginBottom: "8px" }}>Product Not Found</h2>
-          <p style={{ color: "#6b7280", marginBottom: "24px" }}>This product doesn&apos;t exist or has been removed.</p>
-          <Link href="/products" className="btn-primary">Browse Products</Link>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
+  const discount = product.comparePrice && product.comparePrice > product.price
+    ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100) : 0;
 
-  const discountPercent = product.comparePrice && product.comparePrice > product.price
-    ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)
-    : 0;
-
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923001234567";
-  const whatsappMsg = `Hi! I want to order:\n*${product.name}*\nPrice: Rs. ${product.price.toLocaleString()}\n\nPlease confirm availability.`;
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMsg)}`;
+  const waNum = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923001234567";
+  const waMsg = `Hi! I want to order:\n*${product.name}*\nPrice: Rs. ${product.price.toLocaleString()}\n\nPlease confirm availability.`;
+  const waUrl = `https://wa.me/${waNum}?text=${encodeURIComponent(waMsg)}`;
 
   const images = product.images.length > 0
     ? product.images
-    : [`https://placehold.co/600x600/f5f5f5/ff6b00?text=${encodeURIComponent(product.name.slice(0, 20))}`];
-
-  const handleAddToCart = () => {
-    addItem({
-      productId: product._id,
-      name: product.name,
-      price: product.price,
-      quantity,
-      image: images[0],
-      slug: product.slug,
-    });
-  };
-
-  const handleBuyNow = () => {
-    handleAddToCart();
-    window.location.href = "/checkout";
-  };
+    : [`https://placehold.co/600x600/ffffff/2563eb?text=${encodeURIComponent(product.name.slice(0, 12))}`];
 
   return (
-    <div>
+    <div style={s}>
       <Navbar />
 
-      <div className="page-container" style={{ padding: "32px 16px" }}>
+      <div className="page-container" style={{ padding: "40px 24px" }}>
         {/* Breadcrumb */}
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "24px", fontSize: "13px", color: "#6b7280" }}>
-          <Link href="/" style={{ color: "#6b7280", textDecoration: "none" }}>Home</Link>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "32px", fontSize: "13px", color: "var(--text-secondary)", fontWeight: 500 }}>
+          <Link href="/" style={{ color: "var(--text-secondary)", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-primary)")} onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-secondary)")}>Home</Link>
           <span>/</span>
-          <Link href="/products" style={{ color: "#6b7280", textDecoration: "none" }}>Products</Link>
+          <Link href="/products" style={{ color: "var(--text-secondary)", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-primary)")} onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-secondary)")}>Collection</Link>
           <span>/</span>
-          <span style={{ color: "#1f2937", fontWeight: 500 }}>{product.name}</span>
+          <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>{product.name}</span>
         </div>
 
-        {/* Back Button */}
-        <Link href="/products" style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#6b7280", textDecoration: "none", fontSize: "14px", marginBottom: "24px" }}>
-          <ChevronLeft size={16} /> Back to Products
-        </Link>
+        {/* Main Grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "60px", marginBottom: "64px" }} className="product-detail-grid">
 
-        {/* Main Content */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "48px", marginBottom: "60px" }}
-          className="product-detail-grid">
           {/* Gallery */}
-          <div>
-            <div className="gallery-main" style={{ marginBottom: "16px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            {/* Main Image */}
+            <div style={{
+              borderRadius: "var(--radius-xl)", overflow: "hidden",
+              background: "var(--bg-card)",
+              border: "1px solid var(--border-default)",
+              aspectRatio: "1",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              position: "relative",
+              boxShadow: "var(--shadow-sm)"
+            }}>
               <Image
                 src={images[selectedImage]}
                 alt={product.name}
-                width={600}
-                height={600}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                width={800} height={800}
+                style={{ width: "100%", height: "100%", objectFit: "contain", opacity: imgFade ? 1 : 0, transition: "opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)", padding: "24px" }}
                 unoptimized
               />
+              {discount > 0 && (
+                <div style={{ position: "absolute", top: "20px", left: "20px", background: "var(--text-primary)", borderRadius: "6px", padding: "6px 12px", fontSize: "12px", color: "white", fontWeight: 700, fontFamily: "Outfit, sans-serif" }}>
+                  −{discount}%
+                </div>
+              )}
             </div>
+            
+            {/* Thumbnails */}
             {images.length > 1 && (
-              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
                 {images.map((img, i) => (
                   <div
                     key={i}
-                    className={`gallery-thumb ${selectedImage === i ? "active" : ""}`}
-                    onClick={() => setSelectedImage(i)}
+                    onClick={() => switchImage(i)}
+                    style={{
+                      width: "80px", height: "80px", borderRadius: "12px", overflow: "hidden",
+                      background: "var(--bg-card)",
+                      border: `2px solid ${selectedImage === i ? "var(--text-primary)" : "var(--border-default)"}`,
+                      cursor: "pointer", opacity: selectedImage === i ? 1 : 0.6,
+                      transition: "all 0.3s ease",
+                      padding: "4px"
+                    }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "var(--text-primary)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
+                    onMouseLeave={(e) => {
+                      if (selectedImage !== i) {
+                        (e.currentTarget as HTMLElement).style.borderColor = "var(--border-default)";
+                        (e.currentTarget as HTMLElement).style.opacity = "0.6";
+                      }
+                    }}
                   >
-                    <Image src={img} alt={`${product.name} ${i + 1}`} width={80} height={80} style={{ width: "100%", height: "100%", objectFit: "cover" }} unoptimized />
+                    <Image src={img} alt={`${product.name} ${i + 1}`} width={80} height={80} style={{ width: "100%", height: "100%", objectFit: "contain" }} unoptimized />
                   </div>
                 ))}
               </div>
@@ -165,183 +172,114 @@ export default function ProductDetailPage() {
 
           {/* Product Info */}
           <div>
-            {/* Badges */}
-            <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
-              {product.isNewArrival && <span className="badge-new">New Arrival</span>}
-              {discountPercent > 0 && <span className="badge-sale">-{discountPercent}% OFF</span>}
-              {product.isFeatured && (
-                <span style={{ background: "rgba(255,107,0,0.1)", color: "#ff6b00", padding: "3px 10px", borderRadius: "6px", fontSize: "11px", fontWeight: 700 }}>
-                  ⭐ Featured
-                </span>
-              )}
+            {/* Category badge */}
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "20px" }}>
+              <span style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", color: "var(--text-secondary)", padding: "4px 14px", borderRadius: "100px", fontSize: "12px", fontWeight: 600, display: "flex", alignItems: "center", gap: "6px", boxShadow: "var(--shadow-sm)" }}>
+                <Package size={14} /> {product.category}
+              </span>
+              {product.isNewArrival && <span style={{ background: "var(--color-brand-dim)", color: "var(--color-brand)", padding: "4px 14px", borderRadius: "100px", fontSize: "12px", fontWeight: 700, fontFamily: "Outfit, sans-serif" }}>New Arrival</span>}
+              {product.isFeatured && <span style={{ background: "var(--text-primary)", color: "white", padding: "4px 14px", borderRadius: "100px", fontSize: "12px", fontWeight: 700, fontFamily: "Outfit, sans-serif" }}>⭐ Editor&apos;s Pick</span>}
             </div>
 
-            <h1 style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937", marginBottom: "12px", lineHeight: 1.3 }}>
-              {product.name}
-            </h1>
+            <h1 style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)", fontWeight: 800, color: "var(--text-primary)", marginBottom: "16px", lineHeight: 1.15, fontFamily: "Outfit, sans-serif", letterSpacing: "-0.02em" }}>{product.name}</h1>
 
             {/* Rating */}
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-              <div className="star-rating">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} size={16} fill={star <= Math.round(product.rating || 4.5) ? "#fbbf24" : "none"} color={star <= Math.round(product.rating || 4.5) ? "#fbbf24" : "#d1d5db"} />
-                ))}
-              </div>
-              <span style={{ fontSize: "14px", color: "#6b7280" }}>
-                {product.rating || 4.5} ({product.reviewCount || 0} reviews)
-              </span>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
+              <span style={{ color: "var(--color-warning)", fontSize: "18px", letterSpacing: "2px" }}>{"★".repeat(Math.round(product.rating || 4))}<span style={{ color: "var(--border-hover)"}}>{"★".repeat(5 - Math.round(product.rating || 4))}</span></span>
+              <span style={{ fontSize: "14px", color: "var(--text-secondary)", fontWeight: 500 }}>{product.rating || 4.5} ({product.reviewCount || 0} reviews)</span>
             </div>
 
             {/* Price */}
-            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "20px" }}>
-              <span className="price-current" style={{ fontSize: "32px" }}>
-                Rs. {product.price.toLocaleString()}
-              </span>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "16px", marginBottom: "24px" }}>
+              <span style={{ fontSize: "36px", fontWeight: 800, color: "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>Rs. {product.price.toLocaleString()}</span>
               {product.comparePrice && product.comparePrice > product.price && (
-                <span className="price-original" style={{ fontSize: "18px" }}>
-                  Rs. {product.comparePrice.toLocaleString()}
-                </span>
+                <span style={{ fontSize: "18px", color: "var(--text-old-price)", textDecoration: "line-through", fontWeight: 500 }}>Rs. {product.comparePrice.toLocaleString()}</span>
               )}
             </div>
+
+            <div style={{ borderTop: "1px solid var(--border-default)", marginBottom: "24px" }} />
 
             {/* Short description */}
             {product.shortDescription && (
-              <p style={{ color: "#4b5563", fontSize: "15px", lineHeight: 1.7, marginBottom: "24px" }}>
-                {product.shortDescription}
-              </p>
+              <p style={{ color: "var(--text-secondary)", fontSize: "16px", lineHeight: 1.7, marginBottom: "32px", fontWeight: 500 }}>{product.shortDescription}</p>
             )}
 
-            {/* Category & Tags */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "24px" }}>
-              <span style={{ background: "#f3f4f6", color: "#4b5563", padding: "4px 12px", borderRadius: "20px", fontSize: "12px", fontWeight: 600 }}>
-                📦 {product.category}
-              </span>
-              {product.tags?.slice(0, 3).map((tag) => (
-                <span key={tag} style={{ background: "#fff3e8", color: "#ff6b00", padding: "4px 12px", borderRadius: "20px", fontSize: "12px", fontWeight: 500 }}>
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            {/* Quantity */}
-            <div style={{ marginBottom: "24px" }}>
-              <label style={{ display: "block", fontWeight: 600, fontSize: "14px", marginBottom: "10px" }}>Quantity</label>
-              <div className="qty-control" style={{ display: "inline-flex" }}>
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-                  <Minus size={16} />
-                </button>
-                <span>{quantity}</span>
-                <button onClick={() => setQuantity(Math.min(product.stock || 99, quantity + 1))}>
-                  <Plus size={16} />
-                </button>
+            {/* Tags */}
+            {product.tags && product.tags.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "32px" }}>
+                {product.tags.slice(0, 4).map((tag) => (
+                  <span key={tag} style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", color: "var(--text-secondary)", padding: "4px 12px", borderRadius: "100px", fontSize: "12px", fontWeight: 500 }}>{tag}</span>
+                ))}
               </div>
-              {product.stock !== undefined && product.stock <= 5 && (
-                <span style={{ marginLeft: "12px", fontSize: "13px", color: "#f59e0b", fontWeight: 600 }}>
-                  ⚡ Only {product.stock} left!
-                </span>
-              )}
+            )}
+
+            {/* Qty */}
+            <div style={{ marginBottom: "32px" }}>
+              <label style={{ display: "block", fontWeight: 700, fontSize: "12px", color: "var(--text-secondary)", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "1px", fontFamily: "Outfit, sans-serif" }}>Quantity</label>
+              <div style={{ display: "inline-flex", alignItems: "center" }}>
+                <div className="qty-control" style={{ background: "var(--bg-card)" }}>
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))}><Minus size={16} /></button>
+                  <span style={{ minWidth: "48px", fontSize: "16px" }}>{quantity}</span>
+                  <button onClick={() => setQuantity(Math.min(product.stock || 99, quantity + 1))}><Plus size={16} /></button>
+                </div>
+                {product.stock !== undefined && product.stock <= 5 && (
+                  <span style={{ marginLeft: "16px", fontSize: "14px", color: "var(--color-warning)", fontWeight: 700, fontFamily: "Outfit, sans-serif" }}><Zap size={16} style={{ display: "inline", verticalAlign: "text-bottom" }} /> Only {product.stock} units left!</span>
+                )}
+              </div>
             </div>
 
             {/* Action Buttons */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "28px" }}>
-              <button onClick={handleAddToCart} className="btn-secondary" style={{ width: "100%", justifyContent: "center", padding: "15px" }}>
-                <ShoppingCart size={18} /> Add to Cart
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "40px" }}>
+              <button ref={cartBtnRef} onClick={handleAddToCart} className="btn-primary" style={{ width: "100%", justifyContent: "center", padding: "18px", fontSize: "16px" }}>
+                <ShoppingCart size={18} /> Add to Cart — Rs. {(product.price * quantity).toLocaleString()}
               </button>
-              <button onClick={handleBuyNow} className="btn-primary" style={{ width: "100%", justifyContent: "center", padding: "15px", fontSize: "16px" }}>
-                Buy Now — Rs. {(product.price * quantity).toLocaleString()}
-              </button>
-              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-whatsapp" style={{ width: "100%", justifyContent: "center", padding: "15px" }}>
-                <MessageCircle size={18} /> Order on WhatsApp
+              <a href={waUrl} target="_blank" rel="noopener noreferrer" className="btn-whatsapp" style={{ width: "100%", justifyContent: "center", padding: "16px", fontSize: "16px", textDecoration: "none", display: "flex", alignItems: "center", gap: "10px" }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" /></svg>
+              Order via WhatsApp
               </a>
             </div>
 
-            {/* Trust Row */}
-            <div style={{
-              background: "#f9fafb",
-              borderRadius: "12px",
-              padding: "16px",
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "12px",
-              textAlign: "center",
-            }}>
+            {/* Delivery Info Cards */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "16px" }}>
               {[
-                { icon: <Truck size={20} color="#ff6b00" />, label: "Fast Delivery" },
-                { icon: <Shield size={20} color="#ff6b00" />, label: "100% Original" },
-                { icon: <RotateCcw size={20} color="#ff6b00" />, label: "Easy Returns" },
+                { icon: <ShieldCheck size={20} color="var(--text-primary)" />, title: "100% Original", sub: "Quality checked" },
+                { icon: <Zap size={20} color="var(--color-warning)" />, title: "Fast Shipping", sub: "Free over Rs.1500" },
+                { icon: <Package size={20} color="var(--color-brand)" />, title: "Easy Returns", sub: "7-day policy" },
               ].map((item) => (
-                <div key={item.label}>
-                  <div style={{ display: "flex", justifyContent: "center", marginBottom: "6px" }}>{item.icon}</div>
-                  <div style={{ fontSize: "12px", fontWeight: 600, color: "#374151" }}>{item.label}</div>
+                <div key={item.title} style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", padding: "16px 12px", textAlign: "center", boxShadow: "var(--shadow-sm)" }}>
+                  <div style={{ display: "flex", justifyContent: "center", marginBottom: "8px" }}>{item.icon}</div>
+                  <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "4px", fontFamily: "Outfit, sans-serif" }}>{item.title}</div>
+                  <div style={{ fontSize: "11px", color: "var(--text-secondary)", fontWeight: 500 }}>{item.sub}</div>
                 </div>
               ))}
-            </div>
-
-            {/* COD Note */}
-            <div style={{
-              marginTop: "16px",
-              background: "rgba(16,185,129,0.08)",
-              border: "1px solid rgba(16,185,129,0.2)",
-              borderRadius: "10px",
-              padding: "12px 16px",
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-            }}>
-              <span style={{ fontSize: "20px" }}>💰</span>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: "13px", color: "#065f46" }}>Cash on Delivery</div>
-                <div style={{ fontSize: "12px", color: "#6b7280" }}>
-                  Pay when you receive • Free delivery above Rs. 1,500
-                </div>
-              </div>
             </div>
           </div>
         </div>
 
-        {/* Product Description */}
+        {/* Description */}
         {product.description && (
-          <div style={{
-            background: "white",
-            borderRadius: "16px",
-            padding: "32px",
-            border: "1px solid #f0f0f0",
-            marginBottom: "48px",
-          }}>
-            <h2 style={{ fontSize: "22px", fontWeight: 700, marginBottom: "16px", color: "#1f2937" }}>
-              Product Details
-            </h2>
-            <div
-              style={{ color: "#4b5563", lineHeight: 1.8, fontSize: "15px" }}
-              dangerouslySetInnerHTML={{ __html: product.description }}
-            />
+          <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "var(--radius-xl)", padding: "40px", marginBottom: "64px", boxShadow: "var(--shadow-sm)" }}>
+            <h2 style={{ fontSize: "24px", fontWeight: 800, color: "var(--text-primary)", marginBottom: "24px", fontFamily: "Outfit, sans-serif" }}>Product Details</h2>
+            <div style={{ color: "var(--text-secondary)", lineHeight: 1.8, fontSize: "15px", fontWeight: 500 }} dangerouslySetInnerHTML={{ __html: product.description }} />
           </div>
         )}
 
         {/* Related Products */}
         {related.length > 0 && (
           <div>
-            <h2 style={{ fontSize: "26px", fontWeight: 800, marginBottom: "24px", color: "#1f2937" }}>
-              Related Products
-            </h2>
+            <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "32px" }}>
+              <h2 className="section-title">Similar Products</h2>
+              <Link href={`/products?category=${product.category}`} style={{ fontSize: "14px", color: "var(--color-brand)", textDecoration: "none", fontWeight: 600, fontFamily: "Plus Jakarta Sans, sans-serif" }}>See All &rarr;</Link>
+            </div>
             <div className="products-grid">
-              {related.slice(0, 4).map((p) => (
-                <ProductCard key={p._id} product={p} />
-              ))}
+              {related.slice(0, 4).map((p) => <ProductCard key={p._id} product={p} />)}
             </div>
           </div>
         )}
       </div>
 
       <Footer />
-
-      <style jsx global>{`
-        @media (max-width: 768px) {
-          .product-detail-grid {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
+      <style>{`@media(max-width:900px){.product-detail-grid{grid-template-columns:1fr!important; gap: 40px !important;}}`}</style>
     </div>
   );
 }
