@@ -19,7 +19,7 @@ export default function TrustBadges() {
                 background: "var(--bg-primary)", 
                 borderRadius: "12px", 
                 display: "flex", alignItems: "center", justifyContent: "center",
-                color: "var(--color-brand)",
+                color: "var(--color-icon)",
                 flexShrink: 0,
                 border: "1px solid var(--border-default)"
               }}>

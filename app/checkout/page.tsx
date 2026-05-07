@@ -91,7 +91,7 @@ export default function CheckoutPage() {
       <div className="page-container" style={{ padding: "48px 24px" }}>
         <h1 style={{ fontSize: "clamp(2rem, 3vw, 2.5rem)", fontWeight: 800, color: "var(--text-primary)", marginBottom: "8px", fontFamily: "Outfit, sans-serif", letterSpacing: "-0.02em" }}>Secure Checkout</h1>
         <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-secondary)", marginBottom: "40px", fontSize: "14px", fontWeight: 600 }}>
-          <ShieldCheck size={16} color="var(--color-success)" /> SSL Encrypted secure connection
+          <ShieldCheck size={16} color="var(--color-icon)" /> SSL Encrypted secure connection
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 420px", gap: "48px" }} className="checkout-grid">
@@ -172,7 +172,7 @@ export default function CheckoutPage() {
           <div style={{ alignSelf: "flex-start", position: "sticky", top: "100px" }}>
             <div className="summary-card" style={{ border: "none", boxShadow: "var(--shadow-md)" }}>
               <h2 style={{ fontSize: "20px", fontWeight: 800, marginBottom: "24px", color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "10px", fontFamily: "Outfit, sans-serif" }}>
-                <ShoppingBag size={20} color="var(--text-primary)" /> Order Summary
+                <ShoppingBag size={20} color="var(--color-icon)" /> Order Summary
               </h2>
               <div style={{ maxHeight: "320px", overflowY: "auto", marginBottom: "24px", display: "flex", flexDirection: "column", gap: "16px", paddingRight: "8px" }}>
                 {items.map((item) => (
@@ -190,7 +190,7 @@ export default function CheckoutPage() {
               </div>
               <div style={{ borderTop: "1px solid var(--border-default)", paddingTop: "20px", display: "flex", flexDirection: "column", gap: "12px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", fontWeight: 500 }}><span style={{ color: "var(--text-secondary)" }}>Subtotal</span><span style={{ color: "var(--text-primary)", fontWeight: 700, fontFamily: "Outfit, sans-serif" }}>Rs. {subtotal.toLocaleString()}</span></div>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", fontWeight: 500 }}><span style={{ color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "6px" }}><Truck size={14} /> Delivery</span><span style={{ fontWeight: 700, color: shippingFee === 0 ? "var(--color-success)" : "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>{shippingFee === 0 ? "FREE" : `Rs. ${shippingFee}`}</span></div>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", fontWeight: 500 }}><span style={{ color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "6px" }}><Truck size={14} color="var(--color-icon)" /> Delivery</span><span style={{ fontWeight: 700, color: shippingFee === 0 ? "var(--color-success)" : "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>{shippingFee === 0 ? "FREE" : `Rs. ${shippingFee}`}</span></div>
                 <div style={{ borderTop: "1px solid var(--border-default)", paddingTop: "16px", marginTop: "4px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ fontWeight: 800, fontSize: "18px", color: "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>Total</span>
                   <span style={{ fontWeight: 900, fontSize: "24px", color: "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>Rs. {total.toLocaleString()}</span>

@@ -33,6 +33,17 @@ const ProductSchema = new mongoose.Schema({
 
 const Product = mongoose.models.Product || mongoose.model("Product", ProductSchema);
 
+const BannerSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  subtitle: { type: String, default: "" },
+  image: { type: String, required: true },
+  link: { type: String, default: "/" },
+  isActive: { type: Boolean, default: true },
+  order: { type: Number, default: 0 },
+}, { timestamps: true });
+
+const Banner = mongoose.models.Banner || mongoose.model("Banner", BannerSchema);
+
 const PRODUCTS_TO_SEED = [
   "Rechargeable Coffee Beater",
   "Silicone Washing Gloves",
@@ -155,6 +166,34 @@ async function seed() {
 
     await Product.insertMany(products);
     console.log(`Successfully seeded ${products.length} products`);
+
+    // Seed Banners
+    await Banner.deleteMany({});
+    const banners = [
+      {
+        title: "MEGA SUMMER SALE 2024",
+        subtitle: "Up to 50% Off on All Kitchen & Home Accessories",
+        image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=2000",
+        link: "/products?category=kitchen-cooking",
+        order: 1,
+      },
+      {
+        title: "PREMIUM BEAUTY CARE",
+        subtitle: "Discover Your Natural Glow With Our Latest Gadgets",
+        image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&q=80&w=2000",
+        link: "/products?category=personal-care-beauty",
+        order: 2,
+      },
+      {
+        title: "SMART HOME GADGETS",
+        subtitle: "Revolutionize Your Daily Life with Smart Technology",
+        image: "https://images.unsplash.com/photo-1558002038-103792e1972d?auto=format&fit=crop&q=80&w=2000",
+        link: "/products?category=electronics-gadgets",
+        order: 3,
+      }
+    ];
+    await Banner.insertMany(banners);
+    console.log("Successfully seeded 3 banners");
 
     process.exit(0);
   } catch (error) {

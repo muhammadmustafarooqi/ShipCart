@@ -74,14 +74,14 @@ function ProductsContent() {
         {/* Toolbar */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", marginBottom: "32px", flexWrap: "wrap" }}>
           <div className="search-bar" style={{ flex: 1, minWidth: "240px", maxWidth: "400px", background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "12px", padding: "12px 16px", display: "flex", alignItems: "center", gap: "10px", boxShadow: "var(--shadow-sm)" }}>
-            <Search size={18} color="var(--text-secondary)" />
+            <Search size={18} color="var(--color-icon)" />
             <input type="text" placeholder="Search our collection..." value={filters.search}
               onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value, page: 1 }))} 
               style={{ border: "none", outline: "none", background: "transparent", flex: 1, fontSize: "15px", fontFamily: "Plus Jakarta Sans, sans-serif", color: "var(--text-primary)" }}
             />
             {filters.search && (
               <button onClick={() => setFilters((f) => ({ ...f, search: "", page: 1 }))} style={{ background: "var(--bg-card-hover)", border: "none", borderRadius: "50%", width: "24px", height: "24px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <X size={14} color="var(--text-secondary)" />
+                <X size={14} color="var(--color-icon)" />
               </button>
             )}
           </div>
@@ -97,7 +97,7 @@ function ProductsContent() {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               style={{ ...inputStyle, display: "flex", alignItems: "center", gap: "8px", border: sidebarOpen ? "1px solid var(--text-primary)" : "1px solid var(--border-default)", background: sidebarOpen ? "var(--text-primary)" : "var(--bg-card)", color: sidebarOpen ? "white" : "var(--text-primary)" }}
             >
-              <SlidersHorizontal size={16} /> Filters
+              <SlidersHorizontal size={16} color="currentColor" /> Filters
             </button>
           </div>
         </div>
@@ -109,7 +109,7 @@ function ProductsContent() {
               <span style={{ background: "var(--color-brand-dim)", color: "var(--color-brand)", padding: "6px 16px", borderRadius: "100px", fontSize: "13px", fontWeight: 600, display: "flex", alignItems: "center", gap: "8px" }}>
                 {PRODUCT_CATEGORIES.find(c => c.slug === filters.category)?.name || filters.category}
                 <button onClick={() => setFilters((f) => ({ ...f, category: "", page: 1 }))} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }}>
-                  <X size={14} color="var(--color-brand)" />
+                  <X size={14} color="var(--color-icon)" />
                 </button>
               </span>
             )}
@@ -117,7 +117,7 @@ function ProductsContent() {
               <span style={{ background: "var(--color-brand-dim)", color: "var(--color-brand)", padding: "6px 16px", borderRadius: "100px", fontSize: "13px", fontWeight: 600, display: "flex", alignItems: "center", gap: "8px" }}>
                 &quot;{filters.search}&quot;
                 <button onClick={() => setFilters((f) => ({ ...f, search: "", page: 1 }))} style={{ background: "none", border: "none", cursor: "pointer", display: "flex" }}>
-                  <X size={14} color="var(--color-brand)" />
+                  <X size={14} color="var(--color-icon)" />
                 </button>
               </span>
             )}
@@ -165,7 +165,7 @@ function ProductsContent() {
                 {pages > 1 && (
                   <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginTop: "48px", alignItems: "center" }}>
                     <button onClick={() => setFilters((f) => ({ ...f, page: Math.max(1, f.page - 1) }))} disabled={filters.page === 1} style={{ width: "44px", height: "44px", borderRadius: "12px", border: "1px solid var(--border-default)", background: "var(--bg-card)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-primary)", opacity: filters.page === 1 ? 0.4 : 1, transition: "all 0.2s ease" }}>
-                      <ChevronLeft size={20} />
+                      <ChevronLeft size={20} color="var(--color-icon)" />
                     </button>
                     {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
                       <button key={p} onClick={() => setFilters((f) => ({ ...f, page: p }))} style={{ width: "44px", height: "44px", borderRadius: "12px", border: "1px solid", borderColor: p === filters.page ? "var(--text-primary)" : "var(--border-default)", background: p === filters.page ? "var(--text-primary)" : "var(--bg-card)", color: p === filters.page ? "white" : "var(--text-primary)", cursor: "pointer", fontWeight: p === filters.page ? 700 : 500, fontSize: "15px", transition: "all 0.2s ease" }}>
@@ -173,7 +173,7 @@ function ProductsContent() {
                       </button>
                     ))}
                     <button onClick={() => setFilters((f) => ({ ...f, page: Math.min(pages, f.page + 1) }))} disabled={filters.page === pages} style={{ width: "44px", height: "44px", borderRadius: "12px", border: "1px solid var(--border-default)", background: "var(--bg-card)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-primary)", opacity: filters.page === pages ? 0.4 : 1, transition: "all 0.2s ease" }}>
-                      <ChevronRight size={20} />
+                      <ChevronRight size={20} color="var(--color-icon)" />
                     </button>
                   </div>
                 )}

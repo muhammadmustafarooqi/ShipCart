@@ -48,7 +48,7 @@ export default function Footer() {
             <div className="footer-title">Explore</div>
             <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "12px" }}>
               {[{ label: "Home", href: "/" }, { label: "Premium Collection", href: "/products" }, { label: "Shopping Cart", href: "/cart" }, { label: "Admin Portal", href: "/admin/dashboard" }].map((l) => (
-                <li key={l.href}><Link href={l.href} className="footer-link"><span style={{ color: "var(--color-brand)" }}>&rarr;</span> {l.label}</Link></li>
+                <li key={l.href}><Link href={l.href} className="footer-link"><span style={{ color: "var(--color-icon)" }}>&rarr;</span> {l.label}</Link></li>
               ))}
             </ul>
           </div>
@@ -64,7 +64,7 @@ export default function Footer() {
                 { label: "Fitness & Health", slug: "fitness-health" },
                 { label: "Tech Gadgets", slug: "electronics-gadgets" },
               ].map((c) => (
-                <li key={c.slug}><Link href={`/products?category=${c.slug}`} className="footer-link"><span style={{ color: "var(--color-brand)" }}>&rarr;</span> {c.label}</Link></li>
+                <li key={c.slug}><Link href={`/products?category=${c.slug}`} className="footer-link"><span style={{ color: "var(--color-icon)" }}>&rarr;</span> {c.label}</Link></li>
               ))}
             </ul>
           </div>
@@ -74,15 +74,15 @@ export default function Footer() {
             <div className="footer-title">Contact Support</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: "12px", color: "#94a3b8", textDecoration: "none", fontSize: "14px", transition: "color .2s ease" }} onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "white")} onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#94a3b8")}>
-                <div style={{ width: "36px", height: "36px", background: "rgba(37,99,235,.15)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Phone size={16} color="var(--color-brand)" /></div>
+                <div style={{ width: "36px", height: "36px", background: "rgba(37,99,235,.15)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Phone size={16} color="var(--color-icon)" /></div>
                 WhatsApp Support
               </a>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", color: "#94a3b8", fontSize: "14px" }}>
-                <div style={{ width: "36px", height: "36px", background: "rgba(37,99,235,.15)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Mail size={16} color="var(--color-brand)" /></div>
+                <div style={{ width: "36px", height: "36px", background: "rgba(37,99,235,.15)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Mail size={16} color="var(--color-icon)" /></div>
                 support@allinonestore.pk
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", color: "#94a3b8", fontSize: "14px" }}>
-                <div style={{ width: "36px", height: "36px", background: "rgba(37,99,235,.15)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><MapPin size={16} color="var(--color-brand)" /></div>
+                <div style={{ width: "36px", height: "36px", background: "rgba(37,99,235,.15)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><MapPin size={16} color="var(--color-icon)" /></div>
                 Islamabad, Pakistan 🇵🇰
               </div>
               <div style={{ marginTop: "12px", padding: "16px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px" }}>

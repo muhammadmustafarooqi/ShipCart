@@ -107,7 +107,7 @@ function OrderSuccessContent() {
               <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                 <div style={{ display: "flex", alignItems: "flex-start", gap: "16px" }}>
                   <div style={{ width: "40px", height: "40px", background: "var(--bg-primary)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, border: "1px solid var(--border-default)" }}>
-                    <Phone size={18} color="var(--text-primary)" />
+                    <Phone size={18} color="var(--color-icon)" />
                   </div>
                   <div>
                     <div style={{ fontSize: "13px", color: "var(--text-secondary)", marginBottom: "4px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>Customer</div>
@@ -117,7 +117,7 @@ function OrderSuccessContent() {
 
                 <div style={{ display: "flex", alignItems: "flex-start", gap: "16px" }}>
                   <div style={{ width: "40px", height: "40px", background: "var(--bg-primary)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, border: "1px solid var(--border-default)" }}>
-                    <Home size={18} color="var(--text-primary)" />
+                    <Home size={18} color="var(--color-icon)" />
                   </div>
                   <div>
                     <div style={{ fontSize: "13px", color: "var(--text-secondary)", marginBottom: "4px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>Delivery Address</div>
@@ -127,7 +127,7 @@ function OrderSuccessContent() {
 
                 <div style={{ display: "flex", alignItems: "flex-start", gap: "16px" }}>
                   <div style={{ width: "40px", height: "40px", background: "var(--bg-primary)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, border: "1px solid var(--border-default)" }}>
-                    <Package size={18} color="var(--text-primary)" />
+                    <Package size={18} color="var(--color-icon)" />
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: "13px", color: "var(--text-secondary)", marginBottom: "8px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>{order.items.length} Item(s)</div>
@@ -192,7 +192,7 @@ function OrderSuccessContent() {
               className="btn-whatsapp"
               style={{ width: "100%", justifyContent: "center", fontSize: "16px", padding: "18px" }}
             >
-              <MessageCircle size={20} /> Receive Updates on WhatsApp
+              <MessageCircle size={20} color="white" /> Receive Updates on WhatsApp
             </a>
             <Link href="/products" className="btn-secondary" style={{ width: "100%", justifyContent: "center", fontSize: "16px", padding: "18px" }}>
               Continue Shopping
@@ -203,7 +203,7 @@ function OrderSuccessContent() {
 
       <Footer />
 
-      <style jsx global>{`
+      <style>{`
         @keyframes bounce {
           0% { transform: scale(0.5); opacity: 0; }
           70% { transform: scale(1.1); }

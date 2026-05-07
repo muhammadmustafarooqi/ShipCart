@@ -163,7 +163,7 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
                     letterSpacing: "2px",
                     fontFamily: "Outfit, sans-serif"
                   }}>
-                    <Sparkles size={16} fill="var(--color-brand)" /> Premium Selection
+                    <Sparkles size={16} color="var(--color-icon)" fill="var(--color-icon)" /> Premium Selection
                   </div>
                   
                   <h1 style={{ 
@@ -201,7 +201,7 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
                     href={slide.link} 
                     className="hero-btn"
                   >
-                    Discover Now <ArrowRight size={20} />
+                    Discover Now <ArrowRight size={20} color="currentColor" />
                   </Link>
                 </div>
               </div>

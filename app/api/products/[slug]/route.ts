@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
+import { auth } from "@/lib/auth";
 
 export async function GET(
   _request: NextRequest,
@@ -26,12 +27,22 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  // Protect: only admin
+  const session = await auth();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     await connectDB();
     const { slug } = await params;
     const body = await request.json();
 
-    const product = await Product.findOneAndUpdate({ slug }, body, { new: true });
+    // Prevent slug & _id from being overwritten
+    delete body.slug;
+    delete body._id;
+
+    const product = await Product.findOneAndUpdate({ slug }, body, { new: true, runValidators: true });
 
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
@@ -48,6 +59,12 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  // Protect: only admin
+  const session = await auth();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     await connectDB();
     const { slug } = await params;

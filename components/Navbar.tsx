@@ -33,19 +33,22 @@ export default function Navbar() {
 
   return (
     <>
-      <nav
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 100,
-          background: scrolled ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.95)",
-          backdropFilter: scrolled ? "blur(24px) saturate(150%)" : "none",
-          WebkitBackdropFilter: scrolled ? "blur(24px) saturate(150%)" : "none",
-          boxShadow: scrolled ? "var(--shadow-sm)" : "none",
-          borderBottom: "1px solid var(--border-default)",
-          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
-        }}
-      >
+      <div style={{ position: "sticky", top: "20px", zIndex: 100, padding: "0 20px", pointerEvents: "none", transition: "all 0.4s ease" }}>
+        <nav
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            pointerEvents: "auto",
+            background: scrolled ? "rgba(255, 255, 255, 0.75)" : "rgba(255, 255, 255, 0.95)",
+            backdropFilter: "blur(24px) saturate(200%)",
+            WebkitBackdropFilter: "blur(24px) saturate(200%)",
+            boxShadow: scrolled ? "0 20px 40px rgba(15, 23, 42, 0.08)" : "0 4px 20px rgba(15, 23, 42, 0.04)",
+            border: "1px solid rgba(255, 255, 255, 0.8)",
+            borderRadius: "100px",
+            transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+            padding: "0 16px"
+          }}
+        >
         <div className="page-container">
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "72px" }}>
             
@@ -99,16 +102,19 @@ export default function Navbar() {
 
             {/* Right Actions */}
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <div className="search-bar" style={{ display: "none" }}>
-                <Search size={16} color="var(--text-secondary)" />
+              <form 
+                className="search-bar" 
+                style={{ display: "none" }}
+                onSubmit={(e) => { e.preventDefault(); if(searchQuery.trim()) window.location.href = `/products?search=${encodeURIComponent(searchQuery)}`; }}
+              >
+                <Search size={16} color="var(--color-icon)" />
                 <input
                   type="text"
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={handleSearch}
                 />
-              </div>
+              </form>
 
               {/* Cart */}
               <Link
@@ -133,7 +139,7 @@ export default function Navbar() {
                   (e.currentTarget.style.transform = "translateY(0)");
                 }}
               >
-                <ShoppingCart size={18} />
+                <ShoppingCart size={18} color="var(--color-icon)" />
                 {totalItems > 0 && (
                   <span style={{
                     position: "absolute", top: "-6px", right: "-6px",
@@ -161,12 +167,13 @@ export default function Navbar() {
                   transition: "all 0.2s ease"
                 }}
               >
-                {menuOpen ? <X size={20} /> : <Menu size={20} />}
+                {menuOpen ? <X size={20} color="var(--color-icon)" /> : <Menu size={20} color="var(--color-icon)" />}
               </button>
             </div>
           </div>
         </div>
       </nav>
+      </div>
 
       {/* Mobile Drawer */}
       <div className={`mobile-drawer ${menuOpen ? "open" : ""}`}>
@@ -180,25 +187,23 @@ export default function Navbar() {
               width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center",
               color: "var(--text-primary)", cursor: "pointer" 
             }}>
-              <X size={16} />
+              <X size={16} color="var(--color-icon)" />
             </button>
           </div>
           
-          <div className="search-bar" style={{ marginBottom: "24px", display: "flex" }}>
-            <Search size={16} color="var(--text-secondary)" />
+          <form 
+            className="search-bar" 
+            style={{ marginBottom: "24px", display: "flex" }}
+            onSubmit={(e) => { e.preventDefault(); if(searchQuery.trim()) { window.location.href = `/products?search=${encodeURIComponent(searchQuery)}`; setMenuOpen(false); } }}
+          >
+            <Search size={16} color="var(--color-icon)" />
             <input
               type="text" placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && searchQuery.trim()) {
-                  window.location.href = `/products?search=${encodeURIComponent(searchQuery)}`;
-                  setMenuOpen(false);
-                }
-              }}
               style={{ padding: "10px 0" }}
             />
-          </div>
+          </form>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {navLinks.map((link) => (
@@ -216,7 +221,7 @@ export default function Navbar() {
                 }}
               >
                 {link.label}
-                <ArrowRight size={14} color="var(--text-secondary)" />
+                <ArrowRight size={14} color="var(--color-icon)" />
               </Link>
             ))}
           </div>

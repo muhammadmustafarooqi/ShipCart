@@ -22,7 +22,7 @@ export default function CartPage() {
           <div style={{ fontSize: "64px", marginBottom: "24px", opacity: 0.8 }}>🛍️</div>
           <h2 style={{ fontSize: "28px", fontWeight: 800, color: "var(--text-primary)", marginBottom: "12px", fontFamily: "Outfit, sans-serif" }}>Your Cart is Empty</h2>
           <p style={{ color: "var(--text-secondary)", marginBottom: "32px", fontSize: "16px", fontWeight: 500 }}>Looks like you haven&apos;t added anything to your cart yet.</p>
-          <Link href="/products" className="btn-primary" style={{ padding: "16px 32px", fontSize: "16px" }}><ShoppingBag size={18} /> Explore Collection</Link>
+          <Link href="/products" className="btn-primary" style={{ padding: "16px 32px", fontSize: "16px" }}><ShoppingBag size={18} color="white" /> Explore Collection</Link>
         </div>
         <Footer />
       </div>
@@ -55,9 +55,9 @@ export default function CartPage() {
                   </div>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "16px" }}>
                     <div className="qty-control" style={{ background: "var(--bg-card)" }}>
-                      <button onClick={() => updateQuantity(item.productId, item.quantity - 1)}><Minus size={14} /></button>
+                      <button onClick={() => updateQuantity(item.productId, item.quantity - 1)}><Minus size={14} color="var(--color-icon)" /></button>
                       <span>{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.productId, item.quantity + 1)}><Plus size={14} /></button>
+                      <button onClick={() => updateQuantity(item.productId, item.quantity + 1)}><Plus size={14} color="var(--color-icon)" /></button>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                       <span style={{ fontWeight: 800, fontSize: "15px", color: "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>Rs. {(item.price * item.quantity).toLocaleString()}</span>
@@ -89,7 +89,7 @@ export default function CartPage() {
                 </div>
                 {shippingFee > 0 && (
                   <div style={{ background: "var(--color-brand-dim)", border: "1px solid rgba(37,99,235,0.2)", borderRadius: "8px", padding: "12px 16px", fontSize: "13px", color: "var(--color-brand)", display: "flex", alignItems: "center", gap: "8px", fontWeight: 600 }}>
-                    <Truck size={16} /> Add Rs. {(1500 - subtotal).toLocaleString()} more for free delivery!
+                    <Truck size={16} color="var(--color-icon)" /> Add Rs. {(1500 - subtotal).toLocaleString()} more for free delivery!
                   </div>
                 )}
               </div>
@@ -100,7 +100,7 @@ export default function CartPage() {
                 </div>
               </div>
               <div style={{ background: "var(--bg-primary)", border: "1px solid var(--border-default)", borderRadius: "12px", padding: "16px", marginBottom: "24px", display: "flex", alignItems: "center", gap: "16px" }}>
-                <div style={{ background: "white", padding: "8px", borderRadius: "8px", boxShadow: "var(--shadow-sm)" }}><CreditCard size={20} color="var(--text-primary)" /></div>
+                <div style={{ background: "white", padding: "8px", borderRadius: "8px", boxShadow: "var(--shadow-sm)" }}><CreditCard size={20} color="var(--color-icon)" /></div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: "14px", color: "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>Cash on Delivery</div>
                   <div style={{ fontSize: "12px", color: "var(--text-secondary)", fontWeight: 500, marginTop: "2px" }}>Pay securely when you receive your order</div>

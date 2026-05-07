@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
+import { auth } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
   try {
@@ -8,7 +9,7 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "12");
+    const limit = Math.min(parseInt(searchParams.get("limit") || "12"), 100); // cap at 100
     const category = searchParams.get("category");
     const search = searchParams.get("search");
     const featured = searchParams.get("featured");
@@ -24,14 +25,18 @@ export async function GET(request: NextRequest) {
     if (featured === "true") query.isFeatured = true;
     if (newArrival === "true") query.isNewArrival = true;
     if (search) {
+      // Sanitize search input - limit length to prevent ReDoS
+      const sanitized = search.slice(0, 100).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       query.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } },
-        { tags: { $in: [new RegExp(search, "i")] } },
+        { name: { $regex: sanitized, $options: "i" } },
+        { shortDescription: { $regex: sanitized, $options: "i" } },
+        { tags: { $in: [new RegExp(sanitized, "i")] } },
       ];
     }
 
-    const sortObj: Record<string, 1 | -1> = { [sort]: order === "asc" ? 1 : -1 };
+    const allowedSorts = ["createdAt", "price", "rating", "name"];
+    const safeSort = allowedSorts.includes(sort) ? sort : "createdAt";
+    const sortObj: Record<string, 1 | -1> = { [safeSort]: order === "asc" ? 1 : -1 };
     const skip = (page - 1) * limit;
 
     const [products, total] = await Promise.all([
@@ -52,9 +57,26 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  // Protect: only admin
+  const session = await auth();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     await connectDB();
     const body = await request.json();
+
+    // Basic validation
+    if (!body.name?.trim()) {
+      return NextResponse.json({ error: "Product name is required" }, { status: 400 });
+    }
+    if (!body.category) {
+      return NextResponse.json({ error: "Category is required" }, { status: 400 });
+    }
+    if (typeof body.price !== "number" || body.price <= 0) {
+      return NextResponse.json({ error: "Valid price is required" }, { status: 400 });
+    }
 
     // Generate slug
     const slugify = (await import("slugify")).default;
