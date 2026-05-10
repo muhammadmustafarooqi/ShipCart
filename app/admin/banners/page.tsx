@@ -112,7 +112,7 @@ export default function AdminBannersPage() {
               alignItems: "center",
               gap: "20px",
             }}>
-              <GripVertical size={20} color="#cbd5e1" style={{ cursor: "grab" }} />
+              <GripVertical size={20} style={{ cursor: "grab", color: "#cbd5e1" }} />
               
               <div style={{ width: "160px", height: "80px", borderRadius: "8px", overflow: "hidden", flexShrink: 0, position: "relative" }}>
                 <Image src={banner.image} alt={banner.title} fill style={{ objectFit: "cover" }} unoptimized />

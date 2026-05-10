@@ -3,6 +3,8 @@ import connectDB from "@/lib/mongodb";
 import Banner from "@/models/Banner";
 import { auth } from "@/lib/auth";
 
+export const runtime = "nodejs";
+
 export async function GET() {
   try {
     await connectDB();

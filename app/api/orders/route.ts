@@ -4,6 +4,8 @@ import Order from "@/models/Order";
 import { generateOrderId, validatePakistaniPhone, calculateShipping } from "@/lib/utils";
 import { auth } from "@/lib/auth";
 
+export const runtime = "nodejs";
+
 export async function GET(request: NextRequest) {
   // Protect: only admin can list all orders
   const session = await auth();

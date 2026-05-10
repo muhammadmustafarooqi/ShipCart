@@ -44,7 +44,7 @@ export default function WhatsAppCTA() {
               fontFamily: "Outfit, sans-serif",
               letterSpacing: "-0.03em",
             }}>
-              Need Help Choosing?<br />
+              instant ?<br />
               <span style={{ color: "var(--color-brand)" }}>Chat With Us!</span>
             </h2>
             <p style={{ color: "#94a3b8", fontSize: "16px", lineHeight: 1.7, marginBottom: "36px", fontWeight: 500, maxWidth: "440px" }}>

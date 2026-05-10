@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Search, ShoppingCart, Menu, X, ArrowRight } from "lucide-react";
+import { Search, ShoppingCart, Menu, X, ArrowRight, User } from "lucide-react";
+import Image from "next/image";
 import { useCart } from "./CartProvider";
 
 export default function Navbar() {
@@ -56,13 +57,18 @@ export default function Navbar() {
             <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
               <div style={{ 
                 width: "40px", height: "40px", 
-                background: "var(--text-primary)", 
                 borderRadius: "10px",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                color: "white", fontFamily: "Outfit, sans-serif", fontSize: "20px", fontWeight: 800,
+                overflow: "hidden",
                 boxShadow: "var(--shadow-sm)"
               }}>
-                A
+                <Image 
+                  src="/logo.webp" 
+                  alt="AllInOne Store Logo" 
+                  width={40} 
+                  height={40}
+                  style={{ objectFit: "contain", width: "100%", height: "100%" }}
+                />
               </div>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 800, fontSize: "20px", color: "var(--text-primary)", lineHeight: 1.1, letterSpacing: "-0.02em" }}>
@@ -115,6 +121,31 @@ export default function Navbar() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </form>
+
+              {/* User Account */}
+              <Link
+                href="/auth/login"
+                style={{
+                  background: "var(--bg-card)",
+                  border: "1px solid var(--border-default)",
+                  color: "var(--text-primary)",
+                  width: "44px", height: "44px", borderRadius: "12px",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  textDecoration: "none", flexShrink: 0,
+                  transition: "all 0.2s ease",
+                  boxShadow: "var(--shadow-sm)"
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget.style.borderColor = "var(--border-hover)");
+                  (e.currentTarget.style.transform = "translateY(-2px)");
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget.style.borderColor = "var(--border-default)");
+                  (e.currentTarget.style.transform = "translateY(0)");
+                }}
+              >
+                <User size={18} color="var(--color-icon)" />
+              </Link>
 
               {/* Cart */}
               <Link

@@ -5,12 +5,12 @@ import { auth } from "@/lib/auth";
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
-    const { slug } = await params;
-    const product = await Product.findOne({ slug, isActive: true }).lean();
+    const { id } = await params;
+    const product = await Product.findById(id).lean();
 
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
@@ -25,7 +25,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   // Protect: only admin
   const session = await auth();
@@ -35,14 +35,13 @@ export async function PUT(
 
   try {
     await connectDB();
-    const { slug } = await params;
+    const { id } = await params;
     const body = await request.json();
 
-    // Prevent slug & _id from being overwritten
-    delete body.slug;
+    // Prevent _id from being overwritten
     delete body._id;
 
-    const product = await Product.findOneAndUpdate({ slug }, body, { new: true, runValidators: true });
+    const product = await Product.findByIdAndUpdate(id, body, { new: true, runValidators: true });
 
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
@@ -57,7 +56,7 @@ export async function PUT(
 
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   // Protect: only admin
   const session = await auth();
@@ -67,8 +66,8 @@ export async function DELETE(
 
   try {
     await connectDB();
-    const { slug } = await params;
-    const product = await Product.findOneAndDelete({ slug });
+    const { id } = await params;
+    const product = await Product.findByIdAndDelete(id);
 
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });

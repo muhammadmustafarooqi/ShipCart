@@ -9,7 +9,6 @@ export interface CartItem {
   price: number;
   quantity: number;
   image: string;
-  slug: string;
 }
 
 interface CartContextType {
@@ -56,16 +55,22 @@ export default function CartProvider({
     setItems((prev) => {
       const existing = prev.find((i) => i.productId === item.productId);
       if (existing) {
-        toast.success(`${item.name} quantity updated!`);
         return prev.map((i) =>
           i.productId === item.productId
             ? { ...i, quantity: i.quantity + item.quantity }
             : i
         );
       }
-      toast.success(`${item.name} added to cart!`);
       return [...prev, item];
     });
+
+    // Show toast outside state updater to avoid double trigger in Strict Mode
+    const existing = items.find((i) => i.productId === item.productId);
+    if (existing) {
+      toast.success(`${item.name} quantity updated!`);
+    } else {
+      toast.success(`${item.name} added to cart!`);
+    }
   };
 
   const removeItem = (productId: string) => {

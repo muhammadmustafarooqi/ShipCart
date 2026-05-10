@@ -443,7 +443,51 @@ h1,h2,h3,h4,h5,h6 {
 .status-delivered { background: #d1fae5; color: #065f46; }
 .status-cancelled { background: #fee2e2; color: #991b1b; }
 
-.admin-content { overflow-y: auto; max-height: 100vh; }
+.admin-sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  border-right: 1px solid rgba(255,255,255,0.05);
+  box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  margin: 4px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.nav-item:hover {
+  background: rgba(255,107,0,0.1);
+  color: white;
+}
+
+.nav-item.active {
+  background: rgba(255,107,0,0.15);
+  color: white;
+  font-weight: 600;
+}
+
+.admin-content { 
+  overflow-y: auto; 
+  max-height: 100vh;
+  flex: 1;
+  background: #f8f9fa;
+}
 
 .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
 .form-group label { font-size: 13px; font-weight: 600; color: #374151; }

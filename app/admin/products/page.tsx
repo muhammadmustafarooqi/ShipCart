@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { Plus, Edit, Trash2, ToggleLeft, ToggleRight, X, Upload } from "lucide-react";
-import { PRODUCT_CATEGORIES } from "@/lib/utils";
+import { PRODUCT_CATEGORIES, PRODUCT_COLORS } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 interface Product {
@@ -21,6 +21,7 @@ interface Product {
   description: string;
   shortDescription: string;
   tags: string[];
+  colors: string[];
 }
 
 const EMPTY_PRODUCT = {
@@ -36,6 +37,7 @@ const EMPTY_PRODUCT = {
   description: "",
   shortDescription: "",
   tags: [] as string[],
+  colors: [] as string[],
 };
 
 export default function AdminProductsPage() {
@@ -47,6 +49,7 @@ export default function AdminProductsPage() {
   const [submitting, setSubmitting] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [tagInput, setTagInput] = useState("");
+  const [colorInput, setColorInput] = useState("");
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -86,6 +89,7 @@ export default function AdminProductsPage() {
       description: product.description || "",
       shortDescription: product.shortDescription || "",
       tags: product.tags || [],
+      colors: product.colors || [],
     });
     setShowForm(true);
   };
@@ -108,6 +112,13 @@ export default function AdminProductsPage() {
     }
   };
 
+  const handleAddColor = () => {
+    if (colorInput.trim() && !form.colors.includes(colorInput.trim())) {
+      setForm((f) => ({ ...f, colors: [...f.colors, colorInput.trim()] }));
+      setColorInput("");
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.category || form.price <= 0) {
@@ -117,7 +128,7 @@ export default function AdminProductsPage() {
     setSubmitting(true);
     try {
       if (editingProduct) {
-        const res = await fetch(`/api/products/${editingProduct.slug}`, {
+        const res = await fetch(`/api/products/${editingProduct._id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(form),
@@ -143,10 +154,10 @@ export default function AdminProductsPage() {
     }
   };
 
-  const handleDelete = async (slug: string) => {
+  const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
     try {
-      await fetch(`/api/products/${slug}`, { method: "DELETE" });
+      await fetch(`/api/products/${id}`, { method: "DELETE" });
       toast.success("Product deleted");
       fetchProducts();
     } catch {
@@ -156,7 +167,7 @@ export default function AdminProductsPage() {
 
   const handleToggleActive = async (product: Product) => {
     try {
-      await fetch(`/api/products/${product.slug}`, {
+      await fetch(`/api/products/${product._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isActive: !product.isActive }),
@@ -233,7 +244,7 @@ export default function AdminProductsPage() {
                   </td>
                   <td>
                     <button onClick={() => handleToggleActive(product)} style={{ background: "none", border: "none", cursor: "pointer" }}>
-                      {product.isActive ? <ToggleRight size={28} color="#10b981" /> : <ToggleLeft size={28} color="#9ca3af" />}
+                      {product.isActive ? <ToggleRight size={28} style={{ color: "#10b981" }} /> : <ToggleLeft size={28} style={{ color: "#9ca3af" }} />}
                     </button>
                   </td>
                   <td>
@@ -241,7 +252,7 @@ export default function AdminProductsPage() {
                       <button onClick={() => openEditForm(product)} style={{ background: "rgba(59,130,246,0.1)", border: "none", borderRadius: "6px", padding: "6px", cursor: "pointer", color: "#3b82f6" }}>
                         <Edit size={15} />
                       </button>
-                      <button onClick={() => handleDelete(product.slug)} style={{ background: "rgba(239,68,68,0.1)", border: "none", borderRadius: "6px", padding: "6px", cursor: "pointer", color: "#ef4444" }}>
+                      <button onClick={() => handleDelete(product._id)} style={{ background: "rgba(239,68,68,0.1)", border: "none", borderRadius: "6px", padding: "6px", cursor: "pointer", color: "#ef4444" }}>
                         <Trash2 size={15} />
                       </button>
                     </div>
@@ -322,7 +333,7 @@ export default function AdminProductsPage() {
                         <div key={i} style={{ position: "relative", width: "70px", height: "70px" }}>
                           <Image src={img} alt="" width={70} height={70} style={{ borderRadius: "8px", objectFit: "cover", width: "100%", height: "100%" }} unoptimized />
                           <button type="button" onClick={() => handleRemoveImage(img)} style={{ position: "absolute", top: "-4px", right: "-4px", background: "#ef4444", border: "none", borderRadius: "50%", width: "18px", height: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <X size={10} color="white" />
+                            <X size={10} style={{ color: "white" }} />
                           </button>
                         </div>
                       ))}
@@ -343,6 +354,47 @@ export default function AdminProductsPage() {
                         <span key={tag} style={{ background: "#fff3e8", color: "#ff6b00", padding: "4px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: 500, display: "flex", alignItems: "center", gap: "6px" }}>
                           {tag}
                           <button type="button" onClick={() => setForm((f) => ({ ...f, tags: f.tags.filter((t) => t !== tag) }))} style={{ background: "none", border: "none", cursor: "pointer", color: "#ff6b00", display: "flex" }}>
+                            <X size={10} />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Colors */}
+                <div className="form-group" style={{ gridColumn: "1/-1" }}>
+                  <label>Available Colors</label>
+                  <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+                    <select 
+                      value="" 
+                      onChange={(e) => {
+                        if (e.target.value && !form.colors.includes(e.target.value)) {
+                          setForm((f) => ({ ...f, colors: [...f.colors, e.target.value] }));
+                        }
+                      }}
+                      style={{ flex: 1, padding: "10px 14px", border: "2px solid #e5e7eb", borderRadius: "8px", fontSize: "14px", cursor: "pointer" }}
+                    >
+                      <option value="">Select a color to add</option>
+                      {PRODUCT_COLORS.map((color) => (
+                        <option key={color} value={color} disabled={form.colors.includes(color)}>{color}</option>
+                      ))}
+                    </select>
+                    <input 
+                      value={colorInput} 
+                      onChange={(e) => setColorInput(e.target.value)} 
+                      onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddColor())} 
+                      placeholder="Or type custom color" 
+                      style={{ flex: 1, padding: "10px 14px", border: "2px solid #e5e7eb", borderRadius: "8px", fontSize: "14px" }} 
+                    />
+                    <button type="button" onClick={handleAddColor} className="btn-secondary" style={{ padding: "10px 14px" }}>Add</button>
+                  </div>
+                  {form.colors.length > 0 && (
+                    <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                      {form.colors.map((color) => (
+                        <span key={color} style={{ background: "#e0e7ff", color: "#4338ca", padding: "6px 12px", borderRadius: "20px", fontSize: "12px", fontWeight: 600, display: "flex", alignItems: "center", gap: "6px" }}>
+                          {color}
+                          <button type="button" onClick={() => setForm((f) => ({ ...f, colors: f.colors.filter((c) => c !== color) }))} style={{ background: "none", border: "none", cursor: "pointer", color: "#4338ca", display: "flex" }}>
                             <X size={10} />
                           </button>
                         </span>

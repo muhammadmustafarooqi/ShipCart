@@ -3,6 +3,8 @@ import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
 import { auth } from "@/lib/auth";
 
+export const runtime = "nodejs";
+
 export async function GET(request: NextRequest) {
   try {
     await connectDB();

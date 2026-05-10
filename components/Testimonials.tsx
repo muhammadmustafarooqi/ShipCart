@@ -94,7 +94,7 @@ export default function Testimonials() {
               {/* Stars */}
               <div style={{ display: "flex", gap: "4px", marginBottom: "20px" }}>
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={16} color="#fbbf24" fill="#fbbf24" />
+                  <Star key={i} size={16} color="var(--color-warning)" fill="var(--color-warning)" />
                 ))}
               </div>
 

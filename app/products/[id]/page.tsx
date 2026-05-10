@@ -14,11 +14,11 @@ interface Product {
   _id: string; name: string; slug: string; price: number; comparePrice?: number;
   images: string[]; category: string; description: string; shortDescription: string;
   isFeatured?: boolean; isNewArrival?: boolean; rating?: number;
-  reviewCount?: number; stock?: number; tags?: string[];
+  reviewCount?: number; stock?: number; tags?: string[]; colors?: string[];
 }
 
 export default function ProductDetailPage() {
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
   const { addItem } = useCart();
   const cartBtnRef = useRef<HTMLButtonElement>(null);
 
@@ -28,22 +28,26 @@ export default function ProductDetailPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [imgFade, setImgFade] = useState(true);
+  const [selectedColor, setSelectedColor] = useState<string>("");
 
   useEffect(() => {
     async function fetchProduct() {
       try {
-        const res = await fetch(`/api/products/${slug}`);
+        const res = await fetch(`/api/products/${id}`);
         if (!res.ok) throw new Error("Not found");
         const data = await res.json();
         setProduct(data.product);
+        if (data.product.colors && data.product.colors.length > 0) {
+          setSelectedColor(data.product.colors[0]);
+        }
         const relRes = await fetch(`/api/products?category=${data.product.category}&limit=5`);
         const relData = await relRes.json();
-        setRelated(relData.products?.filter((p: Product) => p.slug !== slug) || []);
+        setRelated(relData.products?.filter((p: Product) => p._id !== id) || []);
       } catch { setProduct(null); }
       finally { setLoading(false); }
     }
-    if (slug) fetchProduct();
-  }, [slug]);
+    if (id) fetchProduct();
+  }, [id]);
 
   const switchImage = (i: number) => {
     setImgFade(false);
@@ -52,7 +56,7 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     if (!product) return;
-    addItem({ productId: product._id, name: product.name, price: product.price, quantity, image: images[0], slug: product.slug });
+    addItem({ productId: product._id, name: product.name, price: product.price, quantity, image: images[0] });
     if (cartBtnRef.current) {
       cartBtnRef.current.style.background = "var(--color-success)";
       cartBtnRef.current.style.borderColor = "var(--color-success)";
@@ -248,6 +252,48 @@ export default function ProductDetailPage() {
                 {product.tags.slice(0, 4).map((tag) => (
                   <span key={tag} style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", color: "var(--text-secondary)", padding: "4px 12px", borderRadius: "100px", fontSize: "12px", fontWeight: 500 }}>{tag}</span>
                 ))}
+              </div>
+            )}
+
+            {/* Color Selection */}
+            {product.colors && product.colors.length > 0 && (
+              <div style={{ marginBottom: "32px" }}>
+                <label style={{ display: "block", fontWeight: 700, fontSize: "12px", color: "var(--text-secondary)", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "1px", fontFamily: "Outfit, sans-serif" }}>Select Color</label>
+                <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                  {product.colors.map((color) => (
+                    <button
+                      key={color}
+                      onClick={() => setSelectedColor(color)}
+                      style={{
+                        padding: "10px 20px",
+                        borderRadius: "100px",
+                        border: selectedColor === color ? "2px solid var(--text-primary)" : "2px solid var(--border-default)",
+                        background: selectedColor === color ? "var(--text-primary)" : "var(--bg-card)",
+                        color: selectedColor === color ? "white" : "var(--text-primary)",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        fontWeight: selectedColor === color ? 700 : 500,
+                        fontFamily: "Plus Jakarta Sans, sans-serif",
+                        transition: "all 0.2s ease",
+                        boxShadow: selectedColor === color ? "0 4px 12px rgba(15,23,42,0.15)" : "var(--shadow-sm)"
+                      }}
+                      onMouseEnter={(e) => {
+                        if (selectedColor !== color) {
+                          (e.currentTarget as HTMLElement).style.borderColor = "var(--text-primary)";
+                          (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (selectedColor !== color) {
+                          (e.currentTarget as HTMLElement).style.borderColor = "var(--border-default)";
+                          (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+                        }
+                      }}
+                    >
+                      {color}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 

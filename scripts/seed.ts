@@ -126,6 +126,64 @@ const CATEGORIES = [
   "baby-kids"
 ];
 
+const COMMON_COLORS = [
+  ["Black", "White"],
+  ["Silver", "Gold"],
+  ["Red", "Blue", "Green"],
+  ["Pink", "Purple"],
+  ["Black", "Silver", "Gray"],
+  ["White", "Beige"],
+  ["Multicolor"],
+  ["Rose Gold", "Gold"],
+  ["Navy", "Black"],
+  ["Teal", "Mint"],
+];
+
+const CATEGORY_IMAGES: Record<string, string[]> = {
+  "kitchen-cooking": [
+    "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1585515320310-259814833e62?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1584990347449-39b4aa02b01f?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&h=800&fit=crop",
+  ],
+  "personal-care-beauty": [
+    "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1570554886111-e80fcca6a029?w=800&h=800&fit=crop",
+  ],
+  "home-cleaning": [
+    "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1600428877938-29c5e5b8b250?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1585421514738-01798e348b17?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1584820927498-cafe2c1c9699?w=800&h=800&fit=crop",
+  ],
+  "fitness-health": [
+    "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=800&h=800&fit=crop",
+  ],
+  "electronics-gadgets": [
+    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800&h=800&fit=crop",
+  ],
+  "baby-kids": [
+    "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=800&h=800&fit=crop",
+    "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&h=800&fit=crop",
+  ]
+};
+
 async function seed() {
   try {
     await mongoose.connect(MONGODB_URI as string);
@@ -141,9 +199,13 @@ async function seed() {
       const comparePrice = basePrice + Math.floor(Math.random() * 1000) + 200; // Discounted
       const isFeatured = index % 8 === 0; // Every 8th item is featured
       const isNewArrival = index % 5 === 0; // Every 5th item is new arrival
+      const colors = COMMON_COLORS[Math.floor(Math.random() * COMMON_COLORS.length)];
       
       const slug = slugify(name, { lower: true, strict: true });
-      const imageUrl = `https://placehold.co/800x800/f5f5f5/ff6b00?text=${encodeURIComponent(name.slice(0, 15))}`;
+      
+      // Get real image from category
+      const categoryImages = CATEGORY_IMAGES[category] || CATEGORY_IMAGES["electronics-gadgets"];
+      const imageUrl = categoryImages[index % categoryImages.length];
 
       return {
         name,
@@ -155,6 +217,7 @@ async function seed() {
         images: [imageUrl],
         category,
         tags: [category.split("-")[0], "premium", "new"],
+        colors,
         stock: Math.floor(Math.random() * 100) + 10, // 10 to 110
         isFeatured,
         isNewArrival,

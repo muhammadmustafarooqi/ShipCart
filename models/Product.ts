@@ -10,6 +10,7 @@ export interface IProduct extends Document {
   images: string[];
   category: string;
   tags: string[];
+  colors: string[];
   stock: number;
   isFeatured: boolean;
   isNewArrival: boolean;
@@ -31,6 +32,7 @@ const ProductSchema = new Schema<IProduct>(
     images: [{ type: String }],
     category: { type: String, required: true },
     tags: [{ type: String }],
+    colors: [{ type: String }],
     stock: { type: Number, default: 0, min: 0 },
     isFeatured: { type: Boolean, default: false },
     isNewArrival: { type: Boolean, default: false },

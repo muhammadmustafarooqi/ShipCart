@@ -74,7 +74,7 @@ export default async function HomePage() {
           <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "48px", flexWrap: "wrap", gap: "16px" }}>
             <div>
               <div className="section-tag">⭐ Editor&apos;s Choice</div>
-              <h2 className="section-title" style={{ background: "var(--gradient-brand)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+              <h2 className="section-title">
                 Featured Collection
               </h2>
               <p style={{ color: "var(--text-secondary)", fontSize: "15px", marginTop: "8px", fontWeight: 500 }}>

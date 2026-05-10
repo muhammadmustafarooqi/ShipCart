@@ -101,3 +101,27 @@ export const PRODUCT_CATEGORIES = [
   { name: "Electronics & Gadgets", slug: "electronics-gadgets", icon: "⚡" },
   { name: "Baby & Kids", slug: "baby-kids", icon: "👶" },
 ];
+
+// Common product colors
+export const PRODUCT_COLORS = [
+  "Black",
+  "White",
+  "Red",
+  "Blue",
+  "Green",
+  "Yellow",
+  "Pink",
+  "Purple",
+  "Orange",
+  "Gray",
+  "Silver",
+  "Gold",
+  "Brown",
+  "Beige",
+  "Navy",
+  "Maroon",
+  "Teal",
+  "Mint",
+  "Rose Gold",
+  "Multicolor",
+];

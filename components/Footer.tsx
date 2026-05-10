@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Mail, MapPin, Phone } from "lucide-react";
 
 export default function Footer() {
@@ -15,12 +16,18 @@ export default function Footer() {
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
               <div style={{ 
                 width: "40px", height: "40px", 
-                background: "white", 
                 borderRadius: "10px",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                color: "var(--text-primary)", fontFamily: "Outfit, sans-serif", fontSize: "20px", fontWeight: 800,
+                overflow: "hidden",
+                background: "white"
               }}>
-                A
+                <Image 
+                  src="/logo.webp" 
+                  alt="AllInOne Store Logo" 
+                  width={40} 
+                  height={40}
+                  style={{ objectFit: "contain", width: "100%", height: "100%" }}
+                />
               </div>
               <div>
                 <div style={{ fontWeight: 800, fontSize: "20px", color: "white", fontFamily: "Outfit, sans-serif", lineHeight: 1.1 }}>AllInOne</div>

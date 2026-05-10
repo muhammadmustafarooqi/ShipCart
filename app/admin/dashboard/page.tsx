@@ -54,55 +54,55 @@ export default function AdminDashboard() {
     {
       label: "Today's Orders",
       value: data?.todayOrders || 0,
-      icon: <ShoppingBag size={24} color="white" />,
+      icon: <ShoppingBag size={24} />,
       bg: "linear-gradient(135deg, #ff6b00, #e55a00)",
       sub: "Orders placed today",
     },
     {
       label: "This Week",
       value: data?.weekOrders || 0,
-      icon: <TrendingUp size={24} color="white" />,
+      icon: <TrendingUp size={24} />,
       bg: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
       sub: "Orders this week",
     },
     {
       label: "Pending Orders",
       value: data?.pendingOrders || 0,
-      icon: <Clock size={24} color="white" />,
+      icon: <Clock size={24} />,
       bg: "linear-gradient(135deg, #f59e0b, #d97706)",
       sub: "Require attention",
     },
     {
       label: "Total Revenue",
       value: `Rs. ${(data?.totalRevenue || 0).toLocaleString()}`,
-      icon: <TrendingUp size={24} color="white" />,
+      icon: <TrendingUp size={24} />,
       bg: "linear-gradient(135deg, #10b981, #059669)",
       sub: "From confirmed orders",
     },
     {
       label: "Total Products",
       value: data?.totalProducts || 0,
-      icon: <Package size={24} color="white" />,
+      icon: <Package size={24} />,
       bg: "linear-gradient(135deg, #06b6d4, #0284c7)",
       sub: "Active products",
     },
     {
       label: "Total Orders",
       value: data?.totalOrders || 0,
-      icon: <ShoppingBag size={24} color="white" />,
+      icon: <ShoppingBag size={24} />,
       bg: "linear-gradient(135deg, #1a1a2e, #16213e)",
       sub: "All time orders",
     },
   ];
 
   return (
-    <div style={{ padding: "32px" }}>
+    <div style={{ padding: "40px", maxWidth: "1400px", margin: "0 auto" }}>
       {/* Header */}
-      <div style={{ marginBottom: "32px" }}>
-        <h1 style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937", marginBottom: "4px" }}>
+      <div style={{ marginBottom: "40px" }}>
+        <h1 style={{ fontSize: "32px", fontWeight: 800, color: "#1f2937", marginBottom: "8px", fontFamily: "Outfit, sans-serif" }}>
           Dashboard
         </h1>
-        <p style={{ color: "#6b7280", fontSize: "15px" }}>
+        <p style={{ color: "#6b7280", fontSize: "15px", fontWeight: 500 }}>
           Welcome back! Here&apos;s what&apos;s happening with your store.
         </p>
       </div>
@@ -110,9 +110,9 @@ export default function AdminDashboard() {
       {/* Stats Grid */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-        gap: "20px",
-        marginBottom: "36px",
+        gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+        gap: "24px",
+        marginBottom: "48px",
       }}>
         {stats.map((stat) => (
           <div key={stat.label} className="stat-card">
@@ -134,6 +134,7 @@ export default function AdminDashboard() {
                 alignItems: "center",
                 justifyContent: "center",
                 boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
+                color: "white",
               }}>
                 {stat.icon}
               </div>
@@ -144,10 +145,10 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Orders */}
-      <div style={{ background: "white", borderRadius: "16px", padding: "24px", border: "1px solid #f0f0f0" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-          <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#1f2937" }}>Recent Orders</h2>
-          <Link href="/admin/orders" style={{ display: "flex", alignItems: "center", gap: "6px", color: "#ff6b00", textDecoration: "none", fontSize: "14px", fontWeight: 600 }}>
+      <div style={{ background: "white", borderRadius: "20px", padding: "32px", border: "1px solid #f0f0f0", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+          <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#1f2937", fontFamily: "Outfit, sans-serif" }}>Recent Orders</h2>
+          <Link href="/admin/orders" style={{ display: "flex", alignItems: "center", gap: "6px", color: "#ff6b00", textDecoration: "none", fontSize: "14px", fontWeight: 700, transition: "all 0.2s ease" }}>
             View All <ArrowRight size={14} />
           </Link>
         </div>
@@ -201,7 +202,7 @@ export default function AdminDashboard() {
           </div>
         ) : (
           <div style={{ textAlign: "center", padding: "40px", color: "#9ca3af" }}>
-            <ShoppingBag size={40} color="#e5e7eb" style={{ margin: "0 auto 12px" }} />
+            <ShoppingBag size={40} style={{ margin: "0 auto 12px", color: "#e5e7eb" }} />
             <p>No orders yet. Share your store to get started!</p>
           </div>
         )}

@@ -4,6 +4,9 @@ import Order from "@/models/Order";
 import Product from "@/models/Product";
 import { auth } from "@/lib/auth";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const session = await auth();
   if (!session) {
@@ -52,5 +55,3 @@ export async function GET() {
     return NextResponse.json({ error: "Failed to fetch dashboard data" }, { status: 500 });
   }
 }
-
-export const dynamic = "force-dynamic";

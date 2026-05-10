@@ -10,13 +10,13 @@ export default async function AdminLayout({
   const session = await auth();
 
   if (!session) {
-    redirect("/admin/login");
+    redirect("/auth/admin-login");
   }
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#f8f9fa" }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: "#f8f9fa", overflow: "hidden" }}>
       <AdminSidebar />
-      <div className="admin-content" style={{ flex: 1 }}>
+      <div className="admin-content" style={{ flex: 1, overflowY: "auto" }}>
         {children}
       </div>
     </div>

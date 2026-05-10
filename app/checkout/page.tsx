@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useCart } from "@/components/CartProvider";
@@ -24,12 +25,39 @@ const inputStyle = {
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const { data: session } = useSession();
   const { items, subtotal, clearCart } = useCart();
   const [form, setForm] = useState<FormData>({ customerName: "", phone: "", city: "", address: "", notes: "" });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
+  const [userDataLoaded, setUserDataLoaded] = useState(false);
   const shippingFee = calculateShipping(subtotal);
   const total = subtotal + shippingFee;
+
+  // Fetch user data if logged in
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (session?.user?.email && !userDataLoaded) {
+        try {
+          const res = await fetch(`/api/user/profile`);
+          if (res.ok) {
+            const data = await res.json();
+            setForm(prev => ({
+              ...prev,
+              customerName: data.user.name || prev.customerName,
+              phone: data.user.phone || prev.phone,
+              city: data.user.city || prev.city,
+              address: data.user.address || prev.address,
+            }));
+            setUserDataLoaded(true);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+        }
+      }
+    };
+    fetchUserData();
+  }, [session, userDataLoaded]);
 
   if (items.length === 0) {
     return (

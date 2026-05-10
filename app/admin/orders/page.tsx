@@ -232,7 +232,7 @@ export default function AdminOrdersPage() {
                     <option key={s} value={s}>{s}</option>
                   ))}
                 </select>
-                <ChevronDown size={16} color="#9ca3af" />
+                <ChevronDown size={16} style={{ color: "#9ca3af" }} />
               </div>
             </div>
 
