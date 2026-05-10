@@ -605,8 +605,8 @@ h1,h2,h3,h4,h5,h6 {
   .admin-content form > div > div {
     grid-template-columns: 1fr !important;
   }
-  /* Product form responsive */
-  .admin-product-form > div {
+  /* Product form responsive - tablet */
+  .admin-product-form > div:first-child {
     grid-template-columns: 1fr !important;
   }
   .admin-form-modal {
@@ -709,7 +709,7 @@ h1,h2,h3,h4,h5,h6 {
     margin-bottom: 20px !important;
     padding-right: 40px;
   }
-  .admin-form-content button[type="button"]:first-of-type {
+  .admin-form-content > button {
     top: 20px !important;
     right: 20px !important;
   }
@@ -726,6 +726,10 @@ h1,h2,h3,h4,h5,h6 {
   .admin-product-form > div:first-child {
     grid-template-columns: 1fr !important;
   }
+  /* All form groups full width */
+  .admin-product-form .form-group {
+    grid-column: 1 / -1 !important;
+  }
   /* Button groups stack on mobile */
   .admin-product-form > div:last-child {
     flex-direction: column !important;
@@ -734,28 +738,29 @@ h1,h2,h3,h4,h5,h6 {
   .admin-product-form > div:last-child button {
     width: 100% !important;
     min-width: 100% !important;
+    flex: 1 1 100% !important;
   }
-  /* Image upload section */
-  .admin-product-form .form-group > div:first-of-type {
-    flex-direction: column !important;
-  }
-  .admin-product-form .form-group > div:first-of-type input {
-    width: 100% !important;
-  }
-  .admin-product-form .form-group > div:first-of-type button {
-    width: 100% !important;
-  }
-  /* Color/Tag input sections */
+  /* Image upload section - stack vertically */
   .admin-product-form .form-group > div {
-    flex-wrap: wrap !important;
+    flex-direction: column !important;
+    gap: 8px !important;
   }
-  .admin-product-form .form-group select,
-  .admin-product-form .form-group input[type="text"] {
-    min-width: 100% !important;
+  .admin-product-form .form-group > div input[type="url"] {
+    width: 100% !important;
+    flex: 1 1 100% !important;
+  }
+  .admin-product-form .form-group > div button {
+    width: 100% !important;
+  }
+  /* Color section - stack inputs */
+  .admin-product-form .form-group > div select,
+  .admin-product-form .form-group > div input[type="text"],
+  .admin-product-form .form-group > div input[placeholder*="color"] {
+    width: 100% !important;
     flex: 1 1 100% !important;
   }
   /* Checkbox toggles wrap */
-  .admin-product-form .form-group > div:last-of-type {
+  .admin-product-form .form-group > div:has(label) {
     flex-direction: column !important;
     align-items: flex-start !important;
     gap: 12px !important;
