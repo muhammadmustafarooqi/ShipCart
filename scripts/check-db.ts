@@ -8,10 +8,17 @@ const MONGODB_URI = process.env.MONGODB_URI;
 
 async function check() {
   await mongoose.connect(MONGODB_URI as string);
-  const collections = await mongoose.connection.db.listCollections().toArray();
+  const db = mongoose.connection.db;
+  
+  if (!db) {
+    console.error("Database connection not established");
+    process.exit(1);
+  }
+  
+  const collections = await db.listCollections().toArray();
   console.log("Collections:", collections.map(c => c.name));
   
-  const bannersCount = await mongoose.connection.db.collection("banners").countDocuments();
+  const bannersCount = await db.collection("banners").countDocuments();
   console.log("Banners count:", bannersCount);
   
   process.exit(0);

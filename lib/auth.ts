@@ -24,9 +24,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
+        const email = String(credentials.email);
+        const password = String(credentials.password);
+
         if (
-          credentials.email === adminEmail &&
-          credentials.password === adminPassword
+          email === adminEmail &&
+          password === adminPassword
         ) {
           return {
             id: "1",
@@ -38,11 +41,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         try {
           await connectDB();
-          const user = await User.findOne({ email: credentials.email.toLowerCase() });
+          const user = await User.findOne({ email: email.toLowerCase() });
           
           if (!user) return null;
 
-          const hashedPassword = Buffer.from(credentials.password as string).toString("base64");
+          const hashedPassword = Buffer.from(password).toString("base64");
           if (user.password !== hashedPassword) return null;
 
           return {
@@ -63,11 +66,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (account?.provider === "google") {
         try {
           await connectDB();
+          if (!user.email) return false;
+          
           const existingUser = await User.findOne({ email: user.email });
           
           if (!existingUser) {
             await User.create({
-              name: user.name,
+              name: user.name || user.email.split("@")[0] || "User",
               email: user.email,
               password: "",
               phone: "",
