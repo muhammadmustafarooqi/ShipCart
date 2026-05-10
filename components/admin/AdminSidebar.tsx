@@ -13,6 +13,7 @@ import {
   LogOut,
   Store,
   Users,
+  X,
 } from "lucide-react";
 
 const navItems = [
@@ -24,13 +25,36 @@ const navItems = [
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <div className="admin-sidebar">
+    <>
+      {isOpen && <div className="admin-overlay" onClick={onClose} />}
+      <div className={`admin-sidebar ${isOpen ? 'open' : ''}`}>
       {/* Logo */}
-      <div style={{ padding: "28px 20px 24px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+      <div style={{ padding: "28px 20px 24px", borderBottom: "1px solid rgba(255,255,255,0.08)", position: "relative" }}>
+        <button
+          onClick={onClose}
+          className="mobile-close-btn"
+          style={{
+            position: "absolute",
+            top: "20px",
+            right: "20px",
+            background: "rgba(255,255,255,0.1)",
+            border: "none",
+            borderRadius: "8px",
+            width: "32px",
+            height: "32px",
+            display: "none",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            color: "white",
+          }}
+        >
+          <X size={18} />
+        </button>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <div style={{
             width: "40px",
@@ -71,6 +95,7 @@ export default function AdminSidebar() {
               key={item.href}
               href={item.href}
               className={`nav-item ${isActive ? "active" : ""}`}
+              onClick={onClose}
             >
               <Icon size={18} strokeWidth={2} style={{ color: isActive ? "#ff6b00" : "rgba(255,255,255,0.7)" }} />
               <span>{item.label}</span>
@@ -95,6 +120,7 @@ export default function AdminSidebar() {
           className="nav-item"
           target="_blank"
           rel="noopener noreferrer"
+          onClick={onClose}
         >
           <Store size={18} strokeWidth={2} style={{ color: "rgba(255,255,255,0.7)" }} />
           <span>View Store</span>
@@ -120,6 +146,7 @@ export default function AdminSidebar() {
           <span>Sign Out</span>
         </button>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
