@@ -81,7 +81,7 @@ export default function AdminOrdersPage() {
   };
 
   return (
-    <div style={{ padding: "32px" }}>
+    <div style={{ padding: "32px" }} className="admin-orders-page">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "28px", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <h1 style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>Orders</h1>
@@ -115,7 +115,7 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Layout */}
-      <div style={{ display: "grid", gridTemplateColumns: selectedOrder ? "1fr 380px" : "1fr", gap: "24px" }}>
+      <div className="orders-layout" style={{ display: "grid", gridTemplateColumns: selectedOrder ? "1fr 380px" : "1fr", gap: "24px" }}>
         {/* Orders Table */}
         <div>
           {loading ? (
@@ -211,7 +211,7 @@ export default function AdminOrdersPage() {
 
         {/* Order Detail Panel */}
         {selectedOrder && (
-          <div style={{ background: "white", borderRadius: "16px", padding: "24px", border: "1px solid #f0f0f0", alignSelf: "flex-start", position: "sticky", top: "80px" }}>
+          <div className="order-detail-panel" style={{ background: "white", borderRadius: "16px", padding: "24px", border: "1px solid #f0f0f0", alignSelf: "flex-start", position: "sticky", top: "80px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
               <h3 style={{ fontWeight: 700, fontSize: "18px", color: "#ff6b00" }}>#{selectedOrder.orderId}</h3>
               <button onClick={() => setSelectedOrder(null)} style={{ background: "#f3f4f6", border: "none", borderRadius: "50%", width: "30px", height: "30px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>

@@ -266,8 +266,8 @@ export default function AdminProductsPage() {
 
       {/* Add/Edit Form Modal */}
       {showForm && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 1000, display: "flex", alignItems: "flex-start", justifyContent: "center", overflowY: "auto", padding: "32px 16px" }}>
-          <div style={{ background: "white", borderRadius: "20px", padding: "32px", width: "100%", maxWidth: "700px", position: "relative" }}>
+        <div className="admin-form-modal" style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 1000, display: "flex", alignItems: "flex-start", justifyContent: "center", overflowY: "auto", padding: "32px 16px" }}>
+          <div className="admin-form-content" style={{ background: "white", borderRadius: "20px", padding: "32px", width: "100%", maxWidth: "700px", position: "relative" }}>
             <button onClick={() => setShowForm(false)} style={{ position: "absolute", top: "16px", right: "16px", background: "#f3f4f6", border: "none", borderRadius: "50%", width: "32px", height: "32px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <X size={16} />
             </button>
@@ -276,7 +276,7 @@ export default function AdminProductsPage() {
               {editingProduct ? "Edit Product" : "Add New Product"}
             </h2>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="admin-product-form">
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                 <div className="form-group" style={{ gridColumn: "1/-1" }}>
                   <label>Product Name *</label>
@@ -425,9 +425,9 @@ export default function AdminProductsPage() {
                 </div>
               </div>
 
-              <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end", marginTop: "24px" }}>
-                <button type="button" onClick={() => setShowForm(false)} className="btn-secondary">Cancel</button>
-                <button type="submit" className="btn-primary" disabled={submitting}>
+              <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end", marginTop: "24px", flexWrap: "wrap" }}>
+                <button type="button" onClick={() => setShowForm(false)} className="btn-secondary" style={{ flex: "1 1 auto", minWidth: "120px" }}>Cancel</button>
+                <button type="submit" className="btn-primary" disabled={submitting} style={{ flex: "1 1 auto", minWidth: "120px" }}>
                   {submitting ? "Saving..." : editingProduct ? "Update Product" : "Create Product"}
                 </button>
               </div>
