@@ -11,26 +11,35 @@ import Testimonials from "@/components/Testimonials";
 import HowItWorks from "@/components/HowItWorks";
 import WhatsAppCTA from "@/components/WhatsAppCTA";
 import Link from "next/link";
+import connectDB from "@/lib/mongodb";
+import Product from "@/models/Product";
+import Banner from "@/models/Banner";
 
-async function getProducts(params: string) {
+async function getProducts(query: Record<string, unknown>, limit = 8) {
   try {
-    const res = await fetch(
-      `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/products?${params}`,
-      { next: { revalidate: 60 } }
-    );
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.products || [];
-  } catch { return []; }
+    await connectDB();
+    const products = await Product.find({ ...query, isActive: true })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .lean();
+    return JSON.parse(JSON.stringify(products));
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
 }
 
 async function getBanners() {
   try {
-    const res = await fetch(`${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/banners`, { next: { revalidate: 300 } });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.banners || [];
-  } catch { return []; }
+    await connectDB();
+    const banners = await Banner.find({ isActive: true })
+      .sort({ order: 1 })
+      .lean();
+    return JSON.parse(JSON.stringify(banners));
+  } catch (error) {
+    console.error("Error fetching banners:", error);
+    return [];
+  }
 }
 
 type Product = {
@@ -42,8 +51,8 @@ type Product = {
 
 export default async function HomePage() {
   const [featuredProducts, newArrivals, banners] = await Promise.all([
-    getProducts("featured=true&limit=8"),
-    getProducts("newArrival=true&limit=8"),
+    getProducts({ isFeatured: true }, 8),
+    getProducts({ isNewArrival: true }, 8),
     getBanners(),
   ]);
 
