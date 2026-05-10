@@ -568,8 +568,27 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 /* Admin responsive styles */
+@media (max-width: 1024px) {
+  /* Orders page - detail panel becomes modal on tablet */
+  .orders-layout {
+    grid-template-columns: 1fr !important;
+  }
+  .order-detail-panel {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 200 !important;
+    border-radius: 0 !important;
+    max-height: 100vh !important;
+    overflow-y: auto !important;
+    top: 0 !important;
+  }
+}
+
 @media (max-width: 768px) {
   .admin-content > div {
+    padding: 20px !important;
+  }
+  .admin-orders-page {
     padding: 20px !important;
   }
   .stat-card {
@@ -582,21 +601,32 @@ h1,h2,h3,h4,h5,h6 {
   .data-table td {
     padding: 10px 12px !important;
   }
-  /* Orders page responsive */
-  .orders-layout {
-    grid-template-columns: 1fr !important;
-  }
-  .order-detail-panel {
-    position: fixed !important;
-    inset: 0 !important;
-    z-index: 200 !important;
-    border-radius: 0 !important;
-    max-height: 100vh !important;
-    overflow-y: auto !important;
-  }
   /* Settings page responsive */
   .admin-content form > div > div {
     grid-template-columns: 1fr !important;
+  }
+  /* Product form responsive */
+  .admin-product-form > div {
+    grid-template-columns: 1fr !important;
+  }
+  .admin-form-modal {
+    padding: 16px !important;
+    align-items: flex-start !important;
+  }
+  .admin-form-content {
+    padding: 24px !important;
+    border-radius: 16px !important;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+  }
+  /* Orders page title */
+  .admin-orders-page h1 {
+    font-size: 24px !important;
+  }
+  /* Filter buttons smaller */
+  .admin-orders-page button {
+    padding: 6px 14px !important;
+    font-size: 12px !important;
   }
 }
 
@@ -611,20 +641,34 @@ h1,h2,h3,h4,h5,h6 {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
   }
   .data-table th,
   .data-table td {
     padding: 8px 10px !important;
     font-size: 11px !important;
   }
-  /* Hide some columns on mobile for orders */
-  .data-table th:nth-child(3),
-  .data-table td:nth-child(3),
-  .data-table th:nth-child(4),
-  .data-table td:nth-child(4),
-  .data-table th:nth-child(7),
-  .data-table td:nth-child(7) {
+  /* Hide columns on mobile for orders table */
+  .admin-orders-page .data-table th:nth-child(3),
+  .admin-orders-page .data-table td:nth-child(3),
+  .admin-orders-page .data-table th:nth-child(4),
+  .admin-orders-page .data-table td:nth-child(4),
+  .admin-orders-page .data-table th:nth-child(7),
+  .admin-orders-page .data-table td:nth-child(7) {
     display: none;
+  }
+  /* Make actions column more compact */
+  .admin-orders-page .data-table td:nth-child(8) > div {
+    flex-direction: column !important;
+    gap: 4px !important;
+  }
+  .admin-orders-page .data-table td:nth-child(8) select {
+    font-size: 10px !important;
+    padding: 4px 6px !important;
+  }
+  .admin-orders-page .data-table td:nth-child(8) a {
+    width: 100% !important;
+    height: 26px !important;
   }
   /* Products page - hide flags column on mobile */
   .admin-content table tbody tr td:nth-child(6),
@@ -647,6 +691,123 @@ h1,h2,h3,h4,h5,h6 {
   .mobile-menu-btn {
     top: 16px !important;
     left: 16px !important;
+  }
+  /* Product form mobile optimizations */
+  .admin-form-modal {
+    padding: 0 !important;
+    align-items: flex-start !important;
+  }
+  .admin-form-content {
+    border-radius: 0 !important;
+    padding: 20px !important;
+    max-height: 100vh !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+  }
+  .admin-form-content h2 {
+    font-size: 18px !important;
+    margin-bottom: 20px !important;
+    padding-right: 40px;
+  }
+  .admin-form-content button[type="button"]:first-of-type {
+    top: 20px !important;
+    right: 20px !important;
+  }
+  .form-group label {
+    font-size: 12px !important;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 14px !important;
+    padding: 10px 12px !important;
+  }
+  /* Product form grid - single column */
+  .admin-product-form > div:first-child {
+    grid-template-columns: 1fr !important;
+  }
+  /* Button groups stack on mobile */
+  .admin-product-form > div:last-child {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .admin-product-form > div:last-child button {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+  /* Image upload section */
+  .admin-product-form .form-group > div:first-of-type {
+    flex-direction: column !important;
+  }
+  .admin-product-form .form-group > div:first-of-type input {
+    width: 100% !important;
+  }
+  .admin-product-form .form-group > div:first-of-type button {
+    width: 100% !important;
+  }
+  /* Color/Tag input sections */
+  .admin-product-form .form-group > div {
+    flex-wrap: wrap !important;
+  }
+  .admin-product-form .form-group select,
+  .admin-product-form .form-group input[type="text"] {
+    min-width: 100% !important;
+    flex: 1 1 100% !important;
+  }
+  /* Checkbox toggles wrap */
+  .admin-product-form .form-group > div:last-of-type {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+  /* Order detail panel mobile */
+  .order-detail-panel {
+    padding: 20px !important;
+  }
+  .order-detail-panel h3 {
+    font-size: 16px !important;
+  }
+  /* Filter buttons full width on very small screens */
+  .admin-orders-page > div:nth-child(2) {
+    flex-direction: column !important;
+  }
+  .admin-orders-page > div:nth-child(2) button {
+    width: 100% !important;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small screens - make table even more compact */
+  .data-table th,
+  .data-table td {
+    padding: 6px 8px !important;
+    font-size: 10px !important;
+  }
+  .status-badge {
+    font-size: 9px !important;
+    padding: 3px 8px !important;
+  }
+  .admin-orders-page h1 {
+    font-size: 20px !important;
+  }
+  .admin-orders-page p {
+    font-size: 13px !important;
+  }
+  /* Product form even more compact */
+  .admin-form-content {
+    padding: 16px !important;
+  }
+  .admin-form-content h2 {
+    font-size: 16px !important;
+  }
+  .form-group {
+    margin-bottom: 12px !important;
+  }
+  .btn-primary,
+  .btn-secondary {
+    padding: 12px 20px !important;
+    font-size: 14px !important;
   }
 }
 
