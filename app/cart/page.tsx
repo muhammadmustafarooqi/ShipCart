@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import TrustBadges from "@/components/TrustBadges";
 import { useCart } from "@/components/CartProvider";
 import { Trash2, Plus, Minus, ShoppingBag, Truck, CreditCard } from "lucide-react";
 
@@ -113,6 +114,7 @@ export default function CartPage() {
           </div>
         </div>
       </div>
+      <TrustBadges />
       <Footer />
       <style>{`@media(max-width:900px){.cart-grid{grid-template-columns:1fr!important; gap: 48px !important;}}`}</style>
     </div>

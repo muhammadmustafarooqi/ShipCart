@@ -65,7 +65,7 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
       padding: "40px 20px 20px",
       display: "flex",
       justifyContent: "center"
-    }}>
+    }} className="hero-section">
       <div style={{
         maxWidth: "1400px",
         width: "100%",
@@ -76,7 +76,7 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
         border: "1px solid var(--border-default)",
         boxShadow: "var(--shadow-xl)",
         background: "var(--text-primary)"
-      }}>
+      }} className="hero-container">
         
         {/* Animated Tech Grid Background */}
         <div className="hero-grid-bg" />
@@ -113,7 +113,7 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
                 transition: "transform 8s cubic-bezier(0.16, 1, 0.3, 1)",
                 maskImage: "linear-gradient(to left, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%)",
                 WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%)"
-              }} />
+              }} className="hero-image" />
 
               {/* Glow Behind Text */}
               <div style={{
@@ -137,7 +137,7 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
                 maxWidth: "800px",
                 transform: isActive ? "translateX(0)" : "translateX(-40px)",
                 transition: "transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s"
-              }}>
+              }} className="hero-content-wrapper">
                 {/* Minimalist Card */}
                 <div style={{
                   background: "rgba(255, 255, 255, 0.95)",
@@ -147,7 +147,7 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
                   borderRadius: "24px",
                   padding: "56px 48px",
                   boxShadow: "0 24px 48px rgba(0,0,0,0.12)"
-                }}>
+                }} className="hero-card">
                   <div style={{ 
                     display: "inline-flex", 
                     alignItems: "center", 
@@ -217,7 +217,7 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
           display: "flex",
           gap: "12px",
           zIndex: 20
-        }}>
+        }} className="hero-progress">
           {slides.map((_, i) => (
             <div 
               key={i} 
@@ -288,7 +288,97 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
         }
 
         @media (max-width: 768px) {
-          .hero-grid-bg { background-size: 30px 30px; }
+          .hero-section {
+            padding: 20px 16px 16px !important;
+          }
+
+          .hero-container {
+            height: 500px !important;
+            border-radius: 20px !important;
+          }
+
+          .hero-image {
+            width: 100% !important;
+            opacity: 0.3 !important;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 100%) !important;
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 100%) !important;
+          }
+
+          .hero-content-wrapper {
+            padding-left: 20px !important;
+            padding-right: 20px !important;
+            display: flex;
+            align-items: center;
+            height: 100%;
+          }
+
+          .hero-card {
+            padding: 32px 24px !important;
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border-radius: 20px !important;
+          }
+
+          .hero-card > div:first-child {
+            padding: 6px 14px !important;
+            font-size: 11px !important;
+            margin-bottom: 20px !important;
+          }
+
+          .hero-card h1 {
+            font-size: clamp(1.75rem, 8vw, 2.5rem) !important;
+            margin-bottom: 16px !important;
+            line-height: 1.1 !important;
+          }
+
+          .hero-card p {
+            font-size: 14px !important;
+            margin-bottom: 28px !important;
+            line-height: 1.5 !important;
+          }
+
+          .hero-btn {
+            padding: 14px 28px !important;
+            font-size: 14px !important;
+            width: 100%;
+            justify-content: center;
+          }
+
+          .hero-progress {
+            bottom: 24px !important;
+            right: 20px !important;
+            left: 20px !important;
+            justify-content: center;
+          }
+
+          .hero-grid-bg { 
+            background-size: 30px 30px; 
+          }
+        }
+
+        @media (max-width: 480px) {
+          .hero-container {
+            height: 450px !important;
+          }
+
+          .hero-card {
+            padding: 28px 20px !important;
+          }
+
+          .hero-card h1 {
+            font-size: clamp(1.5rem, 7vw, 2rem) !important;
+          }
+
+          .hero-card p {
+            font-size: 13px !important;
+            margin-bottom: 24px !important;
+          }
+
+          .hero-btn {
+            padding: 12px 24px !important;
+            font-size: 13px !important;
+          }
         }
       `}</style>
     </section>

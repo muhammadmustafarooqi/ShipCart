@@ -2,31 +2,42 @@
 @import "tailwindcss";
 
 :root {
-  --bg-primary: #f8f9fa;
-  --bg-card: rgba(255, 255, 255, 0.85);
-  --bg-card-hover: rgba(255, 255, 255, 1);
-  --bg-input: #ffffff;
-  --border-default: rgba(226, 232, 240, 0.6);
-  --border-hover: rgba(148, 163, 184, 0.4);
-  --border-accent: #6366f1;
-  --color-brand: #6366f1;
-  --color-brand-dim: #e0e7ff;
-  --color-brand-hover: #4f46e5;
+  --maroon: #6B1E2E;
+  --maroon-deep: #4A1020;
+  --maroon-soft: #8B3045;
+  --cream: #FAF3E8;
+  --cream-dark: #F0E6D0;
+  --cream-mid: #E8D8BC;
+  --gold: #C9A84C;
+  --white: #FFFDF9;
+  --gray: #9A8878;
+  --text: #2A1518;
+
+  --bg-primary: var(--cream);
+  --bg-card: var(--white);
+  --bg-card-hover: var(--cream-dark);
+  --bg-input: var(--white);
+  --border-default: var(--cream-mid);
+  --border-hover: var(--maroon-soft);
+  --border-accent: var(--maroon);
+  --color-brand: var(--maroon);
+  --color-brand-dim: rgba(107, 30, 46, 0.1);
+  --color-brand-hover: var(--maroon-deep);
   --color-success: #10b981;
   --color-error: #f43f5e;
-  --color-warning: #f59e0b;
-  --color-icon: var(--color-brand);
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-price: #0f172a;
-  --text-old-price: #94a3b8;
-  --gradient-brand: linear-gradient(135deg, #6366f1, #ec4899);
-  --gradient-bg: radial-gradient(circle at 10% 0%, rgba(99,102,241,0.08) 0%, transparent 40%), radial-gradient(circle at 90% 100%, rgba(236,72,153,0.08) 0%, transparent 40%);
-  --gradient-card-img: linear-gradient(135deg, #f8fafc, #f1f5f9);
-  --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.03);
-  --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.05);
-  --shadow-lg: 0 20px 40px rgba(15, 23, 42, 0.08);
-  --shadow-xl: 0 30px 60px rgba(15, 23, 42, 0.12);
+  --color-warning: var(--gold);
+  --color-icon: var(--maroon);
+  --text-primary: var(--text);
+  --text-secondary: var(--gray);
+  --text-price: var(--text);
+  --text-old-price: var(--gray);
+  --gradient-brand: linear-gradient(135deg, var(--maroon), var(--maroon-soft));
+  --gradient-bg: radial-gradient(circle at 10% 0%, rgba(107, 30, 46, 0.05) 0%, transparent 40%), radial-gradient(circle at 90% 100%, rgba(201, 168, 76, 0.05) 0%, transparent 40%);
+  --gradient-card-img: linear-gradient(135deg, var(--cream), var(--cream-dark));
+  --shadow-sm: 0 4px 12px rgba(42, 21, 24, 0.08);
+  --shadow-md: 0 10px 30px rgba(42, 21, 24, 0.12);
+  --shadow-lg: 0 20px 40px rgba(42, 21, 24, 0.15);
+  --shadow-xl: 0 30px 60px rgba(42, 21, 24, 0.2);
   --radius-sm: 12px;
   --radius-md: 16px;
   --radius-lg: 24px;
@@ -39,7 +50,7 @@ html { scroll-behavior: smooth; }
 body {
   font-family: "Plus Jakarta Sans", sans-serif;
   color: var(--text-primary);
-  background: var(--bg-primary);
+  background: var(--cream);
   background-image: var(--gradient-bg);
   background-attachment: fixed;
   line-height: 1.6;
@@ -55,13 +66,13 @@ h1,h2,h3,h4,h5,h6 {
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+::-webkit-scrollbar-thumb { background: var(--cream-mid); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--maroon-soft); }
 
 /* ===== BUTTONS ===== */
 .btn-primary {
   background: var(--gradient-brand);
-  color: white;
+  color: var(--white);
   border: none;
   border-radius: var(--radius-md);
   padding: 16px 32px;
@@ -72,12 +83,13 @@ h1,h2,h3,h4,h5,h6 {
   display: inline-flex; align-items: center; justify-content: center;
   gap: 8px; text-decoration: none;
   font-family: "Plus Jakarta Sans", sans-serif;
-  box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 10px 20px rgba(107, 30, 46, 0.25);
   letter-spacing: 0.5px;
 }
 .btn-primary:hover { 
   transform: translateY(-3px); 
-  box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3); 
+  box-shadow: 0 15px 30px rgba(107, 30, 46, 0.35);
+  background: var(--maroon-deep);
 }
 .btn-primary:active { transform: scale(0.96); }
 

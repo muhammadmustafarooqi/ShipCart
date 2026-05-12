@@ -81,15 +81,15 @@ export default function Footer() {
             <div className="footer-title">Contact Support</div>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: "12px", color: "#94a3b8", textDecoration: "none", fontSize: "14px", transition: "color .2s ease" }} onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "white")} onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#94a3b8")}>
-                <div style={{ width: "36px", height: "36px", background: "rgba(37,99,235,.15)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Phone size={16} color="var(--color-icon)" /></div>
+                <div style={{ width: "36px", height: "36px", background: "rgba(107, 30, 46, 0.15)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Phone size={16} color="#6B1E2E" /></div>
                 WhatsApp Support
               </a>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", color: "#94a3b8", fontSize: "14px" }}>
-                <div style={{ width: "36px", height: "36px", background: "rgba(37,99,235,.15)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Mail size={16} color="var(--color-icon)" /></div>
+                <div style={{ width: "36px", height: "36px", background: "rgba(107, 30, 46, 0.15)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><Mail size={16} color="#6B1E2E" /></div>
                 support@allinonestore.pk
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", color: "#94a3b8", fontSize: "14px" }}>
-                <div style={{ width: "36px", height: "36px", background: "rgba(37,99,235,.15)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><MapPin size={16} color="var(--color-icon)" /></div>
+                <div style={{ width: "36px", height: "36px", background: "rgba(107, 30, 46, 0.15)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><MapPin size={16} color="#6B1E2E" /></div>
                 Islamabad, Pakistan 🇵🇰
               </div>
               <div style={{ marginTop: "12px", padding: "16px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px" }}>
@@ -104,7 +104,7 @@ export default function Footer() {
       {/* Bottom Bar */}
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", padding: "24px 20px", background: "#020617" }}>
         <div className="page-container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px", width: "100%" }}>
-          <p style={{ color: "#64748b", fontSize: "13px" }}>© {new Date().getFullYear()} AllInOne Premium Store. All rights reserved.</p>
+          <p style={{ color: "#64748b", fontSize: "13px" }}>© {new Date().getFullYear()} <span style={{ color: "#6B1E2E", fontWeight: 600 }}>AllInOne</span> <span style={{ color: "#C9A84C", fontWeight: 600 }}>Premium Store</span>. All rights reserved.</p>
           <div style={{ display: "flex", gap: "24px" }}>
             {["Privacy Policy", "Terms of Service", "Return Policy"].map((item) => (
               <a key={item} href="#" style={{ color: "#64748b", fontSize: "13px", textDecoration: "none", transition: "color .2s ease" }} onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "white")} onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "#64748b")}>{item}</a>

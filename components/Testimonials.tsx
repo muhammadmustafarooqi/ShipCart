@@ -60,8 +60,12 @@ const testimonials = [
 ];
 
 export default function Testimonials() {
-  // Duplicate array to create a seamless infinite scroll effect
-  const scrollItems = [...testimonials, ...testimonials, ...testimonials];
+  // Duplicate array multiple times for truly infinite scroll
+  const allScrollItems = [...testimonials, ...testimonials, ...testimonials, ...testimonials];
+  
+  // Split into two rows for alternating scroll
+  const row1 = allScrollItems.filter((_, i) => i % 2 === 0);
+  const row2 = allScrollItems.filter((_, i) => i % 2 === 1);
 
   return (
     <section style={{ padding: "100px 0", background: "var(--bg-primary)", overflow: "hidden" }}>
@@ -77,103 +81,142 @@ export default function Testimonials() {
         </div>
       </div>
 
-      {/* Infinite Scrolling Marquee */}
-      <div style={{ width: "100%", position: "relative", padding: "20px 0" }}>
-        {/* Left/Right fading edges */}
-        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "15vw", background: "linear-gradient(to right, var(--bg-primary), transparent)", zIndex: 10, pointerEvents: "none" }} />
-        <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "15vw", background: "linear-gradient(to left, var(--bg-primary), transparent)", zIndex: 10, pointerEvents: "none" }} />
+      {/* Dual Scrolling Marquee */}
+      <div style={{ width: "100%", overflow: "hidden", display: "flex", flexDirection: "column", gap: "24px" }}>
+        {/* Row 1 - Scrolling Left */}
+        <div style={{ width: "100%", position: "relative" }}>
+          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "15vw", background: "linear-gradient(to right, var(--bg-primary), transparent)", zIndex: 10, pointerEvents: "none" }} />
+          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "15vw", background: "linear-gradient(to left, var(--bg-primary), transparent)", zIndex: 10, pointerEvents: "none" }} />
 
-        <div className="testimonial-track">
-          {scrollItems.map((t, index) => (
-            <div key={index} className="testimonial-dark-card">
-              {/* Quote Icon Background */}
-              <div style={{ position: "absolute", top: "20px", right: "20px", fontSize: "100px", color: "rgba(255,255,255,0.03)", fontFamily: "Georgia, serif", lineHeight: 1, pointerEvents: "none" }}>
-                "
-              </div>
-
-              {/* Stars */}
-              <div style={{ display: "flex", gap: "4px", marginBottom: "20px" }}>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={16} color="var(--color-warning)" fill="var(--color-warning)" />
-                ))}
-              </div>
-
-              {/* Review Text */}
-              <p style={{ color: "#e2e8f0", fontSize: "15px", lineHeight: 1.7, marginBottom: "24px", fontWeight: 500, flex: 1, position: "relative", zIndex: 1 }}>
-                "{t.text}"
-              </p>
-
-              {/* Product Tag */}
-              <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(255,255,255,0.1)", color: "#f8fafc", borderRadius: "100px", padding: "6px 12px", fontSize: "12px", fontWeight: 600, marginBottom: "24px", width: "fit-content" }}>
-                <Package size={14} /> {t.product}
-              </div>
-
-              {/* Author Info */}
-              <div style={{ display: "flex", alignItems: "center", gap: "14px", borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "20px" }}>
+          <div className="testimonial-track-left">
+            {row1.map((t, index) => (
+              <div key={index} className="testimonial-dark-card">
                 <div style={{
-                  width: "44px", height: "44px", borderRadius: "50%",
-                  background: `linear-gradient(135deg, ${t.color}, #1e293b)`,
+                  width: "56px", height: "56px", borderRadius: "50%",
+                  background: `linear-gradient(135deg, ${t.color}, #2a0f1a)`,
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  color: "white", fontWeight: 800, fontSize: "15px", fontFamily: "Outfit, sans-serif"
+                  color: "#FEF5E7", fontWeight: 900, fontSize: "18px", fontFamily: "Outfit, sans-serif",
+                  flexShrink: 0
                 }}>
                   {t.avatar}
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: "15px", color: "white", fontFamily: "Outfit, sans-serif" }}>{t.name}</div>
-                  <div style={{ fontSize: "13px", color: "#94a3b8", fontWeight: 500 }}>{t.city}</div>
-                </div>
-                <div style={{ color: "#10b981", display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", fontWeight: 800, textTransform: "uppercase", background: "rgba(16,185,129,0.1)", padding: "4px 8px", borderRadius: "6px" }}>
-                  <CheckCircle size={12} color="currentColor" /> Verified
+                <div style={{ display: "flex", flexDirection: "column", gap: "4px", flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <div style={{ fontWeight: 800, fontSize: "15px", color: "#FEF5E7", fontFamily: "Outfit, sans-serif" }}>{t.name}</div>
+                    <div style={{ display: "flex", gap: "2px" }}>
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star key={i} size={14} color="#FEF5E7" fill="#FEF5E7" />
+                      ))}
+                    </div>
+                  </div>
+                  <p style={{ color: "#FEF5E7", fontSize: "14px", lineHeight: 1.5, fontWeight: 500, margin: 0, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                    {t.text}
+                  </p>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+        </div>
+
+        {/* Row 2 - Scrolling Right */}
+        <div style={{ width: "100%", position: "relative" }}>
+          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "15vw", background: "linear-gradient(to right, var(--bg-primary), transparent)", zIndex: 10, pointerEvents: "none" }} />
+          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "15vw", background: "linear-gradient(to left, var(--bg-primary), transparent)", zIndex: 10, pointerEvents: "none" }} />
+
+          <div className="testimonial-track-right">
+            {row2.map((t, index) => (
+              <div key={index} className="testimonial-dark-card">
+                <div style={{
+                  width: "56px", height: "56px", borderRadius: "50%",
+                  background: `linear-gradient(135deg, ${t.color}, #2a0f1a)`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  color: "#FEF5E7", fontWeight: 900, fontSize: "18px", fontFamily: "Outfit, sans-serif",
+                  flexShrink: 0
+                }}>
+                  {t.avatar}
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "4px", flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <div style={{ fontWeight: 800, fontSize: "15px", color: "#FEF5E7", fontFamily: "Outfit, sans-serif" }}>{t.name}</div>
+                    <div style={{ display: "flex", gap: "2px" }}>
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star key={i} size={14} color="#FEF5E7" fill="#FEF5E7" />
+                      ))}
+                    </div>
+                  </div>
+                  <p style={{ color: "#FEF5E7", fontSize: "14px", lineHeight: 1.5, fontWeight: 500, margin: 0, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                    {t.text}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       <style>{`
         @keyframes scroll-left {
           0% { transform: translateX(0); }
-          100% { transform: translateX(calc(-33.333333%)); } /* Scroll one full original set */
+          100% { transform: translateX(calc(-25%)); }
         }
 
-        .testimonial-track {
+    @keyframes scroll-right {
+  0% { transform: translateX(-25%); }
+  100% { transform: translateX(0); }
+}
+
+        .testimonial-track-left {
           display: flex;
           width: max-content;
           gap: 24px;
           padding: 0 24px;
-          animation: scroll-left 40s linear infinite;
+          animation: scroll-left 60s linear infinite;
         }
 
-        .testimonial-track:hover {
+        .testimonial-track-left:hover {
+          animation-play-state: paused;
+        }
+
+        .testimonial-track-right {
+          display: flex;
+          width: max-content;
+          gap: 24px;
+          padding: 0 24px;
+          animation: scroll-right 60s linear infinite;
+        }
+
+        .testimonial-track-right:hover {
           animation-play-state: paused;
         }
 
         .testimonial-dark-card {
-          width: 380px;
+          width: 420px;
           flex-shrink: 0;
-          background: #0f172a;
-          border: 1px solid rgba(255,255,255,0.08);
-          border-radius: 24px;
-          padding: 32px;
+          background: #7E1A35;
+          border: none;
+          border-radius: 100px;
+          padding: 20px 24px;
           display: flex;
-          flex-direction: column;
+          flex-direction: row;
+          align-items: center;
+          gap: 20px;
           position: relative;
           overflow: hidden;
-          box-shadow: 0 20px 40px rgba(15,23,42,0.1);
+          box-shadow: 0 12px 32px rgba(126,26,53,0.15);
           transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
         }
 
         .testimonial-dark-card:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 30px 60px rgba(15,23,42,0.2);
-          border-color: rgba(255,255,255,0.2);
+          transform: translateY(-6px);
+          box-shadow: 0 18px 48px rgba(126,26,53,0.25);
         }
 
         @media (max-width: 768px) {
           .testimonial-dark-card {
-            width: 320px;
-            padding: 24px;
+            width: 100%;
+            min-width: 300px;
+            padding: 16px 20px;
+            border-radius: 100px;
           }
         }
       `}</style>

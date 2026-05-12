@@ -1,225 +1,202 @@
 "use client";
 
 import Link from "next/link";
-import { PRODUCT_CATEGORIES } from "@/lib/utils";
+import { ChefHat, Sparkles, Home, Dumbbell, Zap, Baby } from "lucide-react";
 
-const categoryImages: Record<string, { bg: string; img: string; accent: string }> = {
-  "kitchen-cooking": {
-    bg: "linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%)",
-    img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=400",
-    accent: "#f97316",
+const categories = [
+  { 
+    name: "Kitchen & Cooking", 
+    slug: "kitchen-cooking", 
+    icon: ChefHat,
+    color: "#f97316"
   },
-  "personal-care-beauty": {
-    bg: "linear-gradient(135deg, #fdf2f8 0%, #fbcfe8 100%)",
-    img: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&q=80&w=400",
-    accent: "#ec4899",
+  { 
+    name: "Personal Care & Beauty", 
+    slug: "personal-care-beauty", 
+    icon: Sparkles,
+    color: "#ec4899"
   },
-  "home-cleaning": {
-    bg: "linear-gradient(135deg, #eff6ff 0%, #bfdbfe 100%)",
-    img: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&q=80&w=400",
-    accent: "#3b82f6",
+  { 
+    name: "Home & Cleaning", 
+    slug: "home-cleaning", 
+    icon: Home,
+    color: "#3b82f6"
   },
-  "fitness-health": {
-    bg: "linear-gradient(135deg, #ecfdf5 0%, #a7f3d0 100%)",
-    img: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80&w=400",
-    accent: "#10b981",
+  { 
+    name: "Fitness & Health", 
+    slug: "fitness-health", 
+    icon: Dumbbell,
+    color: "#10b981"
   },
-  "electronics-gadgets": {
-    bg: "linear-gradient(135deg, #f5f3ff 0%, #ddd6fe 100%)",
-    img: "https://images.unsplash.com/photo-1558002038-103792e1972d?auto=format&fit=crop&q=80&w=400",
-    accent: "#8b5cf6",
+  { 
+    name: "Electronics & Gadgets", 
+    slug: "electronics-gadgets", 
+    icon: Zap,
+    color: "#8b5cf6"
   },
-  "baby-kids": {
-    bg: "linear-gradient(135deg, #fffbeb 0%, #fde68a 100%)",
-    img: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&q=80&w=400",
-    accent: "#eab308",
+  { 
+    name: "Baby & Kids", 
+    slug: "baby-kids", 
+    icon: Baby,
+    color: "#eab308"
   },
-};
+];
 
 export default function CategoryShowcase() {
   return (
-    <section style={{ padding: "100px 0", background: "linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-card) 100%)", position: "relative", overflow: "hidden" }}>
-      {/* Decorative background elements */}
-      <div style={{ position: "absolute", top: "10%", right: "-5%", width: "300px", height: "300px", background: "radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)", borderRadius: "50%", filter: "blur(40px)" }} />
-      <div style={{ position: "absolute", bottom: "20%", left: "-5%", width: "250px", height: "250px", background: "radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)", borderRadius: "50%", filter: "blur(40px)" }} />
-      
-      <div className="page-container" style={{ position: "relative", zIndex: 1 }}>
-        <div style={{ textAlign: "center", marginBottom: "64px" }}>
-          <div className="section-tag" style={{ justifyContent: "center", marginBottom: "16px" }}>🗂️ Browse by Category</div>
-          <h2 className="section-title" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", marginBottom: "16px" }}>Shop by Category</h2>
-          <p style={{ color: "var(--text-secondary)", fontSize: "17px", maxWidth: "560px", margin: "0 auto", fontWeight: 500, lineHeight: 1.6 }}>
-            Discover curated collections designed for every aspect of your lifestyle
+    <section style={{ 
+      padding: "80px 0", 
+      background: "var(--cream)",
+      position: "relative"
+    }}>
+      <div className="page-container">
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: "56px" }}>
+          <div className="section-tag" style={{ justifyContent: "center" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--maroon)" strokeWidth="2.5">
+              <rect x="3" y="3" width="7" height="7"/>
+              <rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/>
+            </svg>
+            Browse Collections
+          </div>
+          <h2 className="section-title">Shop by Category</h2>
+          <p style={{
+            color: "var(--text-secondary)",
+            fontSize: "16px",
+            maxWidth: "560px",
+            margin: "12px auto 0",
+            fontWeight: 500
+          }}>
+            Discover curated collections for every aspect of your lifestyle
           </p>
         </div>
 
+        {/* Categories Grid */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "24px",
-        }} className="cat-showcase-grid">
-          {PRODUCT_CATEGORIES.map((cat, index) => {
-            const style = categoryImages[cat.slug] || { bg: "linear-gradient(135deg, #f1f5f9, #e2e8f0)", img: "", accent: "#64748b" };
+          gap: "20px",
+          maxWidth: "1100px",
+          margin: "0 auto"
+        }} className="category-grid-clean">
+          {categories.map((cat) => {
+            const Icon = cat.icon;
             return (
               <Link
                 key={cat.slug}
                 href={`/products?category=${cat.slug}`}
-                style={{ textDecoration: "none", animationDelay: `${index * 0.1}s` }}
-                className="cat-card-link"
+                style={{ textDecoration: "none" }}
               >
                 <div
-                  className="cat-card"
                   style={{
-                    borderRadius: "24px",
-                    overflow: "hidden",
-                    position: "relative",
-                    height: "240px",
-                    background: style.bg,
+                    background: "var(--white)",
+                    border: "2px solid var(--cream-mid)",
+                    borderRadius: "16px",
+                    padding: "32px 24px",
+                    textAlign: "center",
+                    transition: "all 0.3s ease",
                     cursor: "pointer",
-                    transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
-                    border: "1px solid rgba(255,255,255,0.8)",
-                  }}
-                >
-                  {/* Gradient overlay */}
-                  <div className="cat-overlay" style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: `linear-gradient(135deg, transparent 0%, ${style.accent}15 100%)`,
-                    opacity: 0,
-                    transition: "opacity 0.5s ease",
-                  }} />
-
-                  {/* Background image */}
-                  {style.img && (
-                    <div className="cat-img" style={{
-                      position: "absolute",
-                      right: 0,
-                      top: 0,
-                      width: "60%",
-                      height: "100%",
-                      backgroundImage: `url(${style.img})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      maskImage: "linear-gradient(to left, rgba(0,0,0,0.8), transparent)",
-                      WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.8), transparent)",
-                      transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-                    }} />
-                  )}
-
-                  {/* Decorative circle */}
-                  <div className="cat-circle" style={{
-                    position: "absolute",
-                    top: "-40px",
-                    right: "-40px",
-                    width: "120px",
-                    height: "120px",
-                    borderRadius: "50%",
-                    background: `${style.accent}20`,
-                    transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-                  }} />
-
-                  {/* Content */}
-                  <div style={{
-                    position: "absolute",
-                    inset: 0,
-                    padding: "32px",
+                    boxShadow: "var(--shadow-sm)",
+                    height: "100%",
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "space-between",
-                  }}>
-                    <div className="cat-icon" style={{
-                      fontSize: "48px",
-                      transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-                      opacity: 0.15,
-                    }}>{cat.icon}</div>
-                    
-                    <div>
-                      <div style={{
-                        fontFamily: "Outfit, sans-serif",
-                        fontWeight: 800,
-                        fontSize: "20px",
-                        color: "var(--text-primary)",
-                        marginBottom: "8px",
-                        letterSpacing: "-0.02em",
-                      }}>{cat.name}</div>
-                      <div className="cat-cta" style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        fontSize: "13px",
-                        color: style.accent,
-                        fontWeight: 700,
-                        padding: "8px 16px",
-                        background: "rgba(255,255,255,0.9)",
-                        borderRadius: "100px",
-                        transition: "all 0.3s ease",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                      }}>
-                        Explore <span style={{ transition: "transform 0.3s ease", display: "inline-block" }}>→</span>
-                      </div>
-                    </div>
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minHeight: "180px",
+                    position: "relative",
+                    overflow: "hidden"
+                  }}
+                  className="category-card-clean"
+                >
+                  {/* Background Circle */}
+                  <div 
+                    style={{
+                      position: "absolute",
+                      top: "-30px",
+                      right: "-30px",
+                      width: "100px",
+                      height: "100px",
+                      borderRadius: "50%",
+                      background: `${cat.color}10`,
+                      transition: "all 0.3s ease"
+                    }}
+                    className="cat-bg-circle"
+                  />
+
+                  {/* Icon Container */}
+                  <div style={{
+                    width: "64px",
+                    height: "64px",
+                    borderRadius: "16px",
+                    background: `${cat.color}15`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "20px",
+                    transition: "all 0.3s ease",
+                    position: "relative",
+                    zIndex: 1
+                  }} className="cat-icon-box">
+                    <Icon size={32} color={cat.color} strokeWidth={2} />
                   </div>
+
+                  {/* Name */}
+                  <h3 style={{
+                    fontSize: "17px",
+                    fontWeight: 700,
+                    color: "var(--text-primary)",
+                    fontFamily: "Outfit, sans-serif",
+                    lineHeight: 1.3,
+                    transition: "color 0.3s ease",
+                    position: "relative",
+                    zIndex: 1
+                  }} className="cat-name-clean">
+                    {cat.name}
+                  </h3>
                 </div>
               </Link>
             );
           })}
         </div>
       </div>
+
       <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        .category-card-clean:hover {
+          transform: translateY(-6px);
+          box-shadow: var(--shadow-lg);
+          border-color: var(--maroon);
         }
-        
-        .cat-card-link {
-          animation: fadeInUp 0.6s ease forwards;
-          opacity: 0;
-        }
-        
-        .cat-card:hover {
-          transform: translateY(-8px) scale(1.02);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-        }
-        
-        .cat-card:hover .cat-overlay {
-          opacity: 1;
-        }
-        
-        .cat-card:hover .cat-img {
+
+        .category-card-clean:hover .cat-icon-box {
           transform: scale(1.1);
+          background: var(--maroon);
         }
-        
-        .cat-card:hover .cat-circle {
+
+        .category-card-clean:hover .cat-icon-box svg {
+          color: white !important;
+        }
+
+        .category-card-clean:hover .cat-name-clean {
+          color: var(--maroon);
+        }
+
+        .category-card-clean:hover .cat-bg-circle {
           transform: scale(1.5);
           opacity: 0.5;
         }
-        
-        .cat-card:hover .cat-icon {
-          transform: scale(1.1) rotate(5deg);
+
+        @media (max-width: 900px) {
+          .category-grid-clean {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
         }
-        
-        .cat-card:hover .cat-cta {
-          background: rgba(255,255,255,1);
-          padding-right: 20px;
-        }
-        
-        .cat-card:hover .cat-cta span {
-          transform: translateX(4px);
-        }
-        
-        @media(max-width:900px){
-          .cat-showcase-grid{grid-template-columns:repeat(2,1fr)!important; gap: 20px !important;}
-          .cat-card { height: 220px !important; }
-        }
-        @media(max-width:500px){
-          .cat-showcase-grid{grid-template-columns:1fr!important;}
-          .cat-card { height: 200px !important; }
+
+        @media (max-width: 500px) {
+          .category-grid-clean {
+            grid-template-columns: 1fr !important;
+          }
         }
       `}</style>
     </section>

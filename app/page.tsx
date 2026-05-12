@@ -1,15 +1,15 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroSlider from "@/components/HeroSlider";
-import TrustBadges from "@/components/TrustBadges";
 import ProductCard from "@/components/ProductCard";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import MarqueeBanner from "@/components/MarqueeBanner";
 import StatsSection from "@/components/StatsSection";
 import CategoryShowcase from "@/components/CategoryShowcase";
 import Testimonials from "@/components/Testimonials";
-import HowItWorks from "@/components/HowItWorks";
+import FAQ from "@/components/FAQ";
 import WhatsAppCTA from "@/components/WhatsAppCTA";
+import PromoBanner from "@/components/PromoBanner";
 import Link from "next/link";
 import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
@@ -68,9 +68,6 @@ export default async function HomePage() {
       {/* Scrolling Marquee */}
       <MarqueeBanner />
 
-      {/* Trust Badges */}
-      <TrustBadges />
-
       {/* Stats */}
       <StatsSection />
 
@@ -116,34 +113,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* How It Works */}
-      <HowItWorks />
+      {/* FAQ */}
+      <FAQ />
 
       {/* Promo Banner */}
-      <section style={{ background: "linear-gradient(135deg, #0f172a, #1e293b)", padding: "80px 20px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", top: "-100px", right: "-100px", width: "400px", height: "400px", background: "radial-gradient(circle, rgba(37,99,235,.15) 0%, transparent 70%)", borderRadius: "50%" }} />
-        <div style={{ position: "absolute", bottom: "-100px", left: "5%", width: "350px", height: "350px", background: "radial-gradient(circle, rgba(16,185,129,.1) 0%, transparent 70%)", borderRadius: "50%" }} />
-        <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
-        <div className="page-container" style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
-          <div style={{ display: "inline-block", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: "100px", padding: "6px 20px", fontSize: "13px", color: "#ffffff", fontWeight: 600, marginBottom: "24px", backdropFilter: "blur(8px)", fontFamily: "Outfit, sans-serif" }}>
-            🎉 Limited Time Offer
-          </div>
-          <h2 style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", fontWeight: 900, color: "#ffffff", marginBottom: "16px", fontFamily: "Outfit, sans-serif", letterSpacing: "-0.03em" }}>
-            Elevate Your Lifestyle.
-          </h2>
-          <p style={{ color: "#94a3b8", fontSize: "16px", marginBottom: "40px", maxWidth: "500px", margin: "0 auto 40px", lineHeight: 1.7, fontWeight: 500 }}>
-            Experience premium quality with free nationwide delivery on all orders above Rs. 1,500. Zero advance payment required.
-          </p>
-          <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/products" style={{ display: "inline-flex", alignItems: "center", gap: "8px", fontSize: "16px", padding: "16px 36px", background: "#ffffff", color: "#0f172a", border: "none", borderRadius: "100px", fontWeight: 700, fontFamily: "Plus Jakarta Sans, sans-serif", textDecoration: "none", boxShadow: "0 8px 32px rgba(255,255,255,0.15)", transition: "all 0.3s ease" }}>
-              🛒 Shop Now
-            </Link>
-            <Link href="/cart" style={{ display: "inline-flex", alignItems: "center", gap: "8px", fontSize: "16px", padding: "16px 36px", background: "rgba(255,255,255,0.1)", color: "#fff", border: "1px solid rgba(255,255,255,0.2)", borderRadius: "100px", fontWeight: 700, fontFamily: "Plus Jakarta Sans, sans-serif", textDecoration: "none", backdropFilter: "blur(8px)" }}>
-              View Cart →
-            </Link>
-          </div>
-        </div>
-      </section>
+      <PromoBanner />
 
       {/* New Arrivals */}
       <section style={{ padding: "80px 0", background: "var(--bg-primary)" }}>
