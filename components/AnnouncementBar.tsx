@@ -1,51 +1,106 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { X } from "lucide-react";
+
+const ANNOUNCEMENT_VAR = "--announcement-h";
+
+function setAnnouncementHeight(px: number) {
+  document.documentElement.style.setProperty(
+    ANNOUNCEMENT_VAR,
+    px > 0 ? `${px}px` : "0px"
+  );
+}
 
 export default function AnnouncementBar() {
   const [visible, setVisible] = useState(true);
+  const [spacerHeight, setSpacerHeight] = useState(44);
+  const barRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (!visible) {
+      setSpacerHeight(0);
+      setAnnouncementHeight(0);
+      return;
+    }
+
+    const el = barRef.current;
+    if (!el) return;
+
+    const sync = () => {
+      const h = el.offsetHeight;
+      setSpacerHeight(h);
+      setAnnouncementHeight(h);
+    };
+
+    sync();
+    const ro = new ResizeObserver(sync);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+    };
+  }, [visible]);
+
+  useEffect(() => {
+    return () => setAnnouncementHeight(0);
+  }, []);
 
   if (!visible) return null;
 
   return (
-    <div
-      style={{ 
-        position: "relative", 
-        padding: "10px 40px", 
-        background: "var(--color-brand)",
-        color: "white",
-        fontSize: "13px",
-        fontWeight: 600,
-        textAlign: "center",
-        fontFamily: "Plus Jakarta Sans, sans-serif",
-        letterSpacing: "0.5px"
-      }}
-    >
-      <span className="animate-pulse" style={{ marginRight: "8px" }}>✨</span>
-      Free nationwide delivery on orders above Rs. 1,500 &nbsp;|&nbsp; 💵 Cash on Delivery
-      <button
-        onClick={() => setVisible(false)}
-        aria-label="Dismiss"
+    <>
+      <div
+        ref={barRef}
+        role="region"
+        aria-label="Store announcement"
         style={{
-          position: "absolute",
-          right: "12px",
-          top: "50%",
-          transform: "translateY(-50%)",
-          background: "none",
-          border: "none",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 250,
+          padding: "10px clamp(44px, 11vw, 52px) 10px clamp(12px, 4vw, 20px)",
+          background: "var(--color-brand)",
           color: "white",
-          cursor: "pointer",
-          opacity: 0.7,
-          transition: "opacity 150ms ease",
-          display: "flex",
-          alignItems: "center"
+          fontSize: "clamp(11px, 2.6vw, 13px)",
+          fontWeight: 600,
+          textAlign: "center",
+          fontFamily: "Plus Jakarta Sans, sans-serif",
+          letterSpacing: "0.5px",
+          lineHeight: 1.45,
+          wordBreak: "break-word",
+          boxShadow: "0 6px 20px rgba(42, 21, 24, 0.18)",
         }}
-        onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
-        onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.7")}
       >
-        <X size={16} />
-      </button>
-    </div>
+        <span className="animate-pulse" style={{ marginRight: "8px" }}>
+          ✨
+        </span>
+        Free nationwide delivery on orders above Rs. 1,500 &nbsp;|&nbsp; 💵 Cash on Delivery
+        {/* <button
+          type="button"
+          onClick={() => setVisible(false)}
+          aria-label="Dismiss announcement"
+          style={{
+            position: "absolute",
+            right: "12px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            background: "none",
+            border: "none",
+            color: "white",
+            cursor: "pointer",
+            opacity: 0.75,
+            transition: "opacity 150ms ease",
+            display: "flex",
+            alignItems: "center",
+          }}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.75")}
+        >
+          <X size={16} />
+        </button> */}
+      </div>
+      <div aria-hidden style={{ height: spacerHeight, flexShrink: 0 }} />
+    </>
   );
 }

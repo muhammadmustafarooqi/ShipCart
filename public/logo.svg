@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">AllInOne Store</title>
+  <defs>
+    <linearGradient id="logo-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6B1E2E"/>
+      <stop offset="100%" stop-color="#3d1522"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#logo-bg)"/>
+  <path fill="#C9A84C" d="M32 14L46 48H18L32 14zm0 10L24 44h16L32 24z"/>
+  <path fill="#FAF3E8" d="M28 36h8l-4-14-4 14z" opacity=".95"/>
+</svg>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import { BrandLogoMark } from "@/components/BrandLogo";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Lock, Mail } from "lucide-react";
@@ -56,24 +56,8 @@ export default function AdminLogin() {
         boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
       }}>
         <div style={{ textAlign: "center", marginBottom: "32px" }}>
-          <div style={{
-            width: "56px",
-            height: "56px",
-            borderRadius: "16px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "0 auto 20px",
-            overflow: "hidden",
-            background: "white",
-          }}>
-            <Image 
-              src="/logo.webp" 
-              alt="AllInOne Store Logo" 
-              width={56} 
-              height={56}
-              style={{ objectFit: "contain", width: "100%", height: "100%" }}
-            />
+          <div style={{ display: "flex", justifyContent: "center", margin: "0 auto 22px" }}>
+            <BrandLogoMark size={76} tone="elevated" />
           </div>
           <h1 style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937", marginBottom: "8px" }}>
             Admin Portal

@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { BrandLogoMark } from "@/components/BrandLogo";
 import {
   LayoutDashboard,
   Package,
@@ -55,25 +55,8 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; on
         >
           <X size={18} />
         </button>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <div style={{
-            width: "40px",
-            height: "40px",
-            borderRadius: "10px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            overflow: "hidden",
-            background: "white",
-          }}>
-            <Image 
-              src="/logo.webp" 
-              alt="AllInOne Store Logo" 
-              width={40} 
-              height={40}
-              style={{ objectFit: "contain", width: "100%", height: "100%" }}
-            />
-          </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <BrandLogoMark size={48} tone="elevated" decorative />
           <div>
             <div style={{ fontWeight: 800, fontSize: "16px", color: "white" }}>
               ALLIn<span style={{ color: "#ff6b00" }}>ONE</span>

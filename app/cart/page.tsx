@@ -116,7 +116,19 @@ export default function CartPage() {
       </div>
       <TrustBadges />
       <Footer />
-      <style>{`@media(max-width:900px){.cart-grid{grid-template-columns:1fr!important; gap: 48px !important;}}`}</style>
+      <style>{`
+        @media (max-width: 900px) {
+          .cart-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+        }
+        @media (max-width: 520px) {
+          .cart-item {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 16px;
+          }
+          .cart-item > a { align-self: center; }
+        }
+      `}</style>
     </div>
   );
 }

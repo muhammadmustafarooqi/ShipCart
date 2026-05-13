@@ -10,6 +10,7 @@ import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 import WhatsAppCTA from "@/components/WhatsAppCTA";
 import PromoBanner from "@/components/PromoBanner";
+import FeaturedCollection from "@/components/FeaturedCollection";
 import Link from "next/link";
 import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
@@ -62,56 +63,16 @@ export default async function HomePage() {
       <AnnouncementBar />
       <Navbar />
 
-      {/* Hero */}
-      <HeroSlider banners={banners} />
-
-      {/* Scrolling Marquee */}
+      {/* Trust ticker — directly under header, above hero */}
       <MarqueeBanner />
 
-      {/* Stats */}
-      <StatsSection />
+      {/* Hero */}
+      <HeroSlider banners={banners} />
 
       {/* Category Showcase */}
       <CategoryShowcase />
 
-      {/* Featured Products */}
-      <section style={{ padding: "80px 0", background: "var(--bg-card)", borderTop: "1px solid var(--border-default)", borderBottom: "1px solid var(--border-default)" }}>
-        <div className="page-container">
-          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "48px", flexWrap: "wrap", gap: "16px" }}>
-            <div>
-              <div className="section-tag">⭐ Editor&apos;s Choice</div>
-              <h2 className="section-title">
-                Featured Collection
-              </h2>
-              <p style={{ color: "var(--text-secondary)", fontSize: "15px", marginTop: "8px", fontWeight: 500 }}>
-                Hand-picked premium products loved by our customers
-              </p>
-            </div>
-            <Link href="/products?featured=true" style={{
-              display: "inline-flex", alignItems: "center", gap: "8px",
-              fontSize: "14px", color: "var(--color-brand)", textDecoration: "none",
-              fontWeight: 700, fontFamily: "Plus Jakarta Sans, sans-serif",
-              background: "var(--color-brand-dim)", padding: "10px 20px",
-              borderRadius: "100px", transition: "all 0.2s ease",
-            }}>
-              View All →
-            </Link>
-          </div>
-          {featuredProducts.length > 0 ? (
-            <div className="products-grid">
-              {featuredProducts.map((p: Product) => (
-                <ProductCard key={p._id} product={p} />
-              ))}
-            </div>
-          ) : (
-            <div style={{ textAlign: "center", padding: "80px 0", color: "var(--text-secondary)", background: "var(--bg-primary)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--border-hover)" }}>
-              <div style={{ fontSize: "48px", marginBottom: "16px" }}>📦</div>
-              <p style={{ fontSize: "16px", fontWeight: 600 }}>Products loading...</p>
-              <p style={{ fontSize: "14px", marginTop: "8px" }}>Check back shortly or seed the database.</p>
-            </div>
-          )}
-        </div>
-      </section>
+      <FeaturedCollection products={featuredProducts} />
 
       {/* FAQ */}
       <FAQ />
@@ -157,6 +118,9 @@ export default async function HomePage() {
 
       {/* Testimonials */}
       <Testimonials />
+
+      {/* Trust stats — after social proof */}
+      <StatsSection />
 
       {/* WhatsApp CTA */}
       <WhatsAppCTA />

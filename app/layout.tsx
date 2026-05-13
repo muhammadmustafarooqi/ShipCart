@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import CartProvider from "@/components/CartProvider";
+import { FAVICON_URL } from "@/lib/site";
 
 const jakarta = Plus_Jakarta_Sans({ 
   subsets: ["latin"], 
@@ -22,6 +23,9 @@ export const metadata: Metadata = {
   description:
     "Shop premium gadgets, kitchen tools, personal care devices & tech accessories. Cash on Delivery. Free delivery above Rs. 1500. 100% Original Products.",
   keywords: "Pakistan gadgets, smart gadgets, kitchen tools, personal care, COD, cash on delivery Pakistan",
+  icons: {
+    icon: FAVICON_URL,
+  },
   openGraph: {
     title: "AllInOne Store — Premium Gadgets & Accessories",
     description: "Top quality gadgets for every home. Free delivery on orders above Rs. 1500.",

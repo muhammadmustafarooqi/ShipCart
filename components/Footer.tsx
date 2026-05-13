@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Mail, MapPin, Phone } from "lucide-react";
+import { BrandLogoMark } from "@/components/BrandLogo";
 
 export default function Footer() {
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923001234567";
@@ -13,22 +13,8 @@ export default function Footer() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: "48px" }}>
           {/* Brand */}
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
-              <div style={{ 
-                width: "40px", height: "40px", 
-                borderRadius: "10px",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                overflow: "hidden",
-                background: "white"
-              }}>
-                <Image 
-                  src="/logo.webp" 
-                  alt="AllInOne Store Logo" 
-                  width={40} 
-                  height={40}
-                  style={{ objectFit: "contain", width: "100%", height: "100%" }}
-                />
-              </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
+              <BrandLogoMark size={52} tone="footer" decorative />
               <div>
                 <div style={{ fontWeight: 800, fontSize: "20px", color: "white", fontFamily: "Outfit, sans-serif", lineHeight: 1.1 }}>AllInOne</div>
                 <div style={{ fontSize: "10px", color: "var(--text-secondary)", letterSpacing: "2px", fontWeight: 600, textTransform: "uppercase" }}>Premium Store</div>

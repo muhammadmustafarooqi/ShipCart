@@ -213,8 +213,9 @@ export default function Testimonials() {
 
         @media (max-width: 768px) {
           .testimonial-dark-card {
-            width: 380px;
-            min-width: 380px;
+            width: min(380px, calc(100vw - 40px));
+            min-width: min(380px, calc(100vw - 40px));
+            max-width: calc(100vw - 40px);
             padding: 18px 22px;
             border-radius: 100px;
           }

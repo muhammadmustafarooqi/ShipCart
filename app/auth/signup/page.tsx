@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import { BrandLogoMark } from "@/components/BrandLogo";
 import { User, Mail, Lock, Phone, ArrowRight, ShieldCheck, MapPin } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -74,23 +74,17 @@ export default function SignupPage() {
       position: "relative"
     }}>
       <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }} />
-      <div style={{ maxWidth: "900px", width: "100%", background: "rgba(255,255,255,0.98)", borderRadius: "24px", padding: "48px", boxShadow: "0 20px 60px rgba(0,0,0,0.4)", position: "relative", zIndex: 1 }}>
+      <div className="signup-card" style={{ maxWidth: "900px", width: "100%", minWidth: 0, background: "rgba(255,255,255,0.98)", borderRadius: "24px", padding: "clamp(22px, 5vw, 48px)", boxShadow: "0 20px 60px rgba(0,0,0,0.4)", position: "relative", zIndex: 1 }}>
         <div style={{ textAlign: "center", marginBottom: "32px" }}>
-          <div style={{ width: "64px", height: "64px", borderRadius: "16px", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", boxShadow: "0 8px 20px rgba(99,102,241,0.4)", overflow: "hidden", background: "white" }}>
-            <Image 
-              src="/logo.webp" 
-              alt="AllInOne Store Logo" 
-              width={64} 
-              height={64}
-              style={{ objectFit: "contain", width: "100%", height: "100%" }}
-            />
+          <div style={{ display: "flex", justifyContent: "center", margin: "0 auto 22px" }}>
+            <BrandLogoMark size={88} tone="elevated" />
           </div>
           <h1 style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937", marginBottom: "8px", fontFamily: "Outfit, sans-serif" }}>Create Account</h1>
           <p style={{ color: "#6b7280", fontSize: "15px" }}>Join AllInOne Store today</p>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
+          <div className="signup-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
             <div>
               <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "#374151", marginBottom: "8px" }}>Full Name *</label>
               <div style={{ position: "relative" }}>
@@ -240,8 +234,9 @@ export default function SignupPage() {
       </div>
 
       <style>{`
-        @media (max-width: 768px) {
-          form > div:first-child {
+        .signup-card { box-sizing: border-box; }
+        @media (max-width: 900px) {
+          .signup-grid {
             grid-template-columns: 1fr !important;
           }
         }

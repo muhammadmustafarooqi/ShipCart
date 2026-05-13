@@ -73,7 +73,7 @@ function ProductsContent() {
       <div className="page-container" style={{ padding: "40px 24px", flex: 1 }}>
         {/* Toolbar */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", marginBottom: "32px", flexWrap: "wrap" }}>
-          <div className="search-bar" style={{ flex: 1, minWidth: "240px", maxWidth: "400px", background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "12px", padding: "12px 16px", display: "flex", alignItems: "center", gap: "10px", boxShadow: "var(--shadow-sm)" }}>
+          <div className="search-bar" style={{ flex: "1 1 200px", minWidth: 0, maxWidth: "min(400px, 100%)", width: "100%", background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "12px", padding: "12px 16px", display: "flex", alignItems: "center", gap: "10px", boxShadow: "var(--shadow-sm)" }}>
             <Search size={18} color="var(--color-icon)" />
             <input type="text" placeholder="Search our collection..." value={filters.search}
               onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value, page: 1 }))} 

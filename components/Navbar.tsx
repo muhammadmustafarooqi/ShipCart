@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Search, ShoppingCart, Menu, X, ArrowRight, User } from "lucide-react";
-import Image from "next/image";
+import { BrandLogoMark } from "@/components/BrandLogo";
 import { useCart } from "./CartProvider";
 
 export default function Navbar() {
@@ -39,20 +39,11 @@ export default function Navbar() {
   return (
     <>
       <nav
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 100,
-          background: scrolled
-            ? "rgba(255, 253, 249, 0.96)"
-            : "rgba(255, 253, 249, 0.99)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          borderBottom: `1px solid ${scrolled ? "var(--cream-mid)" : "var(--cream-dark)"}`,
-          boxShadow: scrolled ? "0 4px 20px rgba(42, 21, 24, 0.08)" : "none",
-          transition: "all 0.3s ease",
-        }}
+        className="nav-shell"
+        data-scrolled={scrolled ? "true" : "false"}
+        aria-label="Main"
       >
+        <div className="nav-shell-accent" aria-hidden />
         <div className="page-container">
 
           {/* ── MOBILE HEADER (3-column: left | center | right) ── */}
@@ -68,40 +59,13 @@ export default function Navbar() {
             </button>
 
             {/* Center: Logo */}
-            <Link href="/" className="logo-center" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "10px" }}>
-              <div style={{
-                width: "42px", height: "42px",
-                borderRadius: "11px",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                overflow: "hidden",
-                background: "var(--white)",
-                border: "2px solid var(--cream-mid)",
-                boxShadow: "var(--shadow-sm)",
-                flexShrink: 0,
-              }}>
-                <Image
-                  src="/logo.webp"
-                  alt="AllInOne Store Logo"
-                  width={42}
-                  height={42}
-                  style={{ objectFit: "contain", width: "100%", height: "100%" }}
-                />
-              </div>
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <span style={{
-                  fontFamily: "Outfit, sans-serif", fontWeight: 900,
-                  fontSize: "20px", color: "var(--maroon)",
-                  lineHeight: 1.1, letterSpacing: "-0.02em"
-                }}>
-                  AllInOne
-                </span>
-                <span style={{
-                  fontSize: "9px", color: "var(--gold)",
-                  letterSpacing: "2px", fontWeight: 700, textTransform: "uppercase"
-                }}>
-                  Premium Store
-                </span>
-              </div>
+            <Link
+              href="/"
+              className="logo-center nav-logo-link"
+              aria-label="AllInOne Store, home"
+              style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
+            >
+              <BrandLogoMark size={56} tone="nav" decorative />
             </Link>
 
             {/* Right: Search + Cart */}
@@ -127,29 +91,17 @@ export default function Navbar() {
 
           {/* ── DESKTOP HEADER ── */}
           <div className="desktop-header">
-            {/* Logo */}
-            <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "12px", flexShrink: 0 }}>
-              <div style={{
-                width: "48px", height: "48px", borderRadius: "12px",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                overflow: "hidden", background: "var(--white)",
-                border: "2px solid var(--cream-mid)", boxShadow: "var(--shadow-sm)"
-              }}>
-                <Image src="/logo.webp" alt="AllInOne Store Logo" width={48} height={48}
-                  style={{ objectFit: "contain", width: "100%", height: "100%" }} />
-              </div>
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <span style={{ fontFamily: "Outfit, sans-serif", fontWeight: 900, fontSize: "22px", color: "var(--maroon)", lineHeight: 1.1, letterSpacing: "-0.02em" }}>
-                  AllInOne
-                </span>
-                <span style={{ fontSize: "10px", color: "var(--gold)", letterSpacing: "2px", fontWeight: 700, textTransform: "uppercase" }}>
-                  Premium Store
-                </span>
-              </div>
+            {/* Logo only — no wordmark */}
+            <Link
+              href="/"
+              aria-label="AllInOne Store, home"
+              className="nav-logo-link"
+            >
+              <BrandLogoMark size={68} tone="nav" decorative />
             </Link>
 
-            {/* Nav Links */}
-            <div style={{ display: "flex", gap: "4px", flex: 1, justifyContent: "center" }}>
+            {/* Nav links — pill rail */}
+            <div className="nav-pill-rail">
               {navLinks.map((link) => (
                 <Link key={link.href} href={link.href} className="desktop-nav-link">
                   {link.label}
@@ -158,27 +110,15 @@ export default function Navbar() {
             </div>
 
             {/* Right Actions */}
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <form
-                onSubmit={handleSearchSubmit}
-                style={{
-                  display: "flex", alignItems: "center", gap: "8px",
-                  background: "var(--cream-dark)", borderRadius: "10px",
-                  padding: "8px 14px", border: "1px solid var(--cream-mid)"
-                }}
-              >
-                <Search size={15} color="var(--text-secondary)" />
+            <div className="nav-actions-desktop">
+              <form onSubmit={handleSearchSubmit} className="nav-search-form">
+                <Search size={16} color="var(--maroon-soft)" strokeWidth={2} />
                 <input
                   type="text"
-                  placeholder="Search..."
+                  placeholder="Search products…"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  style={{
-                    background: "transparent", border: "none", outline: "none",
-                    fontSize: "14px", fontWeight: 500,
-                    color: "var(--text-primary)", width: "140px",
-                    fontFamily: "Plus Jakarta Sans, sans-serif"
-                  }}
+                  className="nav-search-input"
                 />
               </form>
 
@@ -200,24 +140,15 @@ export default function Navbar() {
 
         {/* ── MOBILE SEARCH BAR (slides down) ── */}
         <div className={`mobile-search-bar ${searchOpen ? "open" : ""}`}>
-          <form onSubmit={handleSearchSubmit} style={{
-            display: "flex", alignItems: "center", gap: "10px",
-            background: "var(--cream-dark)", borderRadius: "12px",
-            padding: "12px 16px", border: "1px solid var(--cream-mid)"
-          }}>
-            <Search size={17} color="var(--text-secondary)" />
+          <form onSubmit={handleSearchSubmit} className="nav-search-form nav-search-form--mobile">
+            <Search size={17} color="var(--maroon-soft)" strokeWidth={2} />
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder="Search products…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               autoFocus={searchOpen}
-              style={{
-                background: "transparent", border: "none", outline: "none",
-                flex: 1, fontSize: "15px", fontWeight: 500,
-                color: "var(--text-primary)",
-                fontFamily: "Plus Jakarta Sans, sans-serif"
-              }}
+              className="nav-search-input nav-search-input--mobile"
             />
             {searchQuery && (
               <button type="button" onClick={() => setSearchQuery("")}
@@ -231,10 +162,9 @@ export default function Navbar() {
 
       {/* ── MOBILE DRAWER ── */}
       <div
-        className={`mobile-drawer ${menuOpen ? "open" : ""}`}
+        className={`mobile-drawer nav-mobile-drawer ${menuOpen ? "open" : ""}`}
         style={{
           position: "fixed",
-          top: "72px",
           left: 0,
           right: 0,
           bottom: 0,
@@ -275,26 +205,79 @@ export default function Navbar() {
       {/* Overlay */}
       {menuOpen && (
         <div
+          className="nav-menu-overlay"
           onClick={() => setMenuOpen(false)}
           style={{
-            position: "fixed", inset: 0,
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: 0,
             background: "rgba(42, 21, 24, 0.45)",
-            zIndex: 98, top: "72px",
-            backdropFilter: "blur(2px)"
+            zIndex: 98,
+            backdropFilter: "blur(2px)",
           }}
         />
       )}
 
       <style>{`
+        /* ── Shell: floating bar + accent ── */
+        .nav-mobile-drawer {
+          top: calc(78px + var(--announcement-h, 0px));
+          width: 100% !important;
+          max-width: none !important;
+          border-right: none !important;
+        }
+        .nav-menu-overlay {
+          top: calc(78px + var(--announcement-h, 0px));
+        }
+
+        .nav-shell {
+          position: sticky;
+          top: var(--announcement-h, 0px);
+          z-index: 100;
+          isolation: isolate;
+          background: linear-gradient(180deg, rgba(255, 253, 249, 0.99) 0%, rgba(250, 243, 232, 0.94) 100%);
+          backdrop-filter: blur(16px) saturate(1.2);
+          -webkit-backdrop-filter: blur(16px) saturate(1.2);
+          border-bottom: 1px solid rgba(232, 216, 188, 0.65);
+          box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 8px 32px rgba(42, 21, 24, 0.06);
+          transition: box-shadow 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+        }
+        .nav-shell[data-scrolled="true"] {
+          background: rgba(255, 253, 249, 0.97);
+          border-bottom-color: var(--cream-mid);
+          box-shadow:
+            0 1px 0 rgba(255, 255, 255, 0.5) inset,
+            0 12px 40px rgba(42, 21, 24, 0.1);
+        }
+        .nav-shell-accent {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 3px;
+          background: linear-gradient(
+            90deg,
+            var(--maroon-deep) 0%,
+            var(--maroon) 22%,
+            var(--gold) 50%,
+            var(--maroon) 78%,
+            var(--maroon-deep) 100%
+          );
+          opacity: 0.95;
+          pointer-events: none;
+        }
+
         /* ── Layout helpers ── */
         .page-container { max-width: 1400px; margin: 0 auto; padding: 0 16px; }
 
         /* ── Mobile vs Desktop visibility ── */
         .mobile-header {
+          position: relative;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          height: 72px;
+          height: 78px;
         }
         .desktop-header { display: none; }
 
@@ -304,7 +287,9 @@ export default function Navbar() {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 80px;
+            gap: 16px;
+            height: 88px;
+            min-width: 0;
           }
           .page-container { padding: 0 32px; }
         }
@@ -316,82 +301,221 @@ export default function Navbar() {
           transform: translateX(-50%);
         }
 
-        /* ── Icon button ── */
-        .icon-btn {
-          background: transparent;
-          border: none;
-          width: 44px; height: 44px;
-          border-radius: 11px;
-          cursor: pointer;
-          color: var(--maroon);
-          display: flex; align-items: center; justify-content: center;
-          transition: background 0.2s;
+        .nav-logo-link {
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          flex-shrink: 0;
+          transition: transform 0.25s ease;
+        }
+        .nav-logo-link:hover {
+          transform: scale(1.04);
+        }
+        .nav-logo-link:active {
+          transform: scale(0.98);
+        }
+        .logo-center.nav-logo-link:hover {
+          transform: translateX(-50%) scale(1.04);
+        }
+        .logo-center.nav-logo-link:active {
+          transform: translateX(-50%) scale(0.98);
+        }
+
+        /* ── Desktop: pill rail + search row ── */
+        .nav-pill-rail {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          flex: 1;
+          gap: 2px;
+          padding: 5px 6px;
+          margin: 0 4px;
+          max-width: min(720px, 52vw);
+          min-width: 0;
+          margin-left: auto;
+          margin-right: auto;
+          background: rgba(107, 30, 46, 0.06);
+          border: 1px solid rgba(107, 30, 46, 0.1);
+          border-radius: 999px;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+          overflow-x: auto;
+          overflow-y: hidden;
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior-x: contain;
+          scrollbar-width: thin;
+        }
+        .nav-pill-rail::-webkit-scrollbar {
+          height: 4px;
+        }
+        .nav-pill-rail::-webkit-scrollbar-thumb {
+          background: rgba(107, 30, 46, 0.25);
+          border-radius: 99px;
+        }
+        .nav-actions-desktop {
+          display: flex;
+          align-items: center;
+          gap: 12px;
           flex-shrink: 0;
         }
-        .icon-btn:hover { background: var(--cream-dark); }
+        .nav-search-form {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 16px;
+          min-width: 96px;
+          flex: 1 1 120px;
+          max-width: 240px;
+          background: var(--white);
+          border-radius: 999px;
+          border: 1px solid var(--cream-mid);
+          box-shadow: inset 0 2px 4px rgba(42, 21, 24, 0.04);
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .nav-search-form:focus-within {
+          border-color: rgba(107, 30, 46, 0.35);
+          box-shadow:
+            inset 0 2px 4px rgba(42, 21, 24, 0.04),
+            0 0 0 3px rgba(201, 168, 76, 0.25);
+        }
+        .nav-search-form--mobile {
+          width: 100%;
+          max-width: none;
+          flex: none;
+          padding: 12px 18px;
+          border-radius: 14px;
+        }
+        .nav-search-input {
+          flex: 1;
+          min-width: 0;
+          width: 100%;
+          background: transparent;
+          border: none;
+          outline: none;
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--text-primary);
+          font-family: "Plus Jakarta Sans", sans-serif;
+        }
+        .nav-search-input::placeholder { color: var(--text-secondary); opacity: 0.85; }
+        .nav-search-input--mobile { font-size: 15px; }
+
+        /* ── Icon button ── */
+        .icon-btn {
+          background: rgba(107, 30, 46, 0.07);
+          border: 1px solid transparent;
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          cursor: pointer;
+          color: var(--maroon);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+          flex-shrink: 0;
+        }
+        .icon-btn:hover {
+          background: rgba(107, 30, 46, 0.12);
+          border-color: rgba(107, 30, 46, 0.12);
+          transform: scale(1.04);
+        }
 
         .icon-btn-bordered {
           background: var(--white);
-          border: 2px solid var(--cream-mid);
-          width: 46px; height: 46px;
-          border-radius: 12px;
+          border: 1px solid var(--cream-mid);
+          width: 46px;
+          height: 46px;
+          border-radius: 50%;
           cursor: pointer;
-          display: flex; align-items: center; justify-content: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           text-decoration: none;
-          transition: all 0.2s;
+          transition: all 0.22s ease;
           flex-shrink: 0;
+          box-shadow: 0 2px 8px rgba(42, 21, 24, 0.06);
         }
         .icon-btn-bordered:hover {
-          border-color: var(--maroon);
+          border-color: var(--maroon-soft);
           background: var(--cream-dark);
           transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(107, 30, 46, 0.12);
         }
 
         /* ── Cart button ── */
         .cart-btn {
           position: relative;
-          background: var(--maroon);
-          border: 2px solid var(--maroon);
-          width: 44px; height: 44px;
-          border-radius: 11px;
-          display: flex; align-items: center; justify-content: center;
+          background: linear-gradient(145deg, var(--maroon) 0%, var(--maroon-deep) 100%);
+          border: 1px solid rgba(201, 168, 76, 0.35);
+          width: 46px;
+          height: 46px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           text-decoration: none;
           flex-shrink: 0;
-          transition: all 0.2s;
-          box-shadow: 0 4px 12px rgba(107, 30, 46, 0.25);
+          transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+          box-shadow:
+            0 4px 14px rgba(107, 30, 46, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.12);
         }
         .cart-btn:hover {
-          background: var(--maroon-deep);
-          transform: translateY(-2px);
-          box-shadow: 0 6px 16px rgba(107, 30, 46, 0.35);
+          filter: brightness(1.06);
+          transform: translateY(-2px) scale(1.02);
+          box-shadow:
+            0 8px 22px rgba(107, 30, 46, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }
 
         /* ── Cart badge ── */
         .cart-badge {
-          position: absolute; top: -6px; right: -6px;
-          background: var(--gold); color: var(--text);
-          border-radius: 50%; width: 20px; height: 20px;
-          font-size: 10px; font-weight: 800;
-          display: flex; align-items: center; justify-content: center;
+          position: absolute;
+          top: -4px;
+          right: -4px;
+          background: linear-gradient(135deg, var(--gold), #d4b45c);
+          color: var(--text);
+          border-radius: 50%;
+          width: 21px;
+          height: 21px;
+          font-size: 10px;
+          font-weight: 800;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           border: 2px solid var(--white);
           font-family: Outfit, sans-serif;
-          box-shadow: 0 2px 8px rgba(201, 168, 76, 0.4);
+          box-shadow: 0 2px 8px rgba(201, 168, 76, 0.45);
         }
 
-        /* ── Desktop nav link ── */
+        /* ── Desktop nav link (inside pill rail) ── */
         .desktop-nav-link {
           text-decoration: none;
           color: var(--text-primary);
           font-weight: 600;
-          font-size: 14px;
-          padding: 10px 18px;
-          border-radius: 10px;
-          transition: all 0.2s ease;
+          font-size: 13px;
+          padding: 9px 16px;
+          border-radius: 999px;
+          transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
           white-space: nowrap;
         }
         .desktop-nav-link:hover {
           color: var(--maroon);
-          background: var(--cream-dark);
+          background: rgba(255, 253, 249, 0.95);
+          box-shadow: 0 1px 3px rgba(42, 21, 24, 0.08);
+        }
+
+        @media (min-width: 1025px) and (max-width: 1320px) {
+          .desktop-nav-link {
+            font-size: 12px;
+            padding: 8px 12px;
+          }
+          .nav-pill-rail {
+            max-width: min(560px, 48vw);
+          }
+          .nav-actions-desktop {
+            gap: 8px;
+          }
         }
 
         /* ── Mobile search slide-down ── */
@@ -402,8 +526,8 @@ export default function Navbar() {
           transition: max-height 0.3s ease, padding 0.3s ease;
         }
         .mobile-search-bar.open {
-          max-height: 80px;
-          padding: 8px 16px 14px;
+          max-height: 88px;
+          padding: 8px 16px 16px;
         }
         @media (min-width: 1025px) {
           .mobile-search-bar { display: none; }
@@ -414,21 +538,23 @@ export default function Navbar() {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 14px 16px;
-          border-radius: 12px;
+          padding: 15px 18px;
+          border-radius: 14px;
           text-decoration: none;
           color: var(--text-primary);
           font-weight: 600;
           font-size: 15px;
           font-family: "Plus Jakarta Sans", sans-serif;
-          background: var(--cream-dark);
+          background: var(--white);
           border: 1px solid var(--cream-mid);
-          transition: all 0.2s ease;
+          box-shadow: 0 2px 8px rgba(42, 21, 24, 0.04);
+          transition: all 0.22s ease;
         }
         .drawer-link:hover {
           background: var(--maroon);
           color: var(--white);
           border-color: var(--maroon);
+          transform: translateX(4px);
         }
         .drawer-link:hover svg { color: var(--white); }
       `}</style>

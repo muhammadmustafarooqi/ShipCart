@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown, HelpCircle } from "lucide-react";
+
+const MOBILE_FAQ_MAX = 5;
+const MOBILE_MQ = "(max-width: 768px)";
 
 const faqs = [
   {
@@ -40,6 +43,23 @@ const faqs = [
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [isMobileLayout, setIsMobileLayout] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_MQ);
+    const update = () => setIsMobileLayout(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const displayedFaqs = isMobileLayout ? faqs.slice(0, MOBILE_FAQ_MAX) : faqs;
+
+  useEffect(() => {
+    if (isMobileLayout && openIndex !== null && openIndex >= MOBILE_FAQ_MAX) {
+      setOpenIndex(null);
+    }
+  }, [isMobileLayout, openIndex]);
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -55,17 +75,46 @@ export default function FAQ() {
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "56px" }}>
           <div className="section-tag" style={{ justifyContent: "center" }}>
-            <HelpCircle size={14} color="var(--color-icon)" /> Got Questions?
+            <HelpCircle size={14} color="var(--color-icon)" /> From cart to doorstep
           </div>
-          <h2 className="section-title">Frequently Asked Questions</h2>
-          <p style={{ 
-            color: "var(--text-secondary)", 
-            fontSize: "16px", 
-            maxWidth: "560px", 
-            margin: "12px auto 0", 
-            fontWeight: 500 
-          }}>
-            Find answers to common questions about ordering, shipping, payments, and returns
+          <h2 className="section-title">Everything You Need to Know</h2>
+          <p
+            style={{
+              color: "var(--text-secondary)",
+              fontSize: "clamp(15px, 2.8vw, 17px)",
+              maxWidth: "640px",
+              margin: "16px auto 0",
+              fontWeight: 500,
+              lineHeight: 1.65,
+              padding: "0 8px",
+            }}
+          >
+            <span
+              style={{
+                display: "block",
+                color: "var(--text-primary)",
+                fontWeight: 600,
+                fontSize: "clamp(16px, 2.9vw, 18px)",
+                lineHeight: 1.45,
+                marginBottom: "12px",
+                fontFamily: "var(--font-outfit), Outfit, sans-serif",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Shopping should feel effortless—never a guessing game.
+            </span>
+            <span style={{ display: "block" }}>
+              Tap a topic for crystal-clear answers on{" "}
+              <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>cash on delivery</strong>
+              ,{" "}
+              <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>fast delivery</strong>{" "}
+              anywhere in Pakistan,{" "}
+              <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>free shipping</strong>{" "}
+              when your order qualifies,{" "}
+              <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>returns and exchanges</strong>
+              , and how we keep every product{" "}
+              <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>100% authentic</strong>.
+            </span>
           </p>
         </div>
 
@@ -77,12 +126,12 @@ export default function FAQ() {
           maxWidth: "1200px",
           margin: "0 auto"
         }} className="faq-grid">
-          {faqs.map((faq, index) => {
+          {displayedFaqs.map((faq, index) => {
             const isOpen = openIndex === index;
             
             return (
               <div
-                key={index}
+                key={faq.question}
                 style={{
                   background: "var(--white)",
                   border: "2px solid",
