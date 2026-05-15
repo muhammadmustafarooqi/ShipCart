@@ -488,6 +488,26 @@ export default function CategoryShowcase() {
           .is-featured .category-showcase-title {
             max-width: none;
           }
+
+          .category-showcase-hero-slot .category-showcase-card,
+          .category-showcase-hero-slot .category-showcase-inner {
+            min-height: 132px;
+          }
+
+          .category-showcase-hero-slot .category-showcase-inner {
+            padding: 14px 16px 14px;
+          }
+
+          .category-showcase-hero-slot .is-featured .category-showcase-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+          }
+
+          .category-showcase-hero-slot .is-featured .category-showcase-title {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+          }
         }
 
         @media (prefers-reduced-motion: reduce) {

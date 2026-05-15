@@ -75,9 +75,6 @@ export default async function HomePage() {
 
       <FeaturedCollection products={featuredProducts} />
 
-      {/* FAQ */}
-      <FAQ />
-
       {/* Promo Banner */}
       <PromoBanner />
 
@@ -148,6 +145,9 @@ export default async function HomePage() {
 
       {/* Testimonials */}
       <Testimonials />
+
+      {/* FAQ */}
+      <FAQ />
 
       {/* Trust stats — after social proof */}
       <StatsSection />

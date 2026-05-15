@@ -59,7 +59,7 @@ export default function AnnouncementBar() {
           left: 0,
           right: 0,
           zIndex: 250,
-          padding: "10px clamp(44px, 11vw, 52px) 10px clamp(12px, 4vw, 20px)",
+          padding: "10px clamp(12px, 4vw, 20px)",
           background: "var(--color-brand)",
           color: "white",
           fontSize: "clamp(11px, 2.6vw, 13px)",
@@ -76,12 +76,12 @@ export default function AnnouncementBar() {
           <Sparkles size={15} strokeWidth={2.25} aria-hidden />
         </span>
         <span style={{ verticalAlign: "middle" }}>
-          Free nationwide delivery on orders above Rs. 1,500 &nbsp;|&nbsp;{" "}
+          Free nationwide delivery on orders above Rs. 1,500 &nbsp;&nbsp;{" "}
         </span>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", verticalAlign: "middle" }}>
+        {/* <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", verticalAlign: "middle" }}>
           <Banknote size={15} strokeWidth={2.25} aria-hidden />
           <span>Cash on Delivery</span>
-        </span>
+        </span> */}
         {/* <button
           type="button"
           onClick={() => setVisible(false)}
