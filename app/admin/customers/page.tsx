@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Users, Phone, MapPin, ShoppingBag, Calendar } from "lucide-react";
+import { Users, Phone, MapPin, ShoppingBag, Calendar, Wallet } from "lucide-react";
 
 interface Customer {
   _id: string;
@@ -81,8 +81,8 @@ export default function CustomersPage() {
               <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "4px", fontWeight: 500 }}>Total Revenue</p>
               <div style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>Rs. {stats.totalRevenue.toLocaleString()}</div>
             </div>
-            <div style={{ width: "52px", height: "52px", borderRadius: "14px", background: "linear-gradient(135deg, #f59e0b, #d97706)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px rgba(245,158,11,0.3)" }}>
-              <span style={{ fontSize: "24px" }}>💰</span>
+            <div style={{ width: "52px", height: "52px", borderRadius: "14px", background: "linear-gradient(135deg, #f59e0b, #d97706)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px rgba(245,158,11,0.3)", color: "white" }}>
+              <Wallet size={24} aria-hidden />
             </div>
           </div>
           <p style={{ fontSize: "12px", color: "#9ca3af" }}>From all customers</p>

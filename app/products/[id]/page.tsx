@@ -8,7 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { useCart } from "@/components/CartProvider";
-import { ShoppingCart, ChevronLeft, Minus, Plus, Package, Zap, ShieldCheck } from "lucide-react";
+import { ShoppingCart, ChevronLeft, Minus, Plus, Package, Zap, ShieldCheck, Star, Frown } from "lucide-react";
 
 interface Product {
   _id: string; name: string; slug: string; price: number; comparePrice?: number;
@@ -82,7 +82,9 @@ export default function ProductDetailPage() {
   if (!product) return (
     <div style={s}><Navbar />
       <div style={{ textAlign: "center", padding: "120px 20px" }}>
-        <div style={{ fontSize: "64px", marginBottom: "24px" }}>😕</div>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "24px", color: "var(--text-secondary)" }}>
+          <Frown size={64} strokeWidth={1.5} aria-hidden />
+        </div>
         <h2 style={{ fontSize: "28px", fontWeight: 800, color: "var(--text-primary)", marginBottom: "16px", fontFamily: "Outfit, sans-serif" }}>Product Not Found</h2>
         <p style={{ color: "var(--text-secondary)", marginBottom: "32px", fontSize: "16px" }}>This product doesn&apos;t exist or has been removed from our catalog.</p>
         <Link href="/products" className="btn-primary">Browse Collection</Link>
@@ -220,7 +222,11 @@ export default function ProductDetailPage() {
                 <Package size={14} color="var(--color-icon)" /> {product.category}
               </span>
               {product.isNewArrival && <span style={{ background: "var(--color-brand-dim)", color: "var(--color-brand)", padding: "4px 14px", borderRadius: "100px", fontSize: "12px", fontWeight: 700, fontFamily: "Outfit, sans-serif" }}>New Arrival</span>}
-              {product.isFeatured && <span style={{ background: "var(--text-primary)", color: "white", padding: "4px 14px", borderRadius: "100px", fontSize: "12px", fontWeight: 700, fontFamily: "Outfit, sans-serif" }}>⭐ Editor&apos;s Pick</span>}
+              {product.isFeatured && (
+                <span style={{ background: "var(--text-primary)", color: "white", padding: "4px 14px", borderRadius: "100px", fontSize: "12px", fontWeight: 700, fontFamily: "Outfit, sans-serif", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                  <Star size={14} fill="white" aria-hidden /> Editor&apos;s Pick
+                </span>
+              )}
             </div>
 
             <h1 style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)", fontWeight: 800, color: "var(--text-primary)", marginBottom: "16px", lineHeight: 1.15, fontFamily: "Outfit, sans-serif", letterSpacing: "-0.02em" }}>{product.name}</h1>

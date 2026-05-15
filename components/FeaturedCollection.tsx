@@ -15,9 +15,15 @@ export type FeaturedProduct = {
   rating?: number;
   reviewCount?: number;
   stock?: number;
+  previewVideoUrl?: string;
 };
 
 export default function FeaturedCollection({ products }: { products: FeaturedProduct[] }) {
+  const loopProducts =
+    products.length > 0
+      ? [...products, ...products, ...products, ...products]
+      : [];
+
   return (
     <section className="fc-section" aria-labelledby="featured-collection-heading">
       <div className="fc-bg" aria-hidden />
@@ -32,21 +38,15 @@ export default function FeaturedCollection({ products }: { products: FeaturedPro
               Hand-picked premium products our customers reorder most — quality-checked
               for your home and daily routine.
             </p>
+            <Link href="/products?featured=true" className="fc-catalog-link">
+              View all
+              <ArrowUpRight size={17} strokeWidth={2.25} aria-hidden />
+            </Link>
           </div>
-          <Link href="/products?featured=true" className="fc-catalog-link">
-            View all
-            <ArrowUpRight size={17} strokeWidth={2.25} aria-hidden />
-          </Link>
         </header>
 
         {products.length > 0 ? (
-          <div className="fc-grid-wrap">
-            <div className="products-grid fc-product-grid">
-              {products.map((p) => (
-                <ProductCard key={p._id} product={p} />
-              ))}
-            </div>
-          </div>
+          <div className="fc-marquee-rule" aria-hidden />
         ) : (
           <div className="fc-empty" role="status">
             <div className="fc-empty-icon" aria-hidden>
@@ -60,6 +60,20 @@ export default function FeaturedCollection({ products }: { products: FeaturedPro
           </div>
         )}
       </div>
+
+      {products.length > 0 ? (
+        <div className="fc-marquee-wrap">
+          <div className="fc-marquee-edge fc-marquee-edge--left" aria-hidden />
+          <div className="fc-marquee-edge fc-marquee-edge--right" aria-hidden />
+          <div className="fc-track" role="list" aria-label="Featured products">
+            {loopProducts.map((p, index) => (
+              <div key={`${p._id}-${index}`} className="fc-card-slot" role="listitem">
+                <ProductCard product={p} />
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       <style>{`
         .fc-section {
@@ -87,15 +101,17 @@ export default function FeaturedCollection({ products }: { products: FeaturedPro
 
         .fc-header {
           display: flex;
-          align-items: flex-end;
-          justify-content: space-between;
-          gap: 24px 32px;
-          margin-bottom: clamp(36px, 5vw, 48px);
-          flex-wrap: wrap;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          margin-bottom: clamp(20px, 3vw, 28px);
         }
 
         .fc-header-copy {
-          max-width: 620px;
+          max-width: 720px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
 
         .fc-kicker {
@@ -126,13 +142,17 @@ export default function FeaturedCollection({ products }: { products: FeaturedPro
           font-weight: 500;
           line-height: 1.65;
           max-width: 50ch;
+          margin-left: auto;
+          margin-right: auto;
           color: var(--text-secondary);
         }
 
         .fc-catalog-link {
           display: inline-flex;
           align-items: center;
+          justify-content: center;
           gap: 8px;
+          margin-top: 22px;
           padding: 11px 20px;
           border-radius: 999px;
           font-size: 14px;
@@ -157,23 +177,80 @@ export default function FeaturedCollection({ products }: { products: FeaturedPro
           background: linear-gradient(135deg, var(--white), var(--cream-dark));
         }
 
-        .fc-grid-wrap {
-          position: relative;
-          padding-top: 8px;
-        }
-
-        .fc-grid-wrap::before {
-          content: "";
+        .fc-marquee-rule {
           display: block;
           height: 3px;
           width: 64px;
           border-radius: 99px;
           background: linear-gradient(90deg, var(--gold), var(--maroon-soft));
-          margin-bottom: 28px;
+          margin: 0 auto 20px;
         }
 
-        .fc-product-grid {
+        .fc-marquee-wrap {
           position: relative;
+          z-index: 1;
+          width: 100%;
+          overflow: hidden;
+          padding: 0 0 8px;
+        }
+
+        .fc-marquee-edge {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: min(120px, 12vw);
+          z-index: 4;
+          pointer-events: none;
+        }
+
+        .fc-marquee-edge--left {
+          left: 0;
+          background: linear-gradient(to right, var(--white), transparent);
+        }
+
+        .fc-marquee-edge--right {
+          right: 0;
+          background: linear-gradient(to left, var(--white), transparent);
+        }
+
+        @keyframes fc-scroll-left {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-25%);
+          }
+        }
+
+        .fc-track {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          width: max-content;
+          gap: 20px;
+          padding: 0 24px 8px;
+          animation: fc-scroll-left 90s linear infinite;
+        }
+
+        .fc-track:hover {
+          animation-play-state: paused;
+        }
+
+        .fc-card-slot {
+          width: min(300px, calc(100vw - 48px));
+          flex-shrink: 0;
+        }
+
+        @media (min-width: 480px) {
+          .fc-card-slot {
+            width: min(300px, 78vw);
+          }
+        }
+
+        @media (min-width: 640px) {
+          .fc-card-slot {
+            width: 300px;
+          }
         }
 
         .fc-empty {
@@ -216,10 +293,17 @@ export default function FeaturedCollection({ products }: { products: FeaturedPro
           line-height: 1.55;
         }
 
-        @media (max-width: 720px) {
-          .fc-header {
-            flex-direction: column;
-            align-items: flex-start;
+        @media (prefers-reduced-motion: reduce) {
+          .fc-track {
+            animation: none !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding-bottom: 12px;
+            scrollbar-width: thin;
+          }
+
+          .fc-track:hover {
+            animation-play-state: running;
           }
         }
       `}</style>

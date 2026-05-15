@@ -3,6 +3,36 @@ import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
 import Banner from "@/models/Banner";
 
+/** Extra Unsplash photo ids so each seeded product has a 4-image mock gallery (hover testing). */
+const MOCK_IMAGE_POOL = [
+  "photo-1505740420928-5e560c06d30e",
+  "photo-1484704849700-f032a568e944",
+  "photo-1572635196237-14b3f281503f",
+  "photo-1546868871-7041f2a55e12",
+  "photo-1498049794561-7780e7231661",
+  "photo-1523275335684-37898b6baf30",
+  "photo-1521572163474-6864f9cf17ab",
+  "photo-1542291026-7eec264c27ff",
+  "photo-1514228742587-6b1558fcca3d",
+  "photo-1527814050087-3793815479db",
+  "photo-1587829741301-dc798b83add3",
+  "photo-1609091839311-d5365f9ff1c5",
+];
+
+function unsplashCardImage(photoId: string) {
+  return `https://images.unsplash.com/${photoId}?w=800&h=800&fit=crop`;
+}
+
+function buildMockProductImages(primaryPhotoId: string, seed: number): string[] {
+  const ids: string[] = [];
+  if (!ids.includes(primaryPhotoId)) ids.push(primaryPhotoId);
+  for (let k = 0; k < MOCK_IMAGE_POOL.length && ids.length < 4; k++) {
+    const id = MOCK_IMAGE_POOL[(seed + k) % MOCK_IMAGE_POOL.length];
+    if (!ids.includes(id)) ids.push(id);
+  }
+  return ids.map(unsplashCardImage);
+}
+
 export async function GET() {
   try {
     await connectDB();
@@ -134,7 +164,7 @@ export async function GET() {
         shortDescription: `Premium ${item.name} - Best quality guaranteed`,
         price: item.price,
         comparePrice: Math.round(item.price * 1.3),
-        images: [`https://images.unsplash.com/${item.image}?w=800`],
+        images: buildMockProductImages(item.image, i),
         category: item.category,
         tags: [item.category.toLowerCase(), "premium", "quality"],
         colors: ["Black", "White"],

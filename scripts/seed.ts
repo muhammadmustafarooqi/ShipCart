@@ -21,6 +21,7 @@ const ProductSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   comparePrice: { type: Number, default: 0 },
   images: [{ type: String }],
+  previewVideoUrl: { type: String, default: "" },
   category: { type: String, required: true },
   tags: [{ type: String }],
   stock: { type: Number, default: 0 },
@@ -203,9 +204,12 @@ async function seed() {
       
       const slug = slugify(name, { lower: true, strict: true });
       
-      // Get real image from category
+      // Mock gallery (4 images) for card hover / testing — rotates through category pool
       const categoryImages = CATEGORY_IMAGES[category] || CATEGORY_IMAGES["electronics-gadgets"];
-      const imageUrl = categoryImages[index % categoryImages.length];
+      const poolLen = categoryImages.length;
+      const galleryCount = Math.min(4, poolLen);
+      const start = index % poolLen;
+      const images = Array.from({ length: galleryCount }, (_, i) => categoryImages[(start + i) % poolLen]);
 
       return {
         name,
@@ -214,7 +218,7 @@ async function seed() {
         shortDescription: `High quality ${name} for your home.`,
         price: basePrice,
         comparePrice,
-        images: [imageUrl],
+        images,
         category,
         tags: [category.split("-")[0], "premium", "new"],
         colors,

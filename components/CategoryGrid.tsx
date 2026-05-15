@@ -1,14 +1,7 @@
 import Link from "next/link";
+import { LayoutGrid } from "lucide-react";
 import { PRODUCT_CATEGORIES } from "@/lib/utils";
-
-const categoryEmojis: Record<string, string> = {
-  "kitchen-cooking": "🍳",
-  "personal-care-beauty": "💆",
-  "home-cleaning": "🏠",
-  "fitness-health": "🏋️",
-  "electronics-gadgets": "🔌",
-  "baby-kids": "👶",
-};
+import { CategorySlugIcon } from "@/components/CategorySlugIcon";
 
 export default function CategoryGrid() {
   return (
@@ -16,7 +9,10 @@ export default function CategoryGrid() {
       <div className="page-container">
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "40px", flexWrap: "wrap", gap: "16px" }}>
           <div>
-            <div className="section-tag">🗂️ Browse by</div>
+            <div className="section-tag" style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+              <LayoutGrid size={14} color="var(--color-icon)" aria-hidden />
+              Browse by
+            </div>
             <h2 className="section-title">Shop by Category</h2>
           </div>
           <Link href="/products" style={{ fontSize: "14px", color: "var(--color-brand)", textDecoration: "none", fontWeight: 600, fontFamily: "Plus Jakarta Sans, sans-serif" }}>
@@ -27,7 +23,9 @@ export default function CategoryGrid() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(6,1fr)", gap: "20px" }}>
           {PRODUCT_CATEGORIES.map((cat) => (
             <Link key={cat.slug} href={`/products?category=${cat.slug}`} className="category-card">
-              <span className="cat-emoji">{categoryEmojis[cat.slug] || cat.icon}</span>
+              <span className="cat-emoji" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <CategorySlugIcon slug={cat.slug} size={32} color="var(--color-icon)" strokeWidth={2} />
+              </span>
               <span className="cat-name">{cat.name}</span>
             </Link>
           ))}

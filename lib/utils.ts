@@ -16,19 +16,19 @@ export function generateWhatsAppOrderURL(order: {
     .map((item) => `• ${item.name} x${item.quantity} = Rs. ${(item.price * item.quantity).toLocaleString()}`)
     .join("\n");
 
-  const message = `🛍️ *New Order #${order.orderId}*
+  const message = `*NEW ORDER #${order.orderId}*
 
-👤 *Customer:* ${order.customerName}
-📱 *Phone:* ${order.phone}
-📍 *City:* ${order.city}
-🏠 *Address:* ${order.address}
+*Customer:* ${order.customerName}
+*Phone:* ${order.phone}
+*City:* ${order.city}
+*Address:* ${order.address}
 
-📦 *Order Items:*
+*Order items:*
 ${itemsList}
 
-💰 *Shipping:* Rs. ${order.shippingFee}
-✅ *Total:* Rs. ${order.total.toLocaleString()}
-💳 *Payment:* ${order.paymentMethod}
+*Shipping:* Rs. ${order.shippingFee}
+*Total:* Rs. ${order.total.toLocaleString()}
+*Payment:* ${order.paymentMethod}
 
 Please confirm the order!`;
 
@@ -94,12 +94,12 @@ export const PAKISTANI_CITIES = [
 
 // Product categories
 export const PRODUCT_CATEGORIES = [
-  { name: "Kitchen & Cooking", slug: "kitchen-cooking", icon: "🍳" },
-  { name: "Personal Care & Beauty", slug: "personal-care-beauty", icon: "💆" },
-  { name: "Home & Cleaning", slug: "home-cleaning", icon: "🏠" },
-  { name: "Fitness & Health", slug: "fitness-health", icon: "💪" },
-  { name: "Electronics & Gadgets", slug: "electronics-gadgets", icon: "⚡" },
-  { name: "Baby & Kids", slug: "baby-kids", icon: "👶" },
+  { name: "Kitchen & Cooking", slug: "kitchen-cooking" },
+  { name: "Personal Care & Beauty", slug: "personal-care-beauty" },
+  { name: "Home & Cleaning", slug: "home-cleaning" },
+  { name: "Fitness & Health", slug: "fitness-health" },
+  { name: "Electronics & Gadgets", slug: "electronics-gadgets" },
+  { name: "Baby & Kids", slug: "baby-kids" },
 ];
 
 // Common product colors

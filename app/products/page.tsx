@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { Search, SlidersHorizontal, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { CategorySlugIcon } from "@/components/CategorySlugIcon";
 import { PRODUCT_CATEGORIES } from "@/lib/utils";
 
 interface Product {
@@ -137,7 +138,10 @@ function ProductsContent() {
                 <button onClick={() => setFilters((f) => ({ ...f, category: "", page: 1 }))} style={{ textAlign: "left", padding: "10px 14px", borderRadius: "8px", border: "none", background: !filters.category ? "var(--text-primary)" : "transparent", color: !filters.category ? "white" : "var(--text-secondary)", cursor: "pointer", fontSize: "14px", fontWeight: 500, transition: "all 0.2s ease" }}>All Categories</button>
                 {PRODUCT_CATEGORIES.map((cat) => (
                   <button key={cat.slug} onClick={() => setFilters((f) => ({ ...f, category: cat.slug, page: 1 }))} style={{ textAlign: "left", padding: "10px 14px", borderRadius: "8px", border: "none", background: filters.category === cat.slug ? "var(--text-primary)" : "transparent", color: filters.category === cat.slug ? "white" : "var(--text-secondary)", cursor: "pointer", fontSize: "14px", fontWeight: 500, transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "10px" }}>
-                    <span style={{ fontSize: "16px" }}>{cat.icon}</span> {cat.name}
+                    <span style={{ display: "inline-flex", alignItems: "center", flexShrink: 0 }}>
+                      <CategorySlugIcon slug={cat.slug} size={18} color={filters.category === cat.slug ? "white" : "var(--color-icon)"} />
+                    </span>{" "}
+                    {cat.name}
                   </button>
                 ))}
               </div>
@@ -152,7 +156,9 @@ function ProductsContent() {
               </div>
             ) : products.length === 0 ? (
               <div style={{ textAlign: "center", padding: "100px 0", background: "var(--bg-card)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--border-hover)" }}>
-                <div style={{ fontSize: "56px", marginBottom: "20px" }}>🔍</div>
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px", color: "var(--text-secondary)" }}>
+                  <Search size={56} strokeWidth={1.5} aria-hidden />
+                </div>
                 <h3 style={{ fontSize: "24px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "12px", fontFamily: "Outfit, sans-serif" }}>No Products Found</h3>
                 <p style={{ color: "var(--text-secondary)", marginBottom: "28px", fontSize: "16px" }}>Try adjusting your filters or search terms to find what you&apos;re looking for.</p>
                 <button onClick={() => setFilters((f) => ({ ...f, category: "", search: "", page: 1 }))} className="btn-primary">Clear All Filters</button>

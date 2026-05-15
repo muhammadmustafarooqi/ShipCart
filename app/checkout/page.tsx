@@ -64,7 +64,9 @@ export default function CheckoutPage() {
       <div style={{ background: "var(--bg-primary)", minHeight: "100vh" }}>
         <Navbar />
         <div style={{ minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "60px 24px" }}>
-          <div style={{ fontSize: "64px", marginBottom: "24px", opacity: 0.8 }}>🛍️</div>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "24px", color: "var(--text-secondary)" }}>
+            <ShoppingBag size={64} strokeWidth={1.35} aria-hidden />
+          </div>
           <h2 style={{ fontSize: "28px", fontWeight: 800, color: "var(--text-primary)", marginBottom: "12px", fontFamily: "Outfit, sans-serif" }}>Cart is Empty</h2>
           <p style={{ color: "var(--text-secondary)", marginBottom: "32px", fontSize: "16px", fontWeight: 500 }}>You need to add products to your cart before checking out.</p>
           <Link href="/products" className="btn-primary" style={{ padding: "16px 32px", fontSize: "16px" }}>Explore Collection</Link>

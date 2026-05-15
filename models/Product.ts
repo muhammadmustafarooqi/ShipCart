@@ -8,6 +8,8 @@ export interface IProduct extends Document {
   price: number;
   comparePrice: number;
   images: string[];
+  /** Optional direct URL to an MP4/WebM (or other) clip shown on product-card hover */
+  previewVideoUrl?: string;
   category: string;
   tags: string[];
   colors: string[];
@@ -30,6 +32,7 @@ const ProductSchema = new Schema<IProduct>(
     price: { type: Number, required: true, min: 0 },
     comparePrice: { type: Number, default: 0 },
     images: [{ type: String }],
+    previewVideoUrl: { type: String, default: "", trim: true },
     category: { type: String, required: true },
     tags: [{ type: String }],
     colors: [{ type: String }],

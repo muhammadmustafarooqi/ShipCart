@@ -325,7 +325,7 @@ export default function Navbar() {
         .nav-pill-rail {
           display: flex;
           align-items: center;
-          justify-content: flex-start;
+          justify-content: center;
           flex: 1;
           gap: 2px;
           padding: 5px 6px;

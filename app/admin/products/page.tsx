@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { Plus, Edit, Trash2, ToggleLeft, ToggleRight, X, Upload } from "lucide-react";
+import { Plus, Edit, Trash2, ToggleLeft, ToggleRight, X, Upload, Package, Star, Sparkles, Eye } from "lucide-react";
 import { PRODUCT_CATEGORIES, PRODUCT_COLORS } from "@/lib/utils";
 import toast from "react-hot-toast";
 
@@ -13,6 +13,7 @@ interface Product {
   price: number;
   comparePrice: number;
   images: string[];
+  previewVideoUrl?: string;
   category: string;
   stock: number;
   isFeatured: boolean;
@@ -29,6 +30,7 @@ const EMPTY_PRODUCT = {
   price: 0,
   comparePrice: 0,
   images: [] as string[],
+  previewVideoUrl: "",
   category: "",
   stock: 10,
   isFeatured: false,
@@ -81,6 +83,7 @@ export default function AdminProductsPage() {
       price: product.price,
       comparePrice: product.comparePrice || 0,
       images: product.images,
+      previewVideoUrl: product.previewVideoUrl || "",
       category: product.category,
       stock: product.stock,
       isFeatured: product.isFeatured,
@@ -218,7 +221,9 @@ export default function AdminProductsPage() {
                       {product.images[0] ? (
                         <Image src={product.images[0]} alt={product.name} width={52} height={52} style={{ width: "100%", height: "100%", objectFit: "cover" }} unoptimized />
                       ) : (
-                        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px" }}>📦</div>
+                        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af" }}>
+                          <Package size={22} strokeWidth={2} aria-hidden />
+                        </div>
                       )}
                     </div>
                   </td>
@@ -238,8 +243,16 @@ export default function AdminProductsPage() {
                   </td>
                   <td>
                     <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                      {product.isFeatured && <span style={{ fontSize: "11px", background: "rgba(255,107,0,0.1)", color: "#ff6b00", padding: "2px 6px", borderRadius: "4px", fontWeight: 600 }}>⭐ Featured</span>}
-                      {product.isNewArrival && <span style={{ fontSize: "11px", background: "#d1fae5", color: "#065f46", padding: "2px 6px", borderRadius: "4px", fontWeight: 600 }}>🆕 New</span>}
+                      {product.isFeatured && (
+                        <span style={{ fontSize: "11px", background: "rgba(255,107,0,0.1)", color: "#ff6b00", padding: "2px 8px", borderRadius: "4px", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                          <Star size={12} aria-hidden /> Featured
+                        </span>
+                      )}
+                      {product.isNewArrival && (
+                        <span style={{ fontSize: "11px", background: "#d1fae5", color: "#065f46", padding: "2px 8px", borderRadius: "4px", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                          <Sparkles size={12} aria-hidden /> New
+                        </span>
+                      )}
                     </div>
                   </td>
                   <td>
@@ -341,6 +354,20 @@ export default function AdminProductsPage() {
                   )}
                 </div>
 
+                <div className="form-group" style={{ gridColumn: "1/-1" }}>
+                  <label>Card hover preview video (optional URL)</label>
+                  <input
+                    type="url"
+                    value={form.previewVideoUrl}
+                    onChange={(e) => setForm((f) => ({ ...f, previewVideoUrl: e.target.value }))}
+                    placeholder="https://…/clip.mp4 — plays on hover (max ~5s), muted"
+                    style={{ width: "100%", padding: "10px 14px", border: "2px solid #e5e7eb", borderRadius: "8px", fontSize: "14px" }}
+                  />
+                  <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "6px" }}>
+                    If set, this overrides image carousel on hover. Leave empty to cycle product images instead.
+                  </p>
+                </div>
+
                 {/* Tags */}
                 <div className="form-group" style={{ gridColumn: "1/-1" }}>
                   <label>Tags</label>
@@ -407,18 +434,19 @@ export default function AdminProductsPage() {
                 <div className="form-group" style={{ gridColumn: "1/-1" }}>
                   <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
                     {[
-                      { key: "isFeatured", label: "⭐ Featured Product" },
-                      { key: "isNewArrival", label: "🆕 New Arrival" },
-                      { key: "isActive", label: "✅ Active (Visible)" },
-                    ].map((toggle) => (
-                      <label key={toggle.key} style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: 500, fontSize: "14px" }}>
+                      { key: "isFeatured", label: "Featured product", Icon: Star },
+                      { key: "isNewArrival", label: "New arrival", Icon: Sparkles },
+                      { key: "isActive", label: "Active (visible)", Icon: Eye },
+                    ].map(({ key, label, Icon }) => (
+                      <label key={key} style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: 500, fontSize: "14px" }}>
+                        <Icon size={16} style={{ color: "#6b7280", flexShrink: 0 }} aria-hidden />
                         <input
                           type="checkbox"
-                          checked={form[toggle.key as keyof typeof form] as boolean}
-                          onChange={(e) => setForm((f) => ({ ...f, [toggle.key]: e.target.checked }))}
+                          checked={form[key as keyof typeof form] as boolean}
+                          onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.checked }))}
                           style={{ width: "18px", height: "18px", accentColor: "#ff6b00" }}
                         />
-                        {toggle.label}
+                        {label}
                       </label>
                     ))}
                   </div>

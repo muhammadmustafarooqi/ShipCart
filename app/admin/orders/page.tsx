@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { MessageCircle, ChevronDown } from "lucide-react";
+import { MessageCircle, ChevronDown, Phone, MapPin, X } from "lucide-react";
 import toast from "react-hot-toast";
 
 interface Order {
@@ -76,7 +76,7 @@ export default function AdminOrdersPage() {
   const generateWhatsAppUrl = (order: Order) => {
     const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923001234567";
     const customerPhone = order.phone.replace(/^0/, "92");
-    const msg = `Hi ${order.customerName}! Your order #${order.orderId} from ALLInONE Store is now ${order.status}. Total: Rs. ${order.total.toLocaleString()} (COD).\n\nThank you for shopping with us! 🛍️`;
+    const msg = `Hi ${order.customerName}! Your order #${order.orderId} from ALLInONE Store is now ${order.status}. Total: Rs. ${order.total.toLocaleString()} (COD).\n\nThank you for shopping with us!`;
     return `https://wa.me/${customerPhone}?text=${encodeURIComponent(msg)}`;
   };
 
@@ -188,10 +188,22 @@ export default function AdminOrdersPage() {
                             href={generateWhatsAppUrl(order)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            style={{ background: "#25d366", color: "white", width: "30px", height: "30px", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none" }}
+                            style={{
+                              background: "var(--whatsapp-float-bg)",
+                              color: "var(--whatsapp-float-icon)",
+                              border: "2px solid rgba(201, 168, 76, 0.35)",
+                              width: "30px",
+                              height: "30px",
+                              borderRadius: "8px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              textDecoration: "none",
+                              boxShadow: "var(--shadow-sm)",
+                            }}
                             title="WhatsApp Customer"
                           >
-                            <MessageCircle size={14} />
+                            <MessageCircle size={14} color="currentColor" strokeWidth={2.25} />
                           </a>
                         </div>
                       </td>
@@ -214,8 +226,8 @@ export default function AdminOrdersPage() {
           <div className="order-detail-panel" style={{ background: "white", borderRadius: "16px", padding: "24px", border: "1px solid #f0f0f0", alignSelf: "flex-start", position: "sticky", top: "80px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
               <h3 style={{ fontWeight: 700, fontSize: "18px", color: "#ff6b00" }}>#{selectedOrder.orderId}</h3>
-              <button onClick={() => setSelectedOrder(null)} style={{ background: "#f3f4f6", border: "none", borderRadius: "50%", width: "30px", height: "30px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                ✕
+              <button onClick={() => setSelectedOrder(null)} style={{ background: "#f3f4f6", border: "none", borderRadius: "50%", width: "30px", height: "30px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#374151" }} aria-label="Close">
+                <X size={16} />
               </button>
             </div>
 
@@ -240,8 +252,14 @@ export default function AdminOrdersPage() {
             <div style={{ padding: "16px", background: "#f9fafb", borderRadius: "12px", marginBottom: "16px" }}>
               <div style={{ fontSize: "12px", color: "#9ca3af", marginBottom: "8px", fontWeight: 600, textTransform: "uppercase" }}>Customer</div>
               <div style={{ fontWeight: 700, fontSize: "15px", color: "#1f2937" }}>{selectedOrder.customerName}</div>
-              <div style={{ fontSize: "14px", color: "#6b7280", marginTop: "4px" }}>📱 {selectedOrder.phone}</div>
-              <div style={{ fontSize: "14px", color: "#6b7280", marginTop: "4px" }}>📍 {selectedOrder.address}, {selectedOrder.city}</div>
+              <div style={{ fontSize: "14px", color: "#6b7280", marginTop: "8px", display: "flex", alignItems: "center", gap: "8px" }}>
+                <Phone size={16} style={{ flexShrink: 0, color: "#9ca3af" }} aria-hidden />
+                {selectedOrder.phone}
+              </div>
+              <div style={{ fontSize: "14px", color: "#6b7280", marginTop: "6px", display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                <MapPin size={16} style={{ flexShrink: 0, color: "#9ca3af", marginTop: "2px" }} aria-hidden />
+                <span>{selectedOrder.address}, {selectedOrder.city}</span>
+              </div>
               {selectedOrder.notes && <div style={{ fontSize: "13px", color: "#9ca3af", marginTop: "8px", fontStyle: "italic" }}>Note: {selectedOrder.notes}</div>}
             </div>
 
@@ -279,7 +297,7 @@ export default function AdminOrdersPage() {
               className="btn-whatsapp"
               style={{ width: "100%", justifyContent: "center", display: "flex" }}
             >
-              <MessageCircle size={16} /> WhatsApp Customer
+              <MessageCircle size={16} color="var(--icon-on-brand)" strokeWidth={2.25} /> WhatsApp Customer
             </a>
 
             <div style={{ marginTop: "12px", textAlign: "center", fontSize: "12px", color: "#9ca3af" }}>

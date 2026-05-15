@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useLayoutEffect, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Sparkles, Banknote } from "lucide-react";
 
 const ANNOUNCEMENT_VAR = "--announcement-h";
 
@@ -72,10 +72,16 @@ export default function AnnouncementBar() {
           boxShadow: "0 6px 20px rgba(42, 21, 24, 0.18)",
         }}
       >
-        <span className="animate-pulse" style={{ marginRight: "8px" }}>
-          ✨
+        <span className="animate-pulse" style={{ display: "inline-flex", marginRight: "8px", verticalAlign: "middle" }}>
+          <Sparkles size={15} strokeWidth={2.25} aria-hidden />
         </span>
-        Free nationwide delivery on orders above Rs. 1,500 &nbsp;|&nbsp; 💵 Cash on Delivery
+        <span style={{ verticalAlign: "middle" }}>
+          Free nationwide delivery on orders above Rs. 1,500 &nbsp;|&nbsp;{" "}
+        </span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", verticalAlign: "middle" }}>
+          <Banknote size={15} strokeWidth={2.25} aria-hidden />
+          <span>Cash on Delivery</span>
+        </span>
         {/* <button
           type="button"
           onClick={() => setVisible(false)}

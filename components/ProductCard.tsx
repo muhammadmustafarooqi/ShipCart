@@ -2,15 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
-import {
-  ShoppingCart,
-  Eye,
-  Heart,
-  Star,
-  Sparkles,
-  ChevronUp,
-} from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ShoppingCart, Eye, Heart, Star, Sparkles } from "lucide-react";
 import { useCart } from "./CartProvider";
 
 interface Product {
@@ -20,12 +13,65 @@ interface Product {
   price: number;
   comparePrice?: number;
   images: string[];
+  /** Optional MP4/WebM URL — plays on card image hover (muted, max ~5s per hover) */
+  previewVideoUrl?: string;
   category: string;
   isFeatured?: boolean;
   isNewArrival?: boolean;
   rating?: number;
   reviewCount?: number;
   stock?: number;
+}
+
+function getFallbackImage(category: string, name: string) {
+  const fallbacks: Record<string, string[]> = {
+    "kitchen-cooking": [
+      "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1585515320310-259814833e62?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1584990347449-39b4aa02b01f?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=400&fit=crop",
+    ],
+    "personal-care-beauty": [
+      "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1570554886111-e80fcca6a029?w=400&h=400&fit=crop",
+    ],
+    "home-cleaning": [
+      "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1600428877938-29c5e5b8b250?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1585421514738-01798e348b17?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1584820927498-cafe2c1c9699?w=400&h=400&fit=crop",
+    ],
+    "fitness-health": [
+      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=400&h=400&fit=crop",
+    ],
+    "electronics-gadgets": [
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=400&fit=crop",
+    ],
+    "baby-kids": [
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=400&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=400&fit=crop",
+    ],
+  };
+  const catImages = fallbacks[category] || fallbacks["electronics-gadgets"];
+  const index =
+    Math.abs(name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0)) % catImages.length;
+  return catImages[index];
 }
 
 function formatCategoryLabel(slug: string) {
@@ -65,58 +111,98 @@ export default function ProductCard({ product }: { product: Product }) {
   const fullStars = Math.floor(rating);
   const isOutOfStock = product.stock !== undefined && product.stock === 0;
 
-  const getFallbackImage = (category: string, name: string) => {
-    const fallbacks: Record<string, string[]> = {
-      "kitchen-cooking": [
-        "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1585515320310-259814833e62?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1584990347449-39b4aa02b01f?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=400&fit=crop",
-      ],
-      "personal-care-beauty": [
-        "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1570554886111-e80fcca6a029?w=400&h=400&fit=crop",
-      ],
-      "home-cleaning": [
-        "https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1600428877938-29c5e5b8b250?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1585421514738-01798e348b17?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1584820927498-cafe2c1c9699?w=400&h=400&fit=crop",
-      ],
-      "fitness-health": [
-        "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1598289431512-b97b0917affc?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=400&h=400&fit=crop",
-      ],
-      "electronics-gadgets": [
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=400&fit=crop",
-      ],
-      "baby-kids": [
-        "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=400&h=400&fit=crop",
-        "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=400&fit=crop",
-      ],
-    };
-    const catImages = fallbacks[category] || fallbacks["electronics-gadgets"];
-    const index =
-      Math.abs(name.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0)) % catImages.length;
-    return catImages[index];
+  const galleryUrls = useMemo(() => {
+    const raw = (product.images || []).filter((u) => typeof u === "string" && u.trim().length > 0);
+    if (raw.length > 0) return raw;
+    return [getFallbackImage(product.category, product.name)];
+  }, [product.images, product.category, product.name]);
+
+  const previewVideoUrl = product.previewVideoUrl?.trim() ?? "";
+  const hasVideo =
+    Boolean(previewVideoUrl) &&
+    (/^https?:\/\//i.test(previewVideoUrl) || previewVideoUrl.startsWith("/"));
+  const hasGalleryCycle = galleryUrls.length >= 2 && !hasVideo;
+
+  const [stageHover, setStageHover] = useState(false);
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const galleryIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const videoCapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearGalleryInterval = () => {
+    if (galleryIntervalRef.current) {
+      clearInterval(galleryIntervalRef.current);
+      galleryIntervalRef.current = null;
+    }
   };
 
-  const finalImageSrc = product.images?.[0] || getFallbackImage(product.category, product.name);
+  const clearVideoCap = () => {
+    if (videoCapTimerRef.current) {
+      clearTimeout(videoCapTimerRef.current);
+      videoCapTimerRef.current = null;
+    }
+  };
+
+  const stopVideo = () => {
+    clearVideoCap();
+    const v = videoRef.current;
+    if (v) {
+      v.pause();
+      v.currentTime = 0;
+    }
+  };
+
+  const hoverMediaAllowed = () => {
+    if (typeof window === "undefined") return false;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+    if (!window.matchMedia("(hover: hover)").matches) return false;
+    return true;
+  };
+
+  const handleStageEnter = () => {
+    if (!hoverMediaAllowed()) return;
+    setStageHover(true);
+
+    if (hasVideo) {
+      clearGalleryInterval();
+      const v = videoRef.current;
+      if (v) {
+        v.currentTime = 0;
+        void v.play().catch(() => {});
+        clearVideoCap();
+        videoCapTimerRef.current = setTimeout(() => {
+          v.pause();
+        }, 5000);
+      }
+      return;
+    }
+
+    if (hasGalleryCycle) {
+      clearGalleryInterval();
+      galleryIntervalRef.current = setInterval(() => {
+        setGalleryIndex((i) => (i + 1) % galleryUrls.length);
+      }, 900);
+    }
+  };
+
+  const handleStageLeave = () => {
+    setStageHover(false);
+    clearGalleryInterval();
+    clearVideoCap();
+    setGalleryIndex(0);
+    stopVideo();
+  };
+
+  useEffect(() => {
+    return () => {
+      clearGalleryInterval();
+      clearVideoCap();
+      const v = videoRef.current;
+      if (v) {
+        v.pause();
+      }
+    };
+  }, []);
 
   return (
     <Link href={`/products/${product._id}`} className="pc-root">
@@ -124,20 +210,35 @@ export default function ProductCard({ product }: { product: Product }) {
         <article
           className={`pc-card${isOutOfStock ? " pc-card--oos" : ""}${added ? " pc-card--added" : ""}`}
         >
-          <div className="pc-stage">
-            <span className="pc-corner pc-corner--tl" aria-hidden />
-            <span className="pc-corner pc-corner--br" aria-hidden />
-
-            <div className="pc-stage-glow" aria-hidden />
-
-            <Image
-              src={finalImageSrc}
-              alt={product.name}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="pc-img"
-              unoptimized
-            />
+          <div
+            className="pc-stage"
+            onMouseEnter={handleStageEnter}
+            onMouseLeave={handleStageLeave}
+          >
+            <div className={`pc-media${isOutOfStock ? " pc-media--oos" : ""}`}>
+              {galleryUrls.map((src, i) => (
+                <Image
+                  key={`${src}-${i}`}
+                  src={src}
+                  alt={i === 0 ? product.name : ""}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className={`pc-img-layer${i === galleryIndex ? " pc-img-layer--active" : ""}`}
+                  unoptimized
+                />
+              ))}
+              {hasVideo ? (
+                <video
+                  ref={videoRef}
+                  className={`pc-preview-video${stageHover ? " pc-preview-video--visible" : ""}`}
+                  src={previewVideoUrl}
+                  muted
+                  playsInline
+                  preload="metadata"
+                  aria-label={`${product.name} preview clip`}
+                />
+              ) : null}
+            </div>
 
             {isOutOfStock && <div className="pc-oos-ribbon">Out of stock</div>}
 
@@ -169,86 +270,68 @@ export default function ProductCard({ product }: { product: Product }) {
             </button>
           </div>
 
-          <div className="pc-rail">
-            <div className="pc-rail-clip">
-              <div className="pc-rail-inner">
-                <div className="pc-rail-head">
-                  <div className="pc-rail-head-text">
-                    <div className="pc-prices">
-                      <span className="pc-price">Rs. {product.price.toLocaleString()}</span>
-                      {product.comparePrice && product.comparePrice > product.price && (
-                        <span className="pc-compare">
-                          Rs. {product.comparePrice.toLocaleString()}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="pc-rail-hint" aria-hidden>
-                    <ChevronUp size={20} strokeWidth={2.5} className="pc-rail-chev" />
-                    <span>Details</span>
-                  </div>
-                </div>
+          <div className="pc-body">
+            <p className="pc-cat">{formatCategoryLabel(product.category)}</p>
+            <h3 className="pc-title">{product.name}</h3>
 
-                <div className="pc-rail-drawer">
-                  <div className="pc-rail-rest">
-                    <p className="pc-cat">{formatCategoryLabel(product.category)}</p>
-                    <h3 className="pc-title">{product.name}</h3>
-
-                    <div className="pc-rating">
-                      <div className="pc-stars" aria-hidden>
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            size={13}
-                            className={i < fullStars ? "pc-star pc-star--on" : "pc-star"}
-                            fill={i < fullStars ? "currentColor" : "none"}
-                            strokeWidth={i < fullStars ? 0 : 1.5}
-                          />
-                        ))}
-                      </div>
-                      <span className="pc-reviews">{product.reviewCount ?? 0} reviews</span>
-                    </div>
-
-                    <div className="pc-actions">
-                      <button
-                        type="button"
-                        className="pc-btn pc-btn--ghost"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          window.location.href = `/products/${product._id}`;
-                        }}
-                      >
-                        <Eye size={16} strokeWidth={2} aria-hidden />
-                        View
-                      </button>
-                      <button
-                        ref={btnRef}
-                        type="button"
-                        className="pc-btn pc-btn--cart"
-                        disabled={isOutOfStock}
-                        onClick={handleAddToCart}
-                      >
-                        {isOutOfStock ? (
-                          "Unavailable"
-                        ) : added ? (
-                          <>
-                            <span className="pc-cart-check" aria-hidden>
-                              ✓
-                            </span>
-                            Added
-                          </>
-                        ) : (
-                          <>
-                            <ShoppingCart size={16} strokeWidth={2} aria-hidden />
-                            Add
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </div>
+            <div className="pc-rating">
+              <div className="pc-stars" aria-hidden>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star
+                    key={i}
+                    size={13}
+                    className={i < fullStars ? "pc-star pc-star--on" : "pc-star"}
+                    fill={i < fullStars ? "currentColor" : "none"}
+                    strokeWidth={i < fullStars ? 0 : 1.5}
+                  />
+                ))}
               </div>
+              <span className="pc-reviews">{product.reviewCount ?? 0} reviews</span>
+            </div>
+
+            <div className="pc-prices">
+              <span className="pc-price">Rs. {product.price.toLocaleString()}</span>
+              {product.comparePrice && product.comparePrice > product.price && (
+                <span className="pc-compare">Rs. {product.comparePrice.toLocaleString()}</span>
+              )}
+            </div>
+
+            <div className="pc-actions">
+              <button
+                type="button"
+                className="pc-btn pc-btn--ghost"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.location.href = `/products/${product._id}`;
+                }}
+              >
+                <Eye size={16} strokeWidth={2} aria-hidden />
+                View
+              </button>
+              <button
+                ref={btnRef}
+                type="button"
+                className="pc-btn pc-btn--cart"
+                disabled={isOutOfStock}
+                onClick={handleAddToCart}
+              >
+                {isOutOfStock ? (
+                  "Unavailable"
+                ) : added ? (
+                  <>
+                    <span className="pc-cart-check" aria-hidden>
+                      ✓
+                    </span>
+                    Added
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart size={16} strokeWidth={2} aria-hidden />
+                    Add
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </article>
@@ -263,22 +346,18 @@ export default function ProductCard({ product }: { product: Product }) {
         }
 
         .pc-shell {
-          padding: 3px;
-          border-radius: 1.75rem 0.85rem 2rem 1.1rem;
-          background: linear-gradient(
-            135deg,
-            rgba(201, 168, 76, 0.85) 0%,
-            rgba(107, 30, 46, 0.55) 42%,
-            rgba(201, 168, 76, 0.45) 100%
-          );
-          box-shadow: 0 16px 40px rgba(42, 21, 24, 0.1);
-          transition: transform 0.5s cubic-bezier(0.33, 1, 0.32, 1), box-shadow 0.5s cubic-bezier(0.33, 1, 0.32, 1);
+          border-radius: var(--radius-lg);
+          background: var(--white);
+          border: 1px solid var(--border-default);
+          box-shadow: var(--shadow-md);
+          transition: transform 0.35s cubic-bezier(0.33, 1, 0.32, 1), box-shadow 0.35s ease;
         }
 
         .pc-root:hover .pc-shell,
         .pc-root:focus-within .pc-shell {
-          transform: translateY(-8px) rotate(-0.35deg);
-          box-shadow: 0 28px 56px rgba(42, 21, 24, 0.14);
+          transform: translateY(-6px);
+          box-shadow: var(--shadow-lg);
+          border-color: rgba(201, 168, 76, 0.35);
         }
 
         .pc-card {
@@ -287,15 +366,15 @@ export default function ProductCard({ product }: { product: Product }) {
           flex-direction: column;
           height: 100%;
           min-height: 300px;
-          border-radius: 1.55rem 0.65rem 1.85rem 0.95rem;
+          border-radius: inherit;
           overflow: hidden;
-          background: linear-gradient(180deg, var(--cream) 0%, var(--white) 55%);
+          background: var(--white);
           cursor: pointer;
         }
 
         @media (min-width: 769px) {
           .pc-card {
-            aspect-ratio: 3 / 4.1;
+            aspect-ratio: 3 / 4.25;
             min-height: 0;
           }
         }
@@ -308,17 +387,9 @@ export default function ProductCard({ product }: { product: Product }) {
           position: relative;
           flex: 1;
           min-height: 200px;
-          margin: 10px 10px 0;
-          border-radius: 1.15rem 0.55rem 1.25rem 0.65rem;
-          background: radial-gradient(
-            ellipse 85% 75% at 50% 42%,
-            rgba(255, 253, 249, 0.95) 0%,
-            var(--cream-dark) 72%,
-            var(--cream-mid) 100%
-          );
-          box-shadow:
-            inset 0 1px 0 rgba(255, 253, 249, 0.9),
-            inset 0 -8px 24px rgba(107, 30, 46, 0.06);
+          margin: 0;
+          background: linear-gradient(180deg, var(--cream) 0%, rgba(250, 243, 232, 0.65) 100%);
+          border-bottom: 1px solid var(--cream-mid);
           overflow: hidden;
         }
 
@@ -328,58 +399,51 @@ export default function ProductCard({ product }: { product: Product }) {
           }
         }
 
-        .pc-corner {
-          position: absolute;
-          width: 22px;
-          height: 22px;
-          z-index: 4;
-          pointer-events: none;
-          border-color: rgba(201, 168, 76, 0.65);
-          border-style: solid;
-          border-width: 0;
-        }
-
-        .pc-corner--tl {
-          top: 10px;
-          left: 10px;
-          border-top-width: 2px;
-          border-left-width: 2px;
-          border-radius: 4px 0 0 0;
-        }
-
-        .pc-corner--br {
-          bottom: 10px;
-          right: 10px;
-          border-bottom-width: 2px;
-          border-right-width: 2px;
-          border-radius: 0 0 4px 0;
-        }
-
-        .pc-stage-glow {
+        .pc-media {
           position: absolute;
           inset: 0;
-          background: radial-gradient(
-            circle at 50% 20%,
-            rgba(255, 255, 255, 0.5) 0%,
-            transparent 45%
-          );
-          pointer-events: none;
-          z-index: 1;
+          transition: transform 0.45s cubic-bezier(0.33, 1, 0.32, 1);
         }
 
-        .pc-img {
+        .pc-root:hover .pc-media,
+        .pc-root:focus-within .pc-media {
+          transform: scale(1.05);
+        }
+
+        .pc-img-layer {
           object-fit: contain;
-          padding: 14px 12px;
+          padding: 16px 14px;
           z-index: 2;
-          transition: transform 0.5s cubic-bezier(0.33, 1, 0.32, 1);
+          opacity: 0;
+          transition: opacity 0.45s ease;
+          pointer-events: none;
         }
 
-        .pc-root:hover .pc-img,
-        .pc-root:focus-within .pc-img {
-          transform: scale(1.06) translateY(-4px);
+        .pc-img-layer--active {
+          opacity: 1;
+          z-index: 3;
         }
 
-        .pc-card--oos .pc-img {
+        .pc-preview-video {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          padding: 14px;
+          z-index: 4;
+          opacity: 0;
+          transition: opacity 0.35s ease;
+          pointer-events: none;
+          background: linear-gradient(180deg, var(--cream) 0%, rgba(250, 243, 232, 0.5) 100%);
+        }
+
+        .pc-preview-video--visible {
+          opacity: 1;
+          z-index: 7;
+        }
+
+        .pc-media--oos {
           filter: grayscale(1) opacity(0.52);
         }
 
@@ -388,7 +452,7 @@ export default function ProductCard({ product }: { product: Product }) {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%) rotate(-7deg);
-          z-index: 8;
+          z-index: 10;
           padding: 7px 16px;
           font-family: Outfit, sans-serif;
           font-size: 10px;
@@ -406,7 +470,7 @@ export default function ProductCard({ product }: { product: Product }) {
           position: absolute;
           top: 10px;
           left: 10px;
-          z-index: 6;
+          z-index: 8;
           display: flex;
           flex-direction: column;
           align-items: flex-start;
@@ -447,7 +511,7 @@ export default function ProductCard({ product }: { product: Product }) {
           position: absolute;
           top: 8px;
           right: 8px;
-          z-index: 7;
+          z-index: 9;
           width: 42px;
           height: 42px;
           border: none;
@@ -456,16 +520,16 @@ export default function ProductCard({ product }: { product: Product }) {
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          background: rgba(255, 253, 249, 0.92);
+          background: rgba(255, 253, 249, 0.94);
           color: var(--gray);
-          box-shadow: 0 4px 14px rgba(42, 21, 24, 0.12);
+          box-shadow: 0 2px 12px rgba(42, 21, 24, 0.1);
           transition: transform 0.25s ease, color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .pc-wish:hover {
           transform: scale(1.08);
           color: var(--maroon);
-          box-shadow: 0 6px 18px rgba(107, 30, 46, 0.18);
+          box-shadow: 0 6px 18px rgba(107, 30, 46, 0.16);
         }
 
         .pc-wish--on {
@@ -477,135 +541,30 @@ export default function ProductCard({ product }: { product: Product }) {
           fill: var(--maroon);
         }
 
-        .pc-rail {
-          position: relative;
-          z-index: 5;
+        .pc-body {
           flex-shrink: 0;
-          margin-top: auto;
-          padding: 0 6px 6px;
-        }
-
-        .pc-rail-clip {
-          overflow: hidden;
-          border-radius: 1.1rem 1.1rem 1.35rem 1.35rem;
-        }
-
-        .pc-rail-inner {
+          padding: 14px 16px 16px;
           display: flex;
           flex-direction: column;
-          background: rgba(255, 253, 249, 0.78);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
-          border: 1px solid rgba(201, 168, 76, 0.28);
-          box-shadow:
-            0 -10px 36px rgba(42, 21, 24, 0.06),
-            inset 0 1px 0 rgba(255, 253, 249, 0.95);
-        }
-
-        .pc-rail-drawer {
-          display: grid;
-          grid-template-rows: 0fr;
-          transition: grid-template-rows 0.52s cubic-bezier(0.33, 1, 0.32, 1);
-        }
-
-        .pc-root:hover .pc-rail-drawer,
-        .pc-root:focus-within .pc-rail-drawer {
-          grid-template-rows: 1fr;
-        }
-
-        .pc-rail-drawer > .pc-rail-rest {
-          min-height: 0;
-          overflow: hidden;
-        }
-
-        .pc-rail-head {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 12px;
-          padding: 16px 16px 14px;
-          border-bottom: 1px solid rgba(107, 30, 46, 0.08);
-        }
-
-        .pc-rail-head-text {
-          min-width: 0;
+          gap: 0;
           text-align: left;
+          background: var(--white);
         }
 
         .pc-cat {
           margin: 0 0 6px;
           font-size: 9px;
           font-weight: 800;
-          letter-spacing: 0.16em;
+          letter-spacing: 0.14em;
           text-transform: uppercase;
           color: var(--maroon-soft);
           font-family: Outfit, sans-serif;
-          text-align: left;
-        }
-
-        .pc-prices {
-          display: flex;
-          align-items: baseline;
-          flex-wrap: wrap;
-          gap: 6px 10px;
-        }
-
-        .pc-price {
-          font-family: Outfit, sans-serif;
-          font-size: clamp(1.15rem, 2.2vw, 1.4rem);
-          font-weight: 900;
-          letter-spacing: -0.03em;
-          color: var(--maroon-deep);
-        }
-
-        .pc-compare {
-          font-size: 12px;
-          font-weight: 500;
-          color: var(--text-old-price);
-          text-decoration: line-through;
-          font-family: "Plus Jakarta Sans", sans-serif;
-        }
-
-        .pc-rail-hint {
-          flex-shrink: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 2px;
-          font-size: 9px;
-          font-weight: 800;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: var(--gold);
-          font-family: "Plus Jakarta Sans", sans-serif;
-        }
-
-        .pc-rail-chev {
-          color: var(--maroon);
-          opacity: 0.75;
-          transition: transform 0.52s cubic-bezier(0.33, 1, 0.32, 1);
-        }
-
-        .pc-root:hover .pc-rail-chev,
-        .pc-root:focus-within .pc-rail-chev {
-          transform: translateY(-3px);
-        }
-
-        .pc-rail-rest {
-          padding: 4px 16px 16px;
-          opacity: 0.88;
-          transition: opacity 0.45s cubic-bezier(0.33, 1, 0.32, 1) 0.04s;
-        }
-
-        .pc-root:hover .pc-rail-rest,
-        .pc-root:focus-within .pc-rail-rest {
-          opacity: 1;
         }
 
         .pc-title {
           margin: 0 0 8px;
           font-family: Outfit, sans-serif;
-          font-size: 14px;
+          font-size: 15px;
           font-weight: 700;
           line-height: 1.35;
           letter-spacing: -0.02em;
@@ -614,14 +573,13 @@ export default function ProductCard({ product }: { product: Product }) {
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
           overflow: hidden;
-          text-align: left;
         }
 
         .pc-rating {
           display: flex;
           align-items: center;
           gap: 8px;
-          margin-bottom: 12px;
+          margin: 0 0 10px;
         }
 
         .pc-stars {
@@ -641,9 +599,34 @@ export default function ProductCard({ product }: { product: Product }) {
           font-family: "Plus Jakarta Sans", sans-serif;
         }
 
+        .pc-prices {
+          display: flex;
+          align-items: baseline;
+          flex-wrap: wrap;
+          gap: 6px 10px;
+          margin: 0 0 14px;
+        }
+
+        .pc-price {
+          font-family: Outfit, sans-serif;
+          font-size: clamp(1.2rem, 2.2vw, 1.45rem);
+          font-weight: 900;
+          letter-spacing: -0.03em;
+          color: var(--maroon-deep);
+        }
+
+        .pc-compare {
+          font-size: 12px;
+          font-weight: 500;
+          color: var(--text-old-price);
+          text-decoration: line-through;
+          font-family: "Plus Jakarta Sans", sans-serif;
+        }
+
         .pc-actions {
           display: flex;
           gap: 10px;
+          margin-top: auto;
         }
 
         .pc-btn {
@@ -666,11 +649,12 @@ export default function ProductCard({ product }: { product: Product }) {
         .pc-btn--ghost {
           color: var(--maroon-deep);
           background: var(--white);
-          border: 1px solid rgba(107, 30, 46, 0.12);
+          border: 1px solid rgba(107, 30, 46, 0.16);
         }
 
         .pc-btn--ghost:hover {
           background: var(--cream-dark);
+          border-color: rgba(107, 30, 46, 0.22);
         }
 
         .pc-btn--cart {
@@ -703,7 +687,7 @@ export default function ProductCard({ product }: { product: Product }) {
         @media (max-width: 768px) {
           .pc-root:hover .pc-shell,
           .pc-root:focus-within .pc-shell {
-            transform: translateY(-4px);
+            transform: translateY(-3px);
           }
 
           .pc-card {
@@ -717,64 +701,27 @@ export default function ProductCard({ product }: { product: Product }) {
             min-height: 200px;
           }
 
-          .pc-img {
-            transform: none !important;
-          }
-
-          .pc-root:hover .pc-img,
-          .pc-root:focus-within .pc-img {
-            transform: none;
-          }
-
-          .pc-rail-inner {
-            max-height: none;
-          }
-
-          .pc-rail-drawer {
-            grid-template-rows: 1fr;
-          }
-
-          .pc-rail-hint {
-            display: none;
-          }
-
-          .pc-rail-head {
-            border-bottom: 1px solid rgba(107, 30, 46, 0.08);
-            padding-bottom: 12px;
-          }
-
-          .pc-rail-rest {
-            opacity: 1;
+          .pc-root:hover .pc-media,
+          .pc-root:focus-within .pc-media {
             transform: none;
           }
         }
 
         @media (prefers-reduced-motion: reduce) {
           .pc-shell,
-          .pc-img,
-          .pc-rail-drawer,
-          .pc-rail-rest,
-          .pc-rail-chev,
+          .pc-media,
+          .pc-img-layer,
+          .pc-preview-video,
           .pc-btn {
             transition: none !important;
-          }
-          .pc-rail-drawer {
-            grid-template-rows: 1fr;
           }
           .pc-root:hover .pc-shell,
           .pc-root:focus-within .pc-shell {
             transform: none;
           }
-          .pc-root:hover .pc-img,
-          .pc-root:focus-within .pc-img {
+          .pc-root:hover .pc-media,
+          .pc-root:focus-within .pc-media {
             transform: none;
-          }
-          .pc-root:hover .pc-rail-chev,
-          .pc-root:focus-within .pc-rail-chev {
-            transform: none;
-          }
-          .pc-rail-rest {
-            opacity: 1;
           }
         }
       `}</style>

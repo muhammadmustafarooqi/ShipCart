@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { CheckCircle, Package, Phone, Home, MessageCircle } from "lucide-react";
+import { CheckCircle, Package, Phone, Home, MessageCircle, PartyPopper, Banknote, Truck } from "lucide-react";
 
 interface Order {
   orderId: string;
@@ -42,7 +42,18 @@ function OrderSuccessContent() {
   const generateWhatsAppMessage = () => {
     if (!order) return "#";
     const itemsList = order.items.map((i) => `• ${i.name} x${i.quantity}`).join("\n");
-    const msg = `🛍️ New Order #${order.orderId}\n\n👤 ${order.customerName}\n📱 ${order.phone}\n📍 ${order.city}\n🏠 ${order.address}\n\n📦 Items:\n${itemsList}\n\n✅ Total: Rs. ${order.total.toLocaleString()}\n💰 Payment: Cash on Delivery`;
+    const msg = `*NEW ORDER #${order.orderId}*
+
+*Customer:* ${order.customerName}
+*Phone:* ${order.phone}
+*City:* ${order.city}
+*Address:* ${order.address}
+
+*Items:*
+${itemsList}
+
+*Total:* Rs. ${order.total.toLocaleString()}
+*Payment:* Cash on Delivery`;
     return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
   };
 
@@ -56,20 +67,22 @@ function OrderSuccessContent() {
           <div style={{
             width: "120px",
             height: "120px",
-            background: "var(--color-success)",
+            background: "var(--gradient-brand)",
             borderRadius: "50%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             margin: "0 auto 32px",
-            boxShadow: "0 20px 40px rgba(16, 185, 129, 0.3)",
+            border: "3px solid rgba(201, 168, 76, 0.45)",
+            boxShadow: "0 20px 48px rgba(74, 16, 32, 0.35)",
             animation: "bounce 0.6s ease cubic-bezier(0.175, 0.885, 0.32, 1.275)",
           }}>
-            <CheckCircle size={64} color="white" strokeWidth={2.5} />
+            <CheckCircle size={64} color="var(--white)" strokeWidth={2.5} />
           </div>
 
-          <h1 style={{ fontSize: "clamp(2rem, 3vw, 2.5rem)", fontWeight: 900, color: "var(--text-primary)", marginBottom: "12px", fontFamily: "Outfit, sans-serif" }}>
-            Order Confirmed! 🎉
+          <h1 style={{ fontSize: "clamp(2rem, 3vw, 2.5rem)", fontWeight: 900, color: "var(--text-primary)", marginBottom: "12px", fontFamily: "Outfit, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", flexWrap: "wrap" }}>
+            <span>Order Confirmed!</span>
+            <PartyPopper size={36} color="var(--maroon)" strokeWidth={2} aria-hidden />
           </h1>
           <p style={{ color: "var(--text-secondary)", fontSize: "16px", marginBottom: "32px", fontWeight: 500 }}>
             Thank you for your purchase. We are processing your order.
@@ -150,7 +163,10 @@ function OrderSuccessContent() {
                 </div>
                 <div style={{ textAlign: "right" }}>
                   <div style={{ fontSize: "14px", color: "var(--text-secondary)", fontWeight: 600, marginBottom: "4px" }}>Payment</div>
-                  <div style={{ fontWeight: 800, color: "var(--color-success)", display: "flex", alignItems: "center", gap: "6px" }}><span style={{ fontSize: "18px" }}>💰</span> COD</div>
+                  <div style={{ fontWeight: 800, color: "var(--maroon)", display: "flex", alignItems: "center", gap: "8px", justifyContent: "flex-end" }}>
+                    <Banknote size={22} color="var(--gold)" strokeWidth={2.25} aria-hidden />
+                    COD
+                  </div>
                 </div>
               </div>
             </div>
@@ -170,14 +186,16 @@ function OrderSuccessContent() {
             </h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {[
-                { step: "1", text: "Our team will confirm your order within 1-2 hours", icon: "📞" },
-                { step: "2", text: "Your order will be packed and shipped within 1-2 days", icon: "📦" },
-                { step: "3", text: "Delivery in 3-5 business days to your address", icon: "🚚" },
-                { step: "4", text: "Pay cash when the order arrives at your door", icon: "💵" },
-              ].map((item) => (
-                <div key={item.step} style={{ display: "flex", gap: "16px", alignItems: "center", background: "var(--bg-primary)", padding: "16px", borderRadius: "12px" }}>
-                  <span style={{ fontSize: "24px", filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.1))" }}>{item.icon}</span>
-                  <span style={{ fontSize: "15px", color: "var(--text-primary)", fontWeight: 500 }}>{item.text}</span>
+                { step: "1", text: "Our team will confirm your order within 1-2 hours", Icon: Phone },
+                { step: "2", text: "Your order will be packed and shipped within 1-2 days", Icon: Package },
+                { step: "3", text: "Delivery in 3-5 business days to your address", Icon: Truck },
+                { step: "4", text: "Pay cash when the order arrives at your door", Icon: Banknote },
+              ].map(({ step, text, Icon }) => (
+                <div key={step} style={{ display: "flex", gap: "16px", alignItems: "center", background: "var(--bg-primary)", padding: "16px", borderRadius: "12px" }}>
+                  <div style={{ width: "44px", height: "44px", borderRadius: "12px", background: "var(--white)", border: "1px solid var(--cream-mid)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "var(--shadow-sm)" }}>
+                    <Icon size={22} color="var(--maroon)" strokeWidth={2.25} aria-hidden style={{ flexShrink: 0 }} />
+                  </div>
+                  <span style={{ fontSize: "15px", color: "var(--text-primary)", fontWeight: 500 }}>{text}</span>
                 </div>
               ))}
             </div>
@@ -192,7 +210,7 @@ function OrderSuccessContent() {
               className="btn-whatsapp"
               style={{ width: "100%", justifyContent: "center", fontSize: "16px", padding: "18px" }}
             >
-              <MessageCircle size={20} color="white" /> Receive Updates on WhatsApp
+              <MessageCircle size={20} color="var(--icon-on-brand)" strokeWidth={2.25} /> Receive Updates on WhatsApp
             </a>
             <Link href="/products" className="btn-secondary" style={{ width: "100%", justifyContent: "center", fontSize: "16px", padding: "18px" }}>
               Continue Shopping

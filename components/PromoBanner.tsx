@@ -1,32 +1,43 @@
 "use client";
 
 import Link from "next/link";
-import { Sparkles, Truck, WalletCards, ShoppingBag, ArrowRight } from "lucide-react";
+import { Sparkles, Truck, WalletCards, ShoppingBag, ArrowRight, Tag } from "lucide-react";
 
 export default function PromoBanner() {
   return (
     <section className="pb-section" aria-labelledby="promo-banner-heading">
-      <div className="pb-ambient" aria-hidden />
+      <div className="pb-bg-grid" aria-hidden />
+      <div className="pb-glow pb-glow--gold" aria-hidden />
+      <div className="pb-glow pb-glow--maroon" aria-hidden />
 
       <div className="page-container pb-inner">
         <div className="pb-card">
+          <div className="pb-ribbon" aria-hidden>
+            <Tag size={13} strokeWidth={2.4} aria-hidden />
+            Special offer
+          </div>
           <div className="pb-accent-bar" aria-hidden />
 
           <div className="pb-layout">
             <div className="pb-copy">
-              <div className="section-tag pb-kicker">
-                <Sparkles size={14} strokeWidth={2.25} aria-hidden />
-                Limited time
+              <div className="pb-kicker-wrap">
+                <span className="pb-kicker">
+                  <Sparkles size={14} strokeWidth={2.25} className="pb-kicker-ico" aria-hidden />
+                  Limited-time offer
+                </span>
+                <span className="pb-kicker-sub">Ends when slots fill — same-day replies on WhatsApp</span>
               </div>
 
               <h2 id="promo-banner-heading" className="pb-title">
-                Free delivery &amp; COD â€”{" "}
-                <span className="pb-title-em">built for how you shop</span>
+                <span className="pb-title-line1">FREE delivery + COD</span>
+                <span className="pb-title-line2">
+                  on carts <span className="pb-title-highlight">Rs. 1,500+</span>
+                </span>
               </h2>
 
               <p className="pb-lede">
-                Nationwide delivery on orders above Rs. 1,500. Pay when your parcel
-                arrives â€” no advance, same quality you expect from the catalog.
+                Nationwide shipping, pay when it lands — no advance on standard orders. Stack cart value once
+                and both perks unlock at checkout.
               </p>
 
               <ul className="pb-perks" role="list">
@@ -36,7 +47,7 @@ export default function PromoBanner() {
                   </span>
                   <span className="pb-perk-text">
                     <strong>Free shipping</strong>
-                    <span>On carts Rs. 1,500+</span>
+                    <span>Orders Rs. 1,500+ ship on us</span>
                   </span>
                 </li>
                 <li className="pb-perk">
@@ -44,8 +55,8 @@ export default function PromoBanner() {
                     <WalletCards size={18} strokeWidth={2} />
                   </span>
                   <span className="pb-perk-text">
-                    <strong>COD ready</strong>
-                    <span>Pay on delivery</span>
+                    <strong>COD unlocked</strong>
+                    <span>Pay on delivery, zero prepay</span>
                   </span>
                 </li>
               </ul>
@@ -53,7 +64,7 @@ export default function PromoBanner() {
               <div className="pb-actions">
                 <Link href="/products" className="btn-primary pb-btn-main">
                   <ShoppingBag size={18} strokeWidth={2} aria-hidden />
-                  Shop now
+                  Shop the offer
                 </Link>
                 <Link href="/products?featured=true" className="pb-btn-outline">
                   Featured picks
@@ -62,18 +73,20 @@ export default function PromoBanner() {
               </div>
             </div>
 
-            <aside className="pb-panel" aria-label="Offer highlights">
+            <aside className="pb-panel" aria-label="Offer details">
+              <div className="pb-panel-shine" aria-hidden />
+              <p className="pb-panel-eyebrow">What you get today</p>
               <div className="pb-stat">
                 <span className="pb-stat-value">Rs. 1,500</span>
-                <span className="pb-stat-label">Minimum for free delivery</span>
+                <span className="pb-stat-label">Minimum cart for free delivery</span>
               </div>
               <div className="pb-stat pb-stat-alt">
                 <span className="pb-stat-value">COD</span>
                 <span className="pb-stat-label">No advance on standard orders</span>
               </div>
               <p className="pb-panel-note">
-                Same dispatch and support flow as the rest of the store â€” perks only
-                change how checkout feels.
+                Same dispatch and support as the rest of the store — only checkout perks change so you keep
+                full confidence.
               </p>
             </aside>
           </div>
@@ -83,20 +96,45 @@ export default function PromoBanner() {
       <style>{`
         .pb-section {
           position: relative;
-          padding: clamp(56px, 8vw, 88px) 0;
-          background: var(--white);
-          border-top: 1px solid var(--border-default);
-          border-bottom: 1px solid var(--border-default);
+          padding: clamp(52px, 7vw, 84px) 0;
+          background: linear-gradient(180deg, var(--cream-dark) 0%, var(--cream) 45%, var(--white) 100%);
+          border-top: 1px solid var(--cream-mid);
+          border-bottom: 1px solid rgba(107, 30, 46, 0.08);
           overflow: hidden;
         }
 
-        .pb-ambient {
+        .pb-bg-grid {
           pointer-events: none;
           position: absolute;
           inset: 0;
-          background:
-            radial-gradient(ellipse 55% 42% at 100% 0%, rgba(201, 168, 76, 0.1), transparent 58%),
-            radial-gradient(ellipse 50% 40% at 0% 100%, rgba(107, 30, 46, 0.06), transparent 55%);
+          opacity: 0.35;
+          background-image:
+            linear-gradient(rgba(107, 30, 46, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(107, 30, 46, 0.04) 1px, transparent 1px);
+          background-size: 28px 28px;
+          mask-image: radial-gradient(ellipse 75% 65% at 50% 40%, black 20%, transparent 72%);
+        }
+
+        .pb-glow {
+          pointer-events: none;
+          position: absolute;
+          border-radius: 50%;
+          filter: blur(70px);
+          opacity: 0.55;
+        }
+        .pb-glow--gold {
+          width: min(420px, 55vw);
+          height: min(320px, 40vw);
+          top: -12%;
+          right: -8%;
+          background: rgba(201, 168, 76, 0.35);
+        }
+        .pb-glow--maroon {
+          width: min(380px, 50vw);
+          height: min(280px, 38vw);
+          bottom: -18%;
+          left: -10%;
+          background: rgba(107, 30, 46, 0.12);
         }
 
         .pb-inner {
@@ -107,10 +145,41 @@ export default function PromoBanner() {
         .pb-card {
           position: relative;
           border-radius: var(--radius-xl);
-          background: linear-gradient(165deg, var(--white) 0%, var(--cream) 100%);
-          border: 1px solid var(--cream-mid);
-          box-shadow: var(--shadow-lg);
-          overflow: hidden;
+          background: linear-gradient(
+            155deg,
+            rgba(255, 253, 249, 0.97) 0%,
+            var(--cream) 38%,
+            rgba(250, 243, 232, 0.92) 100%
+          );
+          border: 1px solid rgba(201, 168, 76, 0.35);
+          box-shadow:
+            0 0 0 1px rgba(107, 30, 46, 0.06),
+            0 28px 56px rgba(42, 21, 24, 0.12),
+            0 12px 28px rgba(107, 30, 46, 0.08);
+          overflow: visible;
+        }
+
+        .pb-ribbon {
+          position: absolute;
+          top: 18px;
+          right: 18px;
+          z-index: 3;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 7px 14px 7px 12px;
+          border-radius: 999px;
+          font-family: "Outfit", sans-serif;
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--maroon-deep);
+          background: linear-gradient(135deg, #fff6d8 0%, var(--gold) 55%, #e8c85c 100%);
+          border: 1px solid rgba(107, 30, 46, 0.2);
+          box-shadow:
+            0 4px 14px rgba(201, 168, 76, 0.45),
+            inset 0 1px 0 rgba(255, 253, 249, 0.65);
         }
 
         .pb-accent-bar {
@@ -118,46 +187,101 @@ export default function PromoBanner() {
           top: 0;
           left: 0;
           right: 0;
-          height: 4px;
-          background: linear-gradient(90deg, var(--gold), var(--maroon-soft));
-          opacity: 0.95;
+          height: 5px;
+          border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+          background: linear-gradient(
+            90deg,
+            var(--maroon-deep) 0%,
+            var(--maroon) 28%,
+            var(--gold) 52%,
+            var(--maroon-soft) 100%
+          );
+          opacity: 1;
         }
 
         .pb-layout {
           display: grid;
           grid-template-columns: minmax(0, 1.12fr) minmax(200px, 0.88fr);
           gap: clamp(24px, 4vw, 40px);
-          padding: clamp(28px, 4.5vw, 40px);
+          padding: clamp(30px, 4.5vw, 44px);
+          padding-top: clamp(34px, 5vw, 48px);
           align-items: stretch;
         }
 
+        .pb-kicker-wrap {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+          margin-bottom: 16px;
+        }
+
         .pb-kicker {
-          margin-bottom: 14px;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 14px 8px 12px;
+          border-radius: 999px;
+          font-family: "Plus Jakarta Sans", sans-serif;
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: var(--maroon);
+          background: linear-gradient(135deg, rgba(107, 30, 46, 0.1), rgba(201, 168, 76, 0.14));
+          border: 1px solid rgba(107, 30, 46, 0.22);
+          box-shadow: 0 2px 10px rgba(107, 30, 46, 0.08);
+        }
+
+        .pb-kicker-ico {
+          color: var(--gold);
+          flex-shrink: 0;
+        }
+
+        .pb-kicker-sub {
+          font-size: 12px;
+          font-weight: 600;
+          color: rgba(42, 21, 24, 0.55);
+          max-width: 28rem;
+          line-height: 1.45;
         }
 
         .pb-title {
-          margin: 0 0 14px;
+          margin: 0 0 16px;
           font-family: "Outfit", sans-serif;
-          font-size: clamp(1.85rem, 4vw, 2.65rem);
-          font-weight: 800;
-          letter-spacing: -0.04em;
-          line-height: 1.12;
-          background: linear-gradient(
-            118deg,
-            var(--maroon-deep) 0%,
-            var(--maroon) 45%,
-            var(--maroon-soft) 100%
-          );
+          font-weight: 900;
+          letter-spacing: -0.045em;
+          line-height: 1.05;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .pb-title-line1 {
+          font-size: clamp(1.95rem, 4.5vw, 2.85rem);
+          background: linear-gradient(118deg, var(--maroon-deep) 0%, var(--maroon) 42%, var(--maroon-soft) 100%);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
         }
 
-        .pb-title-em {
-          background: linear-gradient(118deg, var(--maroon) 0%, var(--gold) 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
+        .pb-title-line2 {
+          font-size: clamp(1.25rem, 2.8vw, 1.65rem);
+          font-weight: 700;
+          letter-spacing: -0.03em;
+          color: rgba(42, 21, 24, 0.72);
+        }
+
+        .pb-title-highlight {
+          display: inline-block;
+          padding: 2px 10px;
+          margin-left: 4px;
+          border-radius: 999px;
+          font-weight: 800;
+          color: var(--maroon-deep);
+          background: linear-gradient(135deg, rgba(201, 168, 76, 0.35), rgba(201, 168, 76, 0.12));
+          border: 1px solid rgba(201, 168, 76, 0.45);
+          box-shadow: 0 2px 12px rgba(201, 168, 76, 0.25);
         }
 
         .pb-lede {
@@ -167,7 +291,7 @@ export default function PromoBanner() {
           font-weight: 500;
           line-height: 1.65;
           max-width: 36rem;
-          color: var(--text-secondary);
+          color: rgba(42, 21, 24, 0.68);
         }
 
         .pb-perks {
@@ -175,7 +299,7 @@ export default function PromoBanner() {
           display: flex;
           flex-wrap: wrap;
           gap: 12px;
-          margin: 0 0 26px;
+          margin: 0 0 28px;
           padding: 0;
         }
 
@@ -183,22 +307,33 @@ export default function PromoBanner() {
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 12px 16px;
+          padding: 14px 18px;
           border-radius: var(--radius-md);
           background: var(--white);
-          border: 1px solid var(--cream-mid);
-          box-shadow: var(--shadow-sm);
+          border: 1px solid rgba(201, 168, 76, 0.28);
+          box-shadow:
+            0 4px 16px rgba(42, 21, 24, 0.06),
+            inset 0 1px 0 rgba(255, 253, 249, 0.9);
+          transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .pb-perk:hover {
+          transform: translateY(-2px);
+          box-shadow:
+            0 10px 28px rgba(107, 30, 46, 0.1),
+            inset 0 1px 0 rgba(255, 253, 249, 0.95);
         }
 
         .pb-perk-icon {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 40px;
-          height: 40px;
-          border-radius: 12px;
-          background: linear-gradient(145deg, rgba(201, 168, 76, 0.18), rgba(107, 30, 46, 0.08));
+          width: 44px;
+          height: 44px;
+          border-radius: 14px;
+          background: linear-gradient(145deg, rgba(201, 168, 76, 0.28), rgba(107, 30, 46, 0.12));
           color: var(--maroon);
+          border: 1px solid rgba(201, 168, 76, 0.35);
         }
 
         .pb-perk-text {
@@ -207,13 +342,13 @@ export default function PromoBanner() {
           gap: 2px;
           font-family: "Plus Jakarta Sans", sans-serif;
           font-size: 13px;
-          color: var(--text-secondary);
+          color: rgba(42, 21, 24, 0.58);
         }
 
         .pb-perk-text strong {
           font-size: 14px;
-          font-weight: 700;
-          color: var(--text-primary);
+          font-weight: 800;
+          color: var(--maroon);
         }
 
         .pb-actions {
@@ -225,6 +360,9 @@ export default function PromoBanner() {
 
         .pb-btn-main {
           text-decoration: none;
+          box-shadow:
+            0 4px 0 rgba(74, 16, 32, 0.35),
+            0 14px 32px rgba(107, 30, 46, 0.28);
         }
 
         .pb-btn-outline {
@@ -240,7 +378,7 @@ export default function PromoBanner() {
           text-decoration: none;
           color: var(--maroon);
           background: var(--white);
-          border: 1px solid var(--cream-mid);
+          border: 2px solid rgba(107, 30, 46, 0.2);
           box-shadow: var(--shadow-sm);
           transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
             box-shadow 0.3s ease,
@@ -250,26 +388,56 @@ export default function PromoBanner() {
 
         .pb-btn-outline:hover {
           transform: translateY(-2px);
-          border-color: rgba(201, 168, 76, 0.5);
+          border-color: rgba(201, 168, 76, 0.55);
           box-shadow: var(--shadow-md);
           background: linear-gradient(135deg, var(--white), var(--cream-dark));
         }
 
         .pb-panel {
+          position: relative;
           display: flex;
           flex-direction: column;
           justify-content: center;
-          gap: 18px;
-          padding: clamp(20px, 3vw, 26px);
+          gap: 16px;
+          padding: clamp(22px, 3vw, 28px);
           border-radius: var(--radius-lg);
-          background: var(--white);
-          border: 1px solid var(--cream-mid);
-          box-shadow: var(--shadow-sm);
+          background: linear-gradient(165deg, var(--white) 0%, rgba(255, 253, 249, 0.96) 100%);
+          border: 2px dashed rgba(201, 168, 76, 0.45);
+          box-shadow:
+            0 0 0 4px rgba(201, 168, 76, 0.08),
+            0 16px 40px rgba(42, 21, 24, 0.08);
+          overflow: hidden;
+        }
+
+        .pb-panel-shine {
+          position: absolute;
+          inset: -40% -20% auto;
+          height: 55%;
+          background: linear-gradient(
+            125deg,
+            transparent 30%,
+            rgba(255, 253, 249, 0.55) 48%,
+            transparent 62%
+          );
+          transform: rotate(-8deg);
+          pointer-events: none;
+        }
+
+        .pb-panel-eyebrow {
+          margin: 0 0 4px;
+          font-family: "Outfit", sans-serif;
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: var(--gold);
         }
 
         .pb-stat {
-          padding-bottom: 16px;
-          border-bottom: 1px solid var(--cream-mid);
+          position: relative;
+          z-index: 1;
+          padding-bottom: 14px;
+          border-bottom: 1px solid rgba(232, 216, 188, 0.9);
         }
 
         .pb-stat-alt {
@@ -280,16 +448,16 @@ export default function PromoBanner() {
         .pb-stat-value {
           display: block;
           font-family: "Outfit", sans-serif;
-          font-size: clamp(1.75rem, 3.2vw, 2.25rem);
-          font-weight: 800;
-          letter-spacing: -0.03em;
-          line-height: 1.1;
+          font-size: clamp(1.85rem, 3.2vw, 2.35rem);
+          font-weight: 900;
+          letter-spacing: -0.035em;
+          line-height: 1.05;
           margin-bottom: 6px;
           color: var(--maroon);
         }
 
         .pb-stat-alt .pb-stat-value {
-          font-size: clamp(2rem, 3.5vw, 2.5rem);
+          font-size: clamp(2.1rem, 3.6vw, 2.65rem);
           background: linear-gradient(118deg, var(--maroon-deep), var(--gold));
           -webkit-background-clip: text;
           background-clip: text;
@@ -300,22 +468,35 @@ export default function PromoBanner() {
           font-family: "Plus Jakarta Sans", sans-serif;
           font-size: 13px;
           line-height: 1.45;
-          font-weight: 500;
-          color: var(--text-secondary);
+          font-weight: 600;
+          color: rgba(42, 21, 24, 0.58);
         }
 
         .pb-panel-note {
-          margin: 0;
+          position: relative;
+          z-index: 1;
+          margin: 4px 0 0;
           font-family: "Plus Jakarta Sans", sans-serif;
           font-size: 12px;
           line-height: 1.55;
-          color: var(--text-secondary);
-          opacity: 0.92;
+          color: rgba(42, 21, 24, 0.52);
         }
 
         @media (max-width: 900px) {
+          .pb-ribbon {
+            top: 12px;
+            right: 12px;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            padding: 6px 11px 6px 9px;
+          }
+
           .pb-layout {
             grid-template-columns: 1fr;
+          }
+
+          .pb-kicker-wrap {
+            padding-right: 88px;
           }
 
           .pb-panel {
@@ -324,11 +505,15 @@ export default function PromoBanner() {
             align-items: flex-start;
           }
 
+          .pb-panel-eyebrow {
+            flex: 1 1 100%;
+          }
+
           .pb-stat {
             flex: 1 1 140px;
             border-bottom: none;
             padding-bottom: 0;
-            border-right: 1px solid var(--cream-mid);
+            border-right: 1px solid rgba(232, 216, 188, 0.9);
             padding-right: 16px;
           }
 
@@ -365,13 +550,28 @@ export default function PromoBanner() {
           .pb-stat {
             border-right: none;
             padding-right: 0;
-            border-bottom: 1px solid var(--cream-mid);
-            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(232, 216, 188, 0.9);
+            padding-bottom: 14px;
           }
 
           .pb-stat-alt {
             border-bottom: none;
             padding-bottom: 0;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .pb-perk {
+            transition: none;
+          }
+          .pb-perk:hover {
+            transform: none;
+          }
+          .pb-btn-outline {
+            transition: none;
+          }
+          .pb-btn-outline:hover {
+            transform: none;
           }
         }
       `}</style>

@@ -1,6 +1,6 @@
 import { Lock, Users, Truck, ShieldCheck, Banknote } from "lucide-react";
 
-const iconProps = { size: 16, color: "rgba(255, 253, 249, 0.9)" as const, strokeWidth: 2.25 };
+const iconProps = { size: 16, color: "var(--gold)" as const, strokeWidth: 2.25 };
 
 /** Trust strip — infinite scroll; place below navbar, above hero. */
 export default function MarqueeBanner() {

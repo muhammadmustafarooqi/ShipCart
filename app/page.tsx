@@ -11,6 +11,7 @@ import FAQ from "@/components/FAQ";
 import WhatsAppCTA from "@/components/WhatsAppCTA";
 import PromoBanner from "@/components/PromoBanner";
 import FeaturedCollection from "@/components/FeaturedCollection";
+import { LucideByName } from "@/components/LucideByName";
 import Link from "next/link";
 import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
@@ -83,21 +84,48 @@ export default async function HomePage() {
       {/* New Arrivals */}
       <section style={{ padding: "80px 0", background: "var(--bg-primary)" }}>
         <div className="page-container">
-          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "48px", flexWrap: "wrap", gap: "16px" }}>
-            <div>
-              <div className="section-tag">⚡ Fresh Drops</div>
-              <h2 className="section-title">New Arrivals</h2>
-              <p style={{ color: "var(--text-secondary)", fontSize: "15px", marginTop: "8px", fontWeight: 500 }}>
-                The latest additions to our premium collection
-              </p>
+          <div style={{ textAlign: "center", marginBottom: "48px" }}>
+            <div
+              className="section-tag"
+              style={{ display: "inline-flex", alignItems: "center", gap: "8px", justifyContent: "center" }}
+            >
+              <LucideByName name="zap" size={14} color="var(--color-icon)" />
+              Fresh Drops
             </div>
-            <Link href="/products?newArrival=true" style={{
-              display: "inline-flex", alignItems: "center", gap: "8px",
-              fontSize: "14px", color: "var(--color-brand)", textDecoration: "none",
-              fontWeight: 700, fontFamily: "Plus Jakarta Sans, sans-serif",
-              background: "var(--color-brand-dim)", padding: "10px 20px",
-              borderRadius: "100px",
-            }}>
+            <h2 className="section-title" style={{ marginTop: "10px" }}>
+              New Arrivals
+            </h2>
+            <p
+              style={{
+                color: "var(--text-secondary)",
+                fontSize: "15px",
+                marginTop: "8px",
+                fontWeight: 500,
+                maxWidth: "540px",
+                marginLeft: "auto",
+                marginRight: "auto",
+                lineHeight: 1.6,
+              }}
+            >
+              The latest additions to our premium collection
+            </p>
+            <Link
+              href="/products?newArrival=true"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                marginTop: "22px",
+                fontSize: "14px",
+                color: "var(--color-brand)",
+                textDecoration: "none",
+                fontWeight: 700,
+                fontFamily: "Plus Jakarta Sans, sans-serif",
+                background: "var(--color-brand-dim)",
+                padding: "10px 20px",
+                borderRadius: "100px",
+              }}
+            >
               View All →
             </Link>
           </div>
@@ -109,7 +137,9 @@ export default async function HomePage() {
             </div>
           ) : (
             <div style={{ textAlign: "center", padding: "80px 0", color: "var(--text-secondary)", background: "var(--bg-card)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--border-hover)" }}>
-              <div style={{ fontSize: "48px", marginBottom: "16px" }}>🆕</div>
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px", color: "var(--text-secondary)" }}>
+                <LucideByName name="sparkles" size={48} strokeWidth={1.75} />
+              </div>
               <p style={{ fontSize: "16px", fontWeight: 600 }}>New arrivals coming soon!</p>
             </div>
           )}

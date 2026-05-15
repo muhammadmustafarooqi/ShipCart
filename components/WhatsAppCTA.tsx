@@ -53,7 +53,7 @@ export default function WhatsAppCTA() {
 
               <div className="wa-side">
                 <p className="wa-pill">
-                  <Clock size={14} strokeWidth={2.2} aria-hidden />
+                  <Clock size={14} strokeWidth={2.2} color="var(--gold)" aria-hidden />
                   Typical reply under 10 min
                 </p>
                 <a href={url} target="_blank" rel="noopener noreferrer" className="wa-btn">
@@ -86,7 +86,7 @@ export default function WhatsAppCTA() {
             {features.map(({ icon: Icon, title, desc }, i) => (
               <li key={title} className={`wa-rail-item${i > 0 ? " wa-rail-item--rule" : ""}`}>
                 <span className="wa-rail-ico">
-                  <Icon size={22} strokeWidth={1.85} aria-hidden />
+                  <Icon size={22} strokeWidth={1.85} color="currentColor" aria-hidden />
                 </span>
                 <span className="wa-rail-title">{title}</span>
                 <span className="wa-rail-desc">{desc}</span>
@@ -108,7 +108,7 @@ export default function WhatsAppCTA() {
         .wa-bg {
           position: absolute;
           inset: 0;
-          background: radial-gradient(ellipse 70% 50% at 100% 0%, rgba(37, 211, 102, 0.07), transparent 55%);
+          background: radial-gradient(ellipse 70% 50% at 100% 0%, rgba(201, 168, 76, 0.12), transparent 55%);
           pointer-events: none;
         }
 
@@ -132,7 +132,7 @@ export default function WhatsAppCTA() {
           position: absolute;
           inset: -2px;
           border-radius: 30px;
-          background: linear-gradient(135deg, rgba(37, 211, 102, 0.25), transparent 40%, rgba(201, 168, 76, 0.2));
+          background: linear-gradient(135deg, rgba(201, 168, 76, 0.28), transparent 40%, rgba(42, 21, 24, 0.22));
           opacity: 0.45;
           z-index: 0;
           pointer-events: none;
@@ -192,18 +192,18 @@ export default function WhatsAppCTA() {
           width: 9px;
           height: 9px;
           border-radius: 50%;
-          background: #25d366;
-          box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4);
+          background: var(--gold);
+          box-shadow: 0 0 0 0 rgba(201, 168, 76, 0.45);
           animation: wa-breathe 2.4s ease-in-out infinite;
         }
 
         @keyframes wa-breathe {
           0%,
           100% {
-            box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.35);
+            box-shadow: 0 0 0 0 rgba(201, 168, 76, 0.35);
           }
           50% {
-            box-shadow: 0 0 0 12px rgba(37, 211, 102, 0);
+            box-shadow: 0 0 0 12px rgba(201, 168, 76, 0);
           }
         }
 
@@ -265,8 +265,8 @@ export default function WhatsAppCTA() {
           font-size: 12px;
           font-weight: 700;
           color: rgba(250, 243, 232, 0.95);
-          background: rgba(37, 211, 102, 0.12);
-          border: 1px solid rgba(37, 211, 102, 0.35);
+          background: rgba(201, 168, 76, 0.12);
+          border: 1px solid rgba(201, 168, 76, 0.35);
           font-family: "Plus Jakarta Sans", sans-serif;
         }
 
@@ -277,13 +277,14 @@ export default function WhatsAppCTA() {
           padding: 17px 20px;
           border-radius: 18px;
           text-decoration: none;
-          color: #063517;
-          background: linear-gradient(180deg, #3ef48a 0%, #25d366 48%, #1ebe5d 100%);
+          color: var(--white);
+          background: var(--whatsapp-btn-bg);
+          border: var(--whatsapp-btn-border);
           font-family: "Plus Jakarta Sans", sans-serif;
           font-weight: 800;
           box-shadow:
-            0 4px 0 rgba(12, 80, 40, 0.35),
-            0 18px 40px rgba(0, 0, 0, 0.35);
+            0 3px 0 rgba(74, 16, 32, 0.35),
+            var(--whatsapp-btn-shadow);
           transition: transform 0.35s cubic-bezier(0.33, 1, 0.32, 1), box-shadow 0.35s ease, filter 0.25s ease;
         }
 
@@ -291,8 +292,8 @@ export default function WhatsAppCTA() {
           transform: translateY(-5px) scale(1.01);
           filter: brightness(1.05);
           box-shadow:
-            0 6px 0 rgba(12, 80, 40, 0.28),
-            0 26px 52px rgba(0, 0, 0, 0.38);
+            0 5px 0 rgba(74, 16, 32, 0.28),
+            0 26px 52px rgba(74, 16, 32, 0.35);
         }
 
         .wa-btn-ico {
@@ -303,8 +304,8 @@ export default function WhatsAppCTA() {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: rgba(255, 255, 255, 0.38);
-          color: #075e54;
+          background: rgba(201, 168, 76, 0.22);
+          color: var(--gold);
         }
 
         .wa-btn-copy {
@@ -330,7 +331,8 @@ export default function WhatsAppCTA() {
 
         .wa-btn-arrow {
           flex-shrink: 0;
-          opacity: 0.9;
+          opacity: 0.95;
+          color: var(--gold);
           transition: transform 0.35s cubic-bezier(0.33, 1, 0.32, 1);
         }
 
@@ -354,7 +356,8 @@ export default function WhatsAppCTA() {
           z-index: 1;
           line-height: 0;
           margin-top: -1px;
-          color: #10060a;
+          /* Cream wave — matches page background, reads as brand divider above rail */
+          color: var(--cream);
         }
 
         .wa-wave-svg {
@@ -370,8 +373,14 @@ export default function WhatsAppCTA() {
           display: grid;
           grid-template-columns: repeat(4, minmax(0, 1fr));
           gap: 0;
-          background: linear-gradient(180deg, #10060a 0%, #1a0d14 100%);
-          border-top: 1px solid rgba(201, 168, 76, 0.22);
+          background: linear-gradient(
+            180deg,
+            var(--maroon-deep) 0%,
+            #2a0f18 42%,
+            #1a080c 100%
+          );
+          border-top: 1px solid rgba(201, 168, 76, 0.3);
+          box-shadow: inset 0 1px 0 rgba(255, 253, 249, 0.06);
         }
 
         .wa-rail-item {
@@ -381,15 +390,17 @@ export default function WhatsAppCTA() {
           text-align: center;
           gap: 10px;
           padding: 8px 12px;
+          border-radius: 14px;
           transition: transform 0.3s cubic-bezier(0.33, 1, 0.32, 1), background 0.3s ease;
         }
 
         .wa-rail-item:hover {
           transform: translateY(-3px);
+          background: rgba(201, 168, 76, 0.06);
         }
 
         .wa-rail-item--rule {
-          border-left: 1px solid rgba(201, 168, 76, 0.2);
+          border-left: 1px solid rgba(201, 168, 76, 0.22);
         }
 
         .wa-rail-ico {
@@ -400,8 +411,9 @@ export default function WhatsAppCTA() {
           align-items: center;
           justify-content: center;
           color: var(--gold);
-          background: rgba(201, 168, 76, 0.1);
-          border: 1px solid rgba(201, 168, 76, 0.28);
+          background: rgba(107, 30, 46, 0.35);
+          border: 1px solid rgba(201, 168, 76, 0.38);
+          box-shadow: 0 4px 14px rgba(42, 15, 24, 0.35);
         }
 
         .wa-rail-title {
@@ -409,14 +421,14 @@ export default function WhatsAppCTA() {
           font-size: 14px;
           font-weight: 800;
           letter-spacing: -0.02em;
-          color: #fffdf9;
+          color: var(--white);
         }
 
         .wa-rail-desc {
           font-size: 12px;
           font-weight: 500;
           line-height: 1.45;
-          color: rgba(250, 243, 232, 0.78);
+          color: rgba(250, 243, 232, 0.88);
           max-width: 11rem;
         }
 
