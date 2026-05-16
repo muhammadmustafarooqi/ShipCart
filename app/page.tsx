@@ -83,7 +83,11 @@ export default async function HomePage() {
         <div className="page-container">
           <div style={{ textAlign: "center", marginBottom: "48px" }}>
             <div
-              className="section-tag"
+              className="section
+              
+              
+              
+              -tag"
               style={{ display: "inline-flex", alignItems: "center", gap: "8px", justifyContent: "center" }}
             >
               <LucideByName name="zap" size={14} color="var(--color-icon)" />
