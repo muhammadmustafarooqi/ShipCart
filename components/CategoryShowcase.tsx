@@ -125,15 +125,6 @@ export default function CategoryShowcase() {
 
       <div className="category-showcase-wrap" style={{ position: "relative", zIndex: 1 }}>
         <div style={{ textAlign: "center", marginBottom: "52px" }}>
-          <div className="section-tag" style={{ justifyContent: "center" }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--maroon)" strokeWidth="2.5">
-              <rect x="3" y="3" width="7" height="7" rx="1" />
-              <rect x="14" y="3" width="7" height="7" rx="1" />
-              <rect x="14" y="14" width="7" height="7" rx="1" />
-              <rect x="3" y="14" width="7" height="7" rx="1" />
-            </svg>
-            Browse Collections
-          </div>
           <h2 className="section-title">Shop by Category</h2>
           <p
             style={{
@@ -145,7 +136,7 @@ export default function CategoryShowcase() {
               lineHeight: 1.55,
             }}
           >
-            Curated looks for every room and routine — tap a mood and explore products that fit your life.
+            Curated collections to elevate your daily routine.
           </p>
         </div>
 

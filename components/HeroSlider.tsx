@@ -75,7 +75,7 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
         overflow: "hidden",
         border: "1px solid var(--border-default)",
         boxShadow: "var(--shadow-xl)",
-        background: "var(--text-primary)"
+        background: "var(--maroon)"
       }} className="hero-container">
         
         {/* Animated Tech Grid Background */}

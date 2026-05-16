@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Search, ShoppingCart, Menu, X, ArrowRight, User } from "lucide-react";
-import { BrandLogoMark } from "@/components/BrandLogo";
+import { NavLogo } from "@/components/BrandLogo";
 import { useCart } from "./CartProvider";
 
 export default function Navbar() {
@@ -65,7 +65,7 @@ export default function Navbar() {
               aria-label="AllInOne Store, home"
               style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
             >
-              <BrandLogoMark size={56} tone="nav" decorative />
+              <NavLogo height={44} maxWidth={160} />
             </Link>
 
             {/* Right: Search + Cart */}
@@ -97,7 +97,7 @@ export default function Navbar() {
               aria-label="AllInOne Store, home"
               className="nav-logo-link"
             >
-              <BrandLogoMark size={68} tone="nav" decorative />
+              <NavLogo height={52} maxWidth={200} />
             </Link>
 
             {/* Nav links — pill rail */}

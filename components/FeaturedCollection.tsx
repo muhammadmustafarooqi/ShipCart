@@ -19,24 +19,17 @@ export type FeaturedProduct = {
 };
 
 export default function FeaturedCollection({ products }: { products: FeaturedProduct[] }) {
-  const loopProducts =
-    products.length > 0
-      ? [...products, ...products, ...products, ...products]
-      : [];
-
   return (
     <section className="fc-section" aria-labelledby="featured-collection-heading">
       <div className="fc-bg" aria-hidden />
       <div className="page-container fc-inner">
         <header className="fc-header">
           <div className="fc-header-copy">
-            <div className="section-tag fc-kicker">Editor&apos;s choice</div>
             <h2 id="featured-collection-heading" className="fc-title">
               Featured Collection
             </h2>
             <p className="fc-sub">
-              Hand-picked premium products our customers reorder most — quality-checked
-              for your home and daily routine.
+              Our top-rated premium products, hand-picked for you.
             </p>
             <Link href="/products?featured=true" className="fc-catalog-link">
               View all
@@ -62,12 +55,10 @@ export default function FeaturedCollection({ products }: { products: FeaturedPro
       </div>
 
       {products.length > 0 ? (
-        <div className="fc-marquee-wrap">
-          <div className="fc-marquee-edge fc-marquee-edge--left" aria-hidden />
-          <div className="fc-marquee-edge fc-marquee-edge--right" aria-hidden />
-          <div className="fc-track" role="list" aria-label="Featured products">
-            {loopProducts.map((p, index) => (
-              <div key={`${p._id}-${index}`} className="fc-card-slot" role="listitem">
+        <div className="fc-grid-wrap">
+          <div className="fc-grid" role="list" aria-label="Featured products">
+            {products.slice(0, 8).map((p) => (
+              <div key={p._id} className="fc-card-slot" role="listitem">
                 <ProductCard product={p} />
               </div>
             ))}
@@ -183,73 +174,41 @@ export default function FeaturedCollection({ products }: { products: FeaturedPro
           width: 64px;
           border-radius: 99px;
           background: linear-gradient(90deg, var(--gold), var(--maroon-soft));
-          margin: 0 auto 20px;
+          margin: 0 auto 32px;
         }
 
-        .fc-marquee-wrap {
+        .fc-grid-wrap {
           position: relative;
           z-index: 1;
           width: 100%;
-          overflow: hidden;
-          padding: 0 0 8px;
+          max-width: 1300px;
+          margin: 0 auto;
+          padding: 0 24px;
         }
 
-        .fc-marquee-edge {
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          width: min(120px, 12vw);
-          z-index: 4;
-          pointer-events: none;
-        }
-
-        .fc-marquee-edge--left {
-          left: 0;
-          background: linear-gradient(to right, var(--white), transparent);
-        }
-
-        .fc-marquee-edge--right {
-          right: 0;
-          background: linear-gradient(to left, var(--white), transparent);
-        }
-
-        @keyframes fc-scroll-left {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-25%);
-          }
-        }
-
-        .fc-track {
-          display: flex;
-          flex-direction: row;
-          flex-wrap: nowrap;
-          width: max-content;
-          gap: 20px;
-          padding: 0 24px 8px;
-          animation: fc-scroll-left 90s linear infinite;
-        }
-
-        .fc-track:hover {
-          animation-play-state: paused;
+        .fc-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 24px;
         }
 
         .fc-card-slot {
-          width: min(300px, calc(100vw - 48px));
-          flex-shrink: 0;
+          width: 100%;
         }
 
-        @media (min-width: 480px) {
-          .fc-card-slot {
-            width: min(300px, 78vw);
+        @media (max-width: 1024px) {
+          .fc-grid {
+            grid-template-columns: repeat(3, 1fr);
           }
         }
 
-        @media (min-width: 640px) {
-          .fc-card-slot {
-            width: 300px;
+        @media (max-width: 768px) {
+          .fc-grid-wrap {
+            padding: 0 16px;
+          }
+          .fc-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
           }
         }
 
@@ -294,16 +253,8 @@ export default function FeaturedCollection({ products }: { products: FeaturedPro
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .fc-track {
-            animation: none !important;
-            overflow-x: auto;
-            overflow-y: hidden;
-            padding-bottom: 12px;
-            scrollbar-width: thin;
-          }
-
-          .fc-track:hover {
-            animation-play-state: running;
+          .fc-grid {
+            transition: none !important;
           }
         }
       `}</style>

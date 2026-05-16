@@ -3,6 +3,43 @@
 import Image from "next/image";
 import { LOGO_URL } from "@/lib/site";
 
+/**
+ * Wide navbar logo — preserves the wordmark's natural aspect ratio.
+ * height is fixed; width expands naturally up to maxWidth.
+ */
+export function NavLogo({
+  height = 48,
+  maxWidth = 180,
+  className,
+}: {
+  height?: number;
+  maxWidth?: number;
+  className?: string;
+}) {
+  return (
+    <div
+      className={className}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        height,
+        width: maxWidth,
+        flexShrink: 0,
+        position: "relative",
+      }}
+    >
+      <Image
+        src={LOGO_URL}
+        alt="AllInOne Store"
+        fill
+        sizes={`${maxWidth}px`}
+        style={{ objectFit: "contain", objectPosition: "left center" }}
+        priority
+      />
+    </div>
+  );
+}
+
 export type BrandLogoMarkProps = {
   size: number;
   /** Corner radius; defaults from size */

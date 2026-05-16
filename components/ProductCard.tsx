@@ -298,18 +298,6 @@ export default function ProductCard({ product }: { product: Product }) {
 
             <div className="pc-actions">
               <button
-                type="button"
-                className="pc-btn pc-btn--ghost"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.location.href = `/products/${product._id}`;
-                }}
-              >
-                <Eye size={16} strokeWidth={2} aria-hidden />
-                View
-              </button>
-              <button
                 ref={btnRef}
                 type="button"
                 className="pc-btn pc-btn--cart"
@@ -323,12 +311,12 @@ export default function ProductCard({ product }: { product: Product }) {
                     <span className="pc-cart-check" aria-hidden>
                       ✓
                     </span>
-                    Added
+                    Added to Cart
                   </>
                 ) : (
                   <>
                     <ShoppingCart size={16} strokeWidth={2} aria-hidden />
-                    Add
+                    Add to Cart
                   </>
                 )}
               </button>
@@ -346,18 +334,18 @@ export default function ProductCard({ product }: { product: Product }) {
         }
 
         .pc-shell {
-          border-radius: var(--radius-lg);
+          border-radius: 16px;
           background: var(--white);
-          border: 1px solid var(--border-default);
-          box-shadow: var(--shadow-md);
-          transition: transform 0.35s cubic-bezier(0.33, 1, 0.32, 1), box-shadow 0.35s ease;
+          border: 1px solid rgba(0,0,0,0.05);
+          box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+          transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         }
 
         .pc-root:hover .pc-shell,
         .pc-root:focus-within .pc-shell {
-          transform: translateY(-6px);
-          box-shadow: var(--shadow-lg);
-          border-color: rgba(201, 168, 76, 0.35);
+          transform: translateY(-4px);
+          box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+          border-color: rgba(0,0,0,0.08);
         }
 
         .pc-card {
@@ -388,8 +376,8 @@ export default function ProductCard({ product }: { product: Product }) {
           flex: 1;
           min-height: 200px;
           margin: 0;
-          background: linear-gradient(180deg, var(--cream) 0%, rgba(250, 243, 232, 0.65) 100%);
-          border-bottom: 1px solid var(--cream-mid);
+          background: #f8f9fa;
+          border-bottom: 1px solid rgba(0,0,0,0.03);
           overflow: hidden;
         }
 
@@ -482,68 +470,67 @@ export default function ProductCard({ product }: { product: Product }) {
           display: inline-flex;
           align-items: center;
           gap: 5px;
-          padding: 4px 10px;
-          border-radius: 8px;
-          font-family: Outfit, sans-serif;
-          font-size: 9px;
-          font-weight: 800;
-          letter-spacing: 0.07em;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-family: "Plus Jakarta Sans", sans-serif;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.05em;
           text-transform: uppercase;
-          box-shadow: var(--shadow-sm);
+          box-shadow: none;
         }
 
         .pc-badge--sale {
-          background: linear-gradient(135deg, #dc2626, #b91c1c);
-          color: #fff;
+          background: #ffebee;
+          color: #c62828;
         }
 
         .pc-badge--featured {
-          background: linear-gradient(135deg, var(--gold), #b4923a);
-          color: var(--maroon-deep);
+          background: #fff8e1;
+          color: #f57f17;
         }
 
         .pc-badge--new {
-          background: var(--maroon);
-          color: var(--white);
+          background: #e8f5e9;
+          color: #2e7d32;
         }
 
         .pc-wish {
           position: absolute;
-          top: 8px;
-          right: 8px;
+          top: 12px;
+          right: 12px;
           z-index: 9;
-          width: 42px;
-          height: 42px;
+          width: 36px;
+          height: 36px;
           border: none;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
           cursor: pointer;
-          background: rgba(255, 253, 249, 0.94);
+          background: var(--white);
           color: var(--gray);
-          box-shadow: 0 2px 12px rgba(42, 21, 24, 0.1);
-          transition: transform 0.25s ease, color 0.2s ease, box-shadow 0.2s ease;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+          transition: transform 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .pc-wish:hover {
-          transform: scale(1.08);
-          color: var(--maroon);
-          box-shadow: 0 6px 18px rgba(107, 30, 46, 0.16);
+          transform: scale(1.05);
+          color: #e53935;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
 
         .pc-wish--on {
-          color: var(--maroon);
-          background: rgba(255, 253, 249, 0.98);
+          color: #e53935;
         }
 
         .pc-wish--on svg {
-          fill: var(--maroon);
+          fill: #e53935;
         }
 
         .pc-body {
           flex-shrink: 0;
-          padding: 14px 16px 16px;
+          padding: 16px 18px 18px;
           display: flex;
           flex-direction: column;
           gap: 0;
@@ -552,23 +539,22 @@ export default function ProductCard({ product }: { product: Product }) {
         }
 
         .pc-cat {
-          margin: 0 0 6px;
-          font-size: 9px;
-          font-weight: 800;
-          letter-spacing: 0.14em;
+          margin: 0 0 4px;
+          font-size: 10px;
+          font-weight: 600;
+          letter-spacing: 0.1em;
           text-transform: uppercase;
-          color: var(--maroon-soft);
-          font-family: Outfit, sans-serif;
+          color: var(--gray);
+          font-family: "Plus Jakarta Sans", sans-serif;
         }
 
         .pc-title {
-          margin: 0 0 8px;
-          font-family: Outfit, sans-serif;
+          margin: 0 0 6px;
+          font-family: "Plus Jakarta Sans", sans-serif;
           font-size: 15px;
-          font-weight: 700;
-          line-height: 1.35;
-          letter-spacing: -0.02em;
-          color: var(--text-primary);
+          font-weight: 600;
+          line-height: 1.4;
+          color: #111;
           display: -webkit-box;
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
@@ -578,49 +564,44 @@ export default function ProductCard({ product }: { product: Product }) {
         .pc-rating {
           display: flex;
           align-items: center;
-          gap: 8px;
-          margin: 0 0 10px;
+          gap: 6px;
+          margin: 0 0 12px;
         }
 
         .pc-stars {
           display: flex;
           gap: 2px;
-          color: var(--cream-mid);
+          color: #e0e0e0;
         }
 
         .pc-star--on {
-          color: var(--gold);
+          color: #fbc02d;
         }
 
         .pc-reviews {
-          font-size: 11px;
-          font-weight: 600;
-          color: var(--text-secondary);
-          font-family: "Plus Jakarta Sans", sans-serif;
+          font-size: 12px;
+          color: var(--gray);
         }
 
         .pc-prices {
           display: flex;
-          align-items: baseline;
-          flex-wrap: wrap;
-          gap: 6px 10px;
-          margin: 0 0 14px;
+          align-items: center;
+          gap: 8px;
+          margin: 0 0 16px;
         }
 
         .pc-price {
-          font-family: Outfit, sans-serif;
-          font-size: clamp(1.2rem, 2.2vw, 1.45rem);
-          font-weight: 900;
-          letter-spacing: -0.03em;
-          color: var(--maroon-deep);
+          font-family: "Plus Jakarta Sans", sans-serif;
+          font-size: 18px;
+          font-weight: 700;
+          color: var(--text-primary);
         }
 
         .pc-compare {
-          font-size: 12px;
+          font-size: 13px;
           font-weight: 500;
           color: var(--text-old-price);
           text-decoration: line-through;
-          font-family: "Plus Jakarta Sans", sans-serif;
         }
 
         .pc-actions {
@@ -632,51 +613,44 @@ export default function ProductCard({ product }: { product: Product }) {
         .pc-btn {
           flex: 1;
           border: none;
-          border-radius: 12px;
-          padding: 11px 10px;
+          border-radius: 8px;
+          padding: 12px 16px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          gap: 6px;
+          gap: 8px;
           cursor: pointer;
           font-family: "Plus Jakarta Sans", sans-serif;
-          font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 0.02em;
-          transition: transform 0.2s ease, filter 0.2s ease, background 0.2s ease;
-        }
-
-        .pc-btn--ghost {
-          color: var(--maroon-deep);
-          background: var(--white);
-          border: 1px solid rgba(107, 30, 46, 0.16);
-        }
-
-        .pc-btn--ghost:hover {
-          background: var(--cream-dark);
-          border-color: rgba(107, 30, 46, 0.22);
+          font-size: 14px;
+          font-weight: 600;
+          transition: all 0.2s ease;
         }
 
         .pc-btn--cart {
-          background: var(--gradient-brand);
-          color: var(--white);
-          box-shadow: 0 8px 20px rgba(107, 30, 46, 0.22);
+          background: var(--white);
+          color: var(--text-primary);
+          border: 1px solid var(--border-default);
+          box-shadow: none;
         }
 
         .pc-btn--cart:hover:not(:disabled) {
-          filter: brightness(1.04);
+          background: var(--maroon);
+          color: var(--white);
+          border-color: var(--maroon);
           transform: translateY(-1px);
         }
 
         .pc-btn--cart:disabled {
           cursor: not-allowed;
-          background: var(--cream-mid);
-          color: var(--gray);
-          box-shadow: none;
+          background: #f5f5f5;
+          color: #bdbdbd;
+          border-color: #e0e0e0;
         }
 
         .pc-card--added .pc-btn--cart {
-          background: var(--color-success);
+          background: #4caf50;
+          color: white;
+          border-color: #4caf50;
         }
 
         .pc-cart-check {

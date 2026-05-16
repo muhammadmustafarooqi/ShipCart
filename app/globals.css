@@ -2,12 +2,12 @@
 @import "tailwindcss";
 
 :root {
-  --maroon: #6B1E2E;
-  --maroon-deep: #4A1020;
-  --maroon-soft: #8B3045;
-  --cream: #FAF3E8;
-  --cream-dark: #F0E6D0;
-  --cream-mid: #E8D8BC;
+  --maroon: #7E1A35;
+  --maroon-deep: #561228;
+  --maroon-soft: #9E2E4A;
+  --cream: #FFF6E7;
+  --cream-dark: #F5E8CC;
+  --cream-mid: #EAD8B4;
   --gold: #C9A84C;
   --white: #FFFDF9;
   --gray: #9A8878;
@@ -23,7 +23,7 @@
   --border-hover: var(--maroon-soft);
   --border-accent: var(--maroon);
   --color-brand: var(--maroon);
-  --color-brand-dim: rgba(107, 30, 46, 0.1);
+  --color-brand-dim: rgba(126, 26, 53, 0.1);
   --color-brand-hover: var(--maroon-deep);
   --color-success: #10b981;
   --color-error: #f43f5e;
@@ -38,15 +38,15 @@
   --whatsapp-btn-bg: linear-gradient(135deg, var(--maroon-deep) 0%, var(--maroon) 50%, var(--maroon-soft) 100%);
   --whatsapp-btn-color: var(--white);
   --whatsapp-btn-border: 1px solid rgba(201, 168, 76, 0.45);
-  --whatsapp-btn-shadow: 0 12px 32px rgba(74, 16, 32, 0.32);
+  --whatsapp-btn-shadow: 0 12px 32px rgba(86, 18, 40, 0.32);
   --whatsapp-float-bg: linear-gradient(145deg, var(--maroon) 0%, var(--maroon-deep) 100%);
-  --whatsapp-float-shadow: 0 8px 28px rgba(107, 30, 46, 0.42);
+  --whatsapp-float-shadow: 0 8px 28px rgba(126, 26, 53, 0.42);
   --whatsapp-float-icon: var(--white);
   --text-secondary: var(--gray);
   --text-price: var(--text);
   --text-old-price: var(--gray);
   --gradient-brand: linear-gradient(135deg, var(--maroon), var(--maroon-soft));
-  --gradient-bg: radial-gradient(circle at 10% 0%, rgba(107, 30, 46, 0.05) 0%, transparent 40%), radial-gradient(circle at 90% 100%, rgba(201, 168, 76, 0.05) 0%, transparent 40%);
+  --gradient-bg: radial-gradient(circle at 10% 0%, rgba(126, 26, 53, 0.05) 0%, transparent 40%), radial-gradient(circle at 90% 100%, rgba(201, 168, 76, 0.05) 0%, transparent 40%);
   --gradient-card-img: linear-gradient(135deg, var(--cream), var(--cream-dark));
   --shadow-sm: 0 4px 12px rgba(42, 21, 24, 0.08);
   --shadow-md: 0 10px 30px rgba(42, 21, 24, 0.12);
@@ -102,7 +102,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 .btn-primary:hover { 
   transform: translateY(-3px); 
-  box-shadow: 0 15px 30px rgba(107, 30, 46, 0.35);
+  box-shadow: 0 15px 30px rgba(126, 26, 53, 0.35);
   background: var(--maroon-deep);
 }
 .btn-primary:active { transform: scale(0.96); }
@@ -494,7 +494,7 @@ a.footer-contact-row:hover {
   overflow: hidden;
   white-space: nowrap;
   position: relative;
-  background: var(--text-primary);
+  background: var(--maroon);
   color: white;
   padding: 12px 0;
   display: flex;

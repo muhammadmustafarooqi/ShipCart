@@ -66,8 +66,8 @@ export default function FAQ() {
   };
 
   return (
-    <section style={{ 
-      padding: "80px 0", 
+    <section style={{
+      padding: "80px 0",
       background: "var(--cream)",
       position: "relative"
     }}>
@@ -103,7 +103,7 @@ export default function FAQ() {
             >
               Shopping should feel effortless—never a guessing game.
             </span>
-            <span style={{ display: "block" }}>
+            {/* <span style={{ display: "block" }}>
               Tap a topic for crystal-clear answers on{" "}
               <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>cash on delivery</strong>
               ,{" "}
@@ -114,21 +114,21 @@ export default function FAQ() {
               <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>returns and exchanges</strong>
               , and how we keep every product{" "}
               <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>100% authentic</strong>.
-            </span>
+            </span> */}
           </p>
         </div>
 
         {/* FAQ Grid */}
-        <div style={{ 
-          display: "grid", 
-          gridTemplateColumns: "repeat(2, 1fr)", 
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2, 1fr)",
           gap: "20px",
           maxWidth: "1200px",
           margin: "0 auto"
         }} className="faq-grid">
           {displayedFaqs.map((faq, index) => {
             const isOpen = openIndex === index;
-            
+
             return (
               <div
                 key={faq.question}
