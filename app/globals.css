@@ -494,7 +494,7 @@ a.footer-contact-row:hover {
   overflow: hidden;
   white-space: nowrap;
   position: relative;
-  background: var(--maroon);
+  background: var(--color-brand);
   color: white;
   padding: 12px 0;
   display: flex;
@@ -625,6 +625,8 @@ a.footer-contact-row:hover {
   box-shadow: 4px 0 20px rgba(0,0,0,0.1);
   flex-shrink: 0;
   transition: transform 0.3s ease;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 @media (max-width: 1024px) {
@@ -669,6 +671,10 @@ a.footer-contact-row:hover {
   font-weight: 500;
   transition: all 0.2s ease;
   font-family: "Plus Jakarta Sans", sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .nav-item:hover {

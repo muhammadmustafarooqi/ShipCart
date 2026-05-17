@@ -4,16 +4,25 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { BrandLogoMark } from "@/components/BrandLogo";
+import { useState } from "react";
 import {
   LayoutDashboard,
   Package,
   ShoppingBag,
-  Image as ImageIcon,
   Settings,
   LogOut,
   Store,
   Users,
   X,
+  ChevronDown,
+  FolderTree,
+  Image as ImageIcon,
+  List,
+  Sliders,
+  Tag,
+  MessageSquare,
+  HelpCircle,
+  TrendingUp,
 } from "lucide-react";
 
 const navItems = [
@@ -21,12 +30,22 @@ const navItems = [
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
   { label: "Customers", href: "/admin/customers", icon: Users },
-  { label: "Banners", href: "/admin/banners", icon: ImageIcon },
-  { label: "Settings", href: "/admin/settings", icon: Settings },
+];
+
+const settingsItems = [
+  { label: "General Settings", href: "/admin/settings", icon: Sliders },
+  { label: "Categories", href: "/admin/settings/categories", icon: FolderTree },
+  { label: "Banners", href: "/admin/settings/banners", icon: ImageIcon },
+  { label: "Marquee Banner", href: "/admin/settings/marquee", icon: List },
+  { label: "Offer Banner", href: "/admin/settings/offer-banner", icon: Tag },
+  { label: "Testimonials", href: "/admin/settings/testimonials", icon: MessageSquare },
+  { label: "FAQs", href: "/admin/settings/faqs", icon: HelpCircle },
+  { label: "Stats", href: "/admin/settings/stats", icon: TrendingUp },
 ];
 
 export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () => void }) {
   const pathname = usePathname();
+  const [settingsOpen, setSettingsOpen] = useState(pathname.startsWith("/admin/settings"));
 
   return (
     <>
@@ -69,7 +88,7 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; on
       </div>
 
       {/* Navigation */}
-      <nav style={{ flex: 1, padding: "16px 0" }}>
+      <nav style={{ flex: 1, padding: "16px 0", overflowY: "auto", overflowX: "hidden", minWidth: 0 }}>
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
           const Icon = item.icon;
@@ -94,6 +113,73 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; on
             </Link>
           );
         })}
+
+        {/* Settings Dropdown */}
+        <div style={{ marginTop: "4px" }}>
+          <button
+            onClick={() => setSettingsOpen(!settingsOpen)}
+            className={`nav-item ${pathname.startsWith("/admin/settings") ? "active" : ""}`}
+            style={{
+              width: "100%",
+              cursor: "pointer",
+              background: "none",
+              border: "none",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: "14px",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              padding: "12px",
+              color: pathname.startsWith("/admin/settings") ? "#ff6b00" : "rgba(255,255,255,0.7)",
+            }}
+          >
+            <Settings size={18} strokeWidth={2} style={{ color: pathname.startsWith("/admin/settings") ? "#ff6b00" : "rgba(255,255,255,0.7)" }} />
+            <span style={{ flex: 1, textAlign: "left", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>Settings</span>
+            <ChevronDown 
+              size={16} 
+              style={{ 
+                transition: "transform 0.2s ease",
+                transform: settingsOpen ? "rotate(180deg)" : "rotate(0deg)"
+              }} 
+            />
+          </button>
+
+          {/* Settings Sub-items */}
+          <div style={{
+            maxHeight: settingsOpen ? "500px" : "0",
+            overflow: "hidden",
+            transition: "max-height 0.3s ease",
+          }}>
+            {settingsItems.map((item) => {
+              const isActive = pathname === item.href;
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`nav-item nav-sub-item ${isActive ? "active" : ""}`}
+                  onClick={onClose}
+                  style={{
+                    paddingLeft: "48px",
+                    fontSize: "13px",
+                  }}
+                >
+                  <Icon size={16} strokeWidth={2} style={{ color: isActive ? "#ff6b00" : "rgba(255,255,255,0.6)" }} />
+                  <span>{item.label}</span>
+                  {isActive && (
+                    <div style={{
+                      marginLeft: "auto",
+                      width: "6px",
+                      height: "6px",
+                      borderRadius: "50%",
+                      background: "#ff6b00",
+                    }} />
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
       </nav>
 
       {/* Footer */}

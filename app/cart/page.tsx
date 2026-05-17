@@ -1,17 +1,29 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import TrustBadges from "@/components/TrustBadges";
 import { useCart } from "@/components/CartProvider";
+import { useSettings } from "@/lib/useSettings";
 import { Trash2, Plus, Minus, ShoppingBag, Truck, CreditCard } from "lucide-react";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, subtotal, totalItems } = useCart();
-  const shippingFee = subtotal >= 1500 ? 0 : 200;
-  const total = subtotal + shippingFee;
+  const { settings, loading: settingsLoading } = useSettings();
+  const [shippingFee, setShippingFee] = useState(0);
+  const [total, setTotal] = useState(0);
+
+  // Update shipping fee when settings or subtotal changes
+  useEffect(() => {
+    if (settings) {
+      const fee = subtotal >= settings.freeDeliveryAbove ? 0 : settings.deliveryFee;
+      setShippingFee(fee);
+      setTotal(subtotal + fee);
+    }
+  }, [subtotal, settings]);
 
   const s = { background: "var(--bg-primary)", minHeight: "100vh" };
 
@@ -90,9 +102,9 @@ export default function CartPage() {
                   <span style={{ color: "var(--text-secondary)" }}>Shipping Fee</span>
                   <span style={{ fontWeight: 700, color: shippingFee === 0 ? "var(--color-success)" : "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>{shippingFee === 0 ? "FREE" : `Rs. ${shippingFee}`}</span>
                 </div>
-                {shippingFee > 0 && (
+                {shippingFee > 0 && settings && (
                   <div style={{ background: "var(--color-brand-dim)", border: "1px solid rgba(37,99,235,0.2)", borderRadius: "8px", padding: "12px 16px", fontSize: "13px", color: "var(--color-brand)", display: "flex", alignItems: "center", gap: "8px", fontWeight: 600 }}>
-                    <Truck size={16} color="var(--color-icon)" /> Add Rs. {(1500 - subtotal).toLocaleString()} more for free delivery!
+                    <Truck size={16} color="var(--color-icon)" /> Add Rs. {(settings.freeDeliveryAbove - subtotal).toLocaleString()} more for free delivery!
                   </div>
                 )}
               </div>

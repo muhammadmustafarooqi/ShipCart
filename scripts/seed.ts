@@ -45,6 +45,20 @@ const BannerSchema = new mongoose.Schema({
 
 const Banner = mongoose.models.Banner || mongoose.model("Banner", BannerSchema);
 
+const CategorySchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  slug: { type: String, required: true, unique: true },
+  icon: { type: String, default: "ChefHat" },
+  image: { type: String, required: true },
+  imagePosition: { type: String, default: "center 50%" },
+  tagline: { type: String, default: "" },
+  isFeatured: { type: Boolean, default: false },
+  order: { type: Number, default: 0 },
+  isActive: { type: Boolean, default: true },
+}, { timestamps: true });
+
+const Category = mongoose.models.Category || mongoose.model("Category", CategorySchema);
+
 const PRODUCTS_TO_SEED = [
   "Rechargeable Coffee Beater",
   "Silicone Washing Gloves",
@@ -261,6 +275,247 @@ async function seed() {
     ];
     await Banner.insertMany(banners);
     console.log("Successfully seeded 3 banners");
+
+    // Seed Categories
+    await Category.deleteMany({});
+    const categories = [
+      {
+        name: "Kitchen & Cooking",
+        slug: "kitchen-cooking",
+        icon: "ChefHat",
+        image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=1200",
+        imagePosition: "center 60%",
+        tagline: "Cookware, prep tools & smart kitchen picks",
+        isFeatured: true,
+        order: 0,
+        isActive: true,
+      },
+      {
+        name: "Personal Care & Beauty",
+        slug: "personal-care-beauty",
+        icon: "Sparkles",
+        image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&q=80&w=700",
+        imagePosition: "center 42%",
+        tagline: "",
+        isFeatured: false,
+        order: 1,
+        isActive: true,
+      },
+      {
+        name: "Home & Cleaning",
+        slug: "home-cleaning",
+        icon: "Home",
+        image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&q=80&w=700",
+        imagePosition: "center 55%",
+        tagline: "",
+        isFeatured: false,
+        order: 2,
+        isActive: true,
+      },
+      {
+        name: "Fitness & Health",
+        slug: "fitness-health",
+        icon: "Dumbbell",
+        image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=700",
+        imagePosition: "center 45%",
+        tagline: "",
+        isFeatured: false,
+        order: 3,
+        isActive: true,
+      },
+      {
+        name: "Electronics & Gadgets",
+        slug: "electronics-gadgets",
+        icon: "Zap",
+        image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&q=80&w=700",
+        imagePosition: "center 50%",
+        tagline: "",
+        isFeatured: false,
+        order: 4,
+        isActive: true,
+      },
+      {
+        name: "Baby & Kids",
+        slug: "baby-kids",
+        icon: "Baby",
+        image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&q=80&w=900",
+        imagePosition: "center 48%",
+        tagline: "",
+        isFeatured: false,
+        order: 5,
+        isActive: true,
+      },
+    ];
+    await Category.insertMany(categories);
+    console.log("Successfully seeded 6 categories");
+
+    // Seed Testimonials
+    const TestimonialSchema = new mongoose.Schema({
+      name: { type: String, required: true },
+      image: { type: String, default: "" },
+      avatarColor: { type: String, default: "#ff6b00" },
+      rating: { type: Number, required: true, min: 1, max: 5 },
+      text: { type: String, required: true },
+      product: { type: String, default: "" },
+      isActive: { type: Boolean, default: true },
+      order: { type: Number, default: 0 },
+    }, { timestamps: true });
+    const Testimonial = mongoose.models.Testimonial || mongoose.model("Testimonial", TestimonialSchema);
+    
+    await Testimonial.deleteMany({});
+    const testimonials = [
+      {
+        name: "Bilal Ahmed",
+        avatarColor: "#ff6b00",
+        rating: 5,
+        text: "Ordered a massage device for my elderly father. The delivery was on time and the product quality is excellent. Highly satisfied!",
+        product: "Neck Massager Pro",
+        isActive: true,
+        order: 0,
+      },
+      {
+        name: "Fatima Khan",
+        avatarColor: "#3b82f6",
+        rating: 5,
+        text: "Best kitchen gadgets I've found! The multi-cooker has made meal prep so much easier. Great customer service too.",
+        product: "Multi-Cooker 8-in-1",
+        isActive: true,
+        order: 1,
+      },
+      {
+        name: "Hassan Ali",
+        avatarColor: "#10b981",
+        rating: 4,
+        text: "Really good quality products at affordable prices. Will definitely order again. Shipping was faster than expected.",
+        product: "Smart LED Bulb Set",
+        isActive: true,
+        order: 2,
+      },
+      {
+        name: "Ayesha Malik",
+        avatarColor: "#f59e0b",
+        rating: 5,
+        text: "The beauty gadgets are a game-changer! My skin has improved so much in just a month of use. Love it!",
+        product: "Facial Cleansing Brush",
+        isActive: true,
+        order: 3,
+      },
+      {
+        name: "Muhammad Hassan",
+        avatarColor: "#ef4444",
+        rating: 5,
+        text: "Amazing fitness equipment! I've been using the home gym setup for 3 months now. Best investment ever!",
+        product: "Portable Home Gym Kit",
+        isActive: true,
+        order: 4,
+      },
+      {
+        name: "Zainab Ahmed",
+        avatarColor: "#8b5cf6",
+        rating: 4,
+        text: "The baby monitor camera is incredible. Can watch my baby from anywhere. Highly recommended for new parents!",
+        product: "WiFi Baby Monitor",
+        isActive: true,
+        order: 5,
+      },
+    ];
+    await Testimonial.insertMany(testimonials);
+    console.log("Successfully seeded 6 testimonials");
+
+    // Seed FAQs
+    const FAQSchema = new mongoose.Schema({
+      question: { type: String, required: true },
+      answer: { type: String, required: true },
+      isActive: { type: Boolean, default: true },
+      order: { type: Number, default: 0 },
+    }, { timestamps: true });
+    const FAQ = mongoose.models.FAQ || mongoose.model("FAQ", FAQSchema);
+    
+    await FAQ.deleteMany({});
+    const faqs = [
+      {
+        question: "What is your delivery timeframe?",
+        answer: "We deliver to all major cities in Pakistan within 2-3 business days. Orders placed in Karachi, Lahore, and Islamabad are usually delivered within 24-48 hours. Delivery times may vary for other cities.",
+        isActive: true,
+        order: 0,
+      },
+      {
+        question: "Do you offer cash on delivery (COD)?",
+        answer: "Yes! We offer Cash on Delivery for all orders across Pakistan. There's no advance payment required. Pay only when you receive your order.",
+        isActive: true,
+        order: 1,
+      },
+      {
+        question: "What is the free shipping policy?",
+        answer: "We offer free shipping on all orders above Rs. 1,500. Orders below Rs. 1,500 have a flat shipping charge of Rs. 200. This applies to all major cities in Pakistan.",
+        isActive: true,
+        order: 2,
+      },
+      {
+        question: "What is your return and exchange policy?",
+        answer: "We accept returns and exchanges within 7 days of delivery. The product must be unused and in original packaging. Contact our customer service for return instructions.",
+        isActive: true,
+        order: 3,
+      },
+      {
+        question: "How can I track my order?",
+        answer: "After placing your order, you'll receive a tracking link via SMS and email. You can use this link to track your package in real-time until delivery.",
+        isActive: true,
+        order: 4,
+      },
+      {
+        question: "Are the products original and authentic?",
+        answer: "Absolutely! We source all products directly from authorized distributors and manufacturers. Every product comes with a warranty and quality guarantee.",
+        isActive: true,
+        order: 5,
+      },
+    ];
+    await FAQ.insertMany(faqs);
+    console.log("Successfully seeded 6 FAQs");
+
+    // Seed Stats
+    const StatSchema = new mongoose.Schema({
+      value: { type: String, required: true },
+      label: { type: String, required: true },
+      icon: { type: String, default: "package" },
+      isActive: { type: Boolean, default: true },
+      order: { type: Number, default: 0 },
+    }, { timestamps: true });
+    const Stat = mongoose.models.Stat || mongoose.model("Stat", StatSchema);
+    
+    await Stat.deleteMany({});
+    const stats = [
+      {
+        value: "50,000+",
+        label: "Happy Customers",
+        icon: "users",
+        isActive: true,
+        order: 0,
+      },
+      {
+        value: "100,000+",
+        label: "Products Shipped",
+        icon: "package",
+        isActive: true,
+        order: 1,
+      },
+      {
+        value: "24/7",
+        label: "Customer Support",
+        icon: "clock",
+        isActive: true,
+        order: 2,
+      },
+      {
+        value: "4.8/5",
+        label: "Average Rating",
+        icon: "star",
+        isActive: true,
+        order: 3,
+      },
+    ];
+    await Stat.insertMany(stats);
+    console.log("Successfully seeded 4 stats");
 
     process.exit(0);
   } catch (error) {

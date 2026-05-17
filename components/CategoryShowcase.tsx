@@ -1,66 +1,85 @@
 "use client";
 
 import Link from "next/link";
-import { ChefHat, Sparkles, Home, Dumbbell, Zap, Baby, ArrowUpRight } from "lucide-react";
+import { ChefHat, Sparkles, Home, Dumbbell, Zap, Baby, Shirt, Watch, Laptop, Book, ArrowUpRight, LucideIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+
+const iconMap: Record<string, LucideIcon> = {
+  ChefHat,
+  Sparkles,
+  Home,
+  Dumbbell,
+  Zap,
+  Baby,
+  Shirt,
+  Watch,
+  Laptop,
+  Book,
+};
 
 const unsplash = (id: string, w: number) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=82`;
 
 type Cat = {
+  _id?: string;
   name: string;
   slug: string;
-  icon: typeof ChefHat;
+  icon: string;
   image: string;
   imagePosition: string;
+  tagline?: string;
+  isFeatured?: boolean;
 };
 
-const categories: Cat[] = [
+const DEFAULT_CATEGORIES: Cat[] = [
   {
     name: "Kitchen & Cooking",
     slug: "kitchen-cooking",
-    icon: ChefHat,
+    icon: "ChefHat",
     image: unsplash("photo-1556911220-e15b29be8c8f", 1200),
     imagePosition: "center 60%",
+    tagline: "Cookware, prep tools & smart kitchen picks",
+    isFeatured: true,
   },
   {
     name: "Personal Care & Beauty",
     slug: "personal-care-beauty",
-    icon: Sparkles,
+    icon: "Sparkles",
     image: unsplash("photo-1596462502278-27bfdc403348", 700),
     imagePosition: "center 42%",
   },
   {
     name: "Home & Cleaning",
     slug: "home-cleaning",
-    icon: Home,
+    icon: "Home",
     image: unsplash("photo-1581578731548-c64695cc6952", 700),
     imagePosition: "center 55%",
   },
   {
     name: "Fitness & Health",
     slug: "fitness-health",
-    icon: Dumbbell,
+    icon: "Dumbbell",
     image: unsplash("photo-1517836357463-d25dfeac3438", 700),
     imagePosition: "center 45%",
   },
   {
     name: "Electronics & Gadgets",
     slug: "electronics-gadgets",
-    icon: Zap,
+    icon: "Zap",
     image: unsplash("photo-1498049794561-7780e7231661", 700),
     imagePosition: "center 50%",
   },
   {
     name: "Baby & Kids",
     slug: "baby-kids",
-    icon: Baby,
+    icon: "Baby",
     image: unsplash("photo-1515488042361-ee00e0ddd4e4", 900),
     imagePosition: "center 48%",
   },
 ];
 
 function CategoryCard({ cat, featured }: { cat: Cat; featured?: boolean }) {
-  const Icon = cat.icon;
+  const IconComponent = iconMap[cat.icon] || ChefHat;
   const iconSize = featured ? 34 : 22;
   const ctaSize = featured ? 17 : 14;
 
@@ -81,12 +100,12 @@ function CategoryCard({ cat, featured }: { cat: Cat; featured?: boolean }) {
         <div className="category-showcase-frame" aria-hidden />
         <div className="category-showcase-inner">
           <div className="category-showcase-icon">
-            <Icon size={iconSize} strokeWidth={featured ? 2 : 2.2} aria-hidden />
+            <IconComponent size={iconSize} strokeWidth={featured ? 2 : 2.2} aria-hidden />
           </div>
           <div className="category-showcase-copy">
             <h3 className="category-showcase-title">{cat.name}</h3>
-            {featured ? (
-              <p className="category-showcase-tagline">Cookware, prep tools & smart kitchen picks</p>
+            {featured && cat.tagline ? (
+              <p className="category-showcase-tagline">{cat.tagline}</p>
             ) : null}
             <span className="category-showcase-cta">
               Explore
@@ -100,7 +119,39 @@ function CategoryCard({ cat, featured }: { cat: Cat; featured?: boolean }) {
 }
 
 export default function CategoryShowcase() {
-  const [hero, ...rail] = categories;
+  const [categories, setCategories] = useState<Cat[]>(DEFAULT_CATEGORIES);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("/api/categories", {
+          cache: "no-store",
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.categories && data.categories.length > 0) {
+            setCategories(data.categories);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const featured = categories.find(c => c.isFeatured) || categories[0];
+  const rail = categories.filter(c => c._id !== featured._id || !c.isFeatured).slice(0, 5);
+
+  if (loading) return null;
 
   return (
     <section
@@ -142,10 +193,10 @@ export default function CategoryShowcase() {
 
         <div className="category-showcase-bento">
           <div className="category-showcase-hero-slot">
-            <CategoryCard cat={hero} featured />
+            <CategoryCard cat={featured} featured />
           </div>
           <div className="category-showcase-rail">{rail.map((cat) => (
-            <CategoryCard key={cat.slug} cat={cat} />
+            <CategoryCard key={cat._id || cat.slug} cat={cat} />
           ))}</div>
         </div>
       </div>

@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { useCart } from "@/components/CartProvider";
+import { useSettings } from "@/lib/useSettings";
 import { ShoppingCart, ChevronLeft, Minus, Plus, Package, Zap, ShieldCheck, Star, Frown } from "lucide-react";
 
 interface Product {
@@ -20,6 +21,7 @@ interface Product {
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { addItem } = useCart();
+  const { settings, loading: settingsLoading } = useSettings();
   const cartBtnRef = useRef<HTMLButtonElement>(null);
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -333,7 +335,7 @@ export default function ProductDetailPage() {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "16px" }}>
               {[
                 { icon: <ShieldCheck size={20} color="var(--color-icon)" />, title: "100% Original", sub: "Quality checked" },
-                { icon: <Zap size={20} color="var(--color-icon)" />, title: "Fast Shipping", sub: "Free over Rs.1500" },
+                { icon: <Zap size={20} color="var(--color-icon)" />, title: "Fast Shipping", sub: settings ? `Free over Rs.${settings.freeDeliveryAbove.toLocaleString()}` : "Free over Rs.3000" },
                 { icon: <Package size={20} color="var(--color-icon)" />, title: "Easy Returns", sub: "7-day policy" },
               ].map((item) => (
                 <div key={item.title} style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", padding: "16px 12px", textAlign: "center", boxShadow: "var(--shadow-sm)" }}>

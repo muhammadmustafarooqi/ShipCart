@@ -2,6 +2,7 @@
 
 import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { X, Sparkles, Banknote } from "lucide-react";
+import { useSettings } from "@/lib/useSettings";
 
 const ANNOUNCEMENT_VAR = "--announcement-h";
 
@@ -16,6 +17,7 @@ export default function AnnouncementBar() {
   const [visible, setVisible] = useState(true);
   const [spacerHeight, setSpacerHeight] = useState(44);
   const barRef = useRef<HTMLDivElement>(null);
+  const { settings, loading } = useSettings();
 
   useLayoutEffect(() => {
     if (!visible) {
@@ -45,7 +47,14 @@ export default function AnnouncementBar() {
     return () => setAnnouncementHeight(0);
   }, []);
 
-  if (!visible) return null;
+  // Hide announcement bar if not active in settings
+  useEffect(() => {
+    if (settings && !settings.announcementBarActive) {
+      setVisible(false);
+    }
+  }, [settings]);
+
+  if (!visible || !settings) return null;
 
   return (
     <>
@@ -76,7 +85,7 @@ export default function AnnouncementBar() {
           <Sparkles size={15} strokeWidth={2.25} aria-hidden />
         </span>
         <span style={{ verticalAlign: "middle" }}>
-          Free nationwide delivery on orders above Rs. 1,500 &nbsp;&nbsp;{" "}
+          {settings.announcementBarText} &nbsp;&nbsp;{" "}
         </span>
         {/* <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", verticalAlign: "middle" }}>
           <Banknote size={15} strokeWidth={2.25} aria-hidden />

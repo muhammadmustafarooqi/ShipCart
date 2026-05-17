@@ -57,7 +57,7 @@ export function generateOrderId(): string {
 }
 
 // Calculate shipping fee
-export function calculateShipping(subtotal: number, freeAbove = 1500, fee = 200): number {
+export function calculateShipping(subtotal: number, freeAbove = 3000, fee = 200): number {
   return subtotal >= freeAbove ? 0 : fee;
 }
 

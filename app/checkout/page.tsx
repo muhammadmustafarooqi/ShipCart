@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useCart } from "@/components/CartProvider";
+import { useSettings } from "@/lib/useSettings";
 import { PAKISTANI_CITIES, validatePakistaniPhone, calculateShipping } from "@/lib/utils";
 import { CheckCircle, Truck, ShoppingBag, ShieldCheck } from "lucide-react";
 import Link from "next/link";
@@ -27,12 +28,22 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { data: session } = useSession();
   const { items, subtotal, clearCart } = useCart();
+  const { settings, loading: settingsLoading } = useSettings();
   const [form, setForm] = useState<FormData>({ customerName: "", phone: "", city: "", address: "", notes: "" });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [userDataLoaded, setUserDataLoaded] = useState(false);
-  const shippingFee = calculateShipping(subtotal);
-  const total = subtotal + shippingFee;
+  const [shippingFee, setShippingFee] = useState(0);
+  const [total, setTotal] = useState(0);
+
+  // Update shipping when settings or subtotal changes
+  useEffect(() => {
+    if (settings) {
+      const fee = subtotal >= settings.freeDeliveryAbove ? 0 : settings.deliveryFee;
+      setShippingFee(fee);
+      setTotal(subtotal + fee);
+    }
+  }, [subtotal, settings]);
 
   // Fetch user data if logged in
   useEffect(() => {

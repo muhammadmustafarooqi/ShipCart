@@ -1,28 +1,75 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
 export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(false);
+  const [isLoadingSettings, setIsLoadingSettings] = useState(true);
   const [form, setForm] = useState({
     storeName: "ALLInONE Store",
     whatsappNumber: "923001234567",
     deliveryFee: 200,
-    freeDeliveryAbove: 1500,
-    announcementBarText: "Free Delivery on Orders Above PKR 1500 | COD Available Nationwide",
+    freeDeliveryAbove: 3000,
+    announcementBarText: "Free Delivery on Orders Above PKR 3000 | COD Available Nationwide",
     announcementBarActive: true,
   });
+
+  // Load settings from database on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const response = await fetch("/api/settings");
+        if (response.ok) {
+          const data = await response.json();
+          setForm({
+            storeName: data.storeName || "ALLInONE Store",
+            whatsappNumber: data.whatsappNumber || "923001234567",
+            deliveryFee: data.deliveryFee || 200,
+            freeDeliveryAbove: data.freeDeliveryAbove || 3000,
+            announcementBarText: data.announcementBarText || "Free Delivery on Orders Above PKR 3000 | COD Available Nationwide",
+            announcementBarActive: data.announcementBarActive ?? true,
+          });
+        }
+      } catch (error) {
+        console.error("Error loading settings:", error);
+      } finally {
+        setIsLoadingSettings(false);
+      }
+    };
+
+    loadSettings();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    
     try {
-      // Simulate API call for settings
-      await new Promise((res) => setTimeout(res, 800));
+      // Fetch current settings to preserve marqueeItems
+      const currentRes = await fetch("/api/settings");
+      const currentData = await currentRes.json();
+
+      const response = await fetch("/api/settings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...currentData,
+          ...form,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to save settings");
+      }
+
       toast.success("Settings updated successfully!");
-    } catch {
-      toast.error("Failed to update settings");
+      window.dispatchEvent(new Event('settingsUpdated'));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to update settings");
     } finally {
       setLoading(false);
     }

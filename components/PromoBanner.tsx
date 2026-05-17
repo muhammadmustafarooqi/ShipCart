@@ -2,8 +2,36 @@
 
 import Link from "next/link";
 import { Sparkles, Truck, WalletCards, ShoppingBag, ArrowRight, Tag } from "lucide-react";
+import { useSettings } from "@/lib/useSettings";
+
+const DEFAULT_OFFER = {
+  isActive: true,
+  kickerText: "Limited-time offer",
+  kickerSubtext: "Ends when slots fill — same-day replies on WhatsApp",
+  titleLine1: "FREE delivery + COD",
+  titleLine2: "on carts",
+  highlightText: "Rs. 1,500+",
+  description: "Nationwide shipping, pay when it lands — no advance on standard orders. Stack cart value once and both perks unlock at checkout.",
+  perk1Title: "Free shipping",
+  perk1Text: "Orders Rs. 1,500+ ship on us",
+  perk2Title: "COD unlocked",
+  perk2Text: "Pay on delivery, zero prepay",
+  buttonText: "Shop the offer",
+  buttonLink: "/products",
+  secondaryButtonText: "Featured picks",
+  secondaryButtonLink: "/products?featured=true",
+  statValue: "Rs. 1,500",
+  statLabel: "Minimum cart for free delivery",
+  stat2Value: "COD",
+  stat2Label: "No advance on standard orders",
+  panelNote: "Same dispatch and support as the rest of the store — only checkout perks change so you keep full confidence.",
+};
 
 export default function PromoBanner() {
+  const { settings, loading } = useSettings();
+  const offer = settings?.offerBanner || DEFAULT_OFFER;
+
+  if (loading || !offer.isActive) return null;
   return (
     <section className="pb-section" aria-labelledby="promo-banner-heading">
       <div className="pb-bg-grid" aria-hidden />
@@ -23,21 +51,20 @@ export default function PromoBanner() {
               <div className="pb-kicker-wrap">
                 <span className="pb-kicker">
                   <Sparkles size={14} strokeWidth={2.25} className="pb-kicker-ico" aria-hidden />
-                  Limited-time offer
+                  {offer.kickerText}
                 </span>
-                <span className="pb-kicker-sub">Ends when slots fill — same-day replies on WhatsApp</span>
+                <span className="pb-kicker-sub">{offer.kickerSubtext}</span>
               </div>
 
               <h2 id="promo-banner-heading" className="pb-title">
-                <span className="pb-title-line1">FREE delivery + COD</span>
+                <span className="pb-title-line1">{offer.titleLine1}</span>
                 <span className="pb-title-line2">
-                  on carts <span className="pb-title-highlight">Rs. 1,500+</span>
+                  {offer.titleLine2} <span className="pb-title-highlight">{offer.highlightText}</span>
                 </span>
               </h2>
 
               <p className="pb-lede">
-                Nationwide shipping, pay when it lands — no advance on standard orders. Stack cart value once
-                and both perks unlock at checkout.
+                {offer.description}
               </p>
 
               <ul className="pb-perks" role="list">
@@ -46,8 +73,8 @@ export default function PromoBanner() {
                     <Truck size={18} strokeWidth={2} />
                   </span>
                   <span className="pb-perk-text">
-                    <strong>Free shipping</strong>
-                    <span>Orders Rs. 1,500+ ship on us</span>
+                    <strong>{offer.perk1Title}</strong>
+                    <span>{offer.perk1Text}</span>
                   </span>
                 </li>
                 <li className="pb-perk">
@@ -55,19 +82,19 @@ export default function PromoBanner() {
                     <WalletCards size={18} strokeWidth={2} />
                   </span>
                   <span className="pb-perk-text">
-                    <strong>COD unlocked</strong>
-                    <span>Pay on delivery, zero prepay</span>
+                    <strong>{offer.perk2Title}</strong>
+                    <span>{offer.perk2Text}</span>
                   </span>
                 </li>
               </ul>
 
               <div className="pb-actions">
-                <Link href="/products" className="btn-primary pb-btn-main">
+                <Link href={offer.buttonLink} className="btn-primary pb-btn-main">
                   <ShoppingBag size={18} strokeWidth={2} aria-hidden />
-                  Shop the offer
+                  {offer.buttonText}
                 </Link>
-                <Link href="/products?featured=true" className="pb-btn-outline">
-                  Featured picks
+                <Link href={offer.secondaryButtonLink} className="pb-btn-outline">
+                  {offer.secondaryButtonText}
                   <ArrowRight size={18} strokeWidth={2.25} aria-hidden />
                 </Link>
               </div>
@@ -77,16 +104,15 @@ export default function PromoBanner() {
               <div className="pb-panel-shine" aria-hidden />
               <p className="pb-panel-eyebrow">What you get today</p>
               <div className="pb-stat">
-                <span className="pb-stat-value">Rs. 1,500</span>
-                <span className="pb-stat-label">Minimum cart for free delivery</span>
+                <span className="pb-stat-value">{offer.statValue}</span>
+                <span className="pb-stat-label">{offer.statLabel}</span>
               </div>
               <div className="pb-stat pb-stat-alt">
-                <span className="pb-stat-value">COD</span>
-                <span className="pb-stat-label">No advance on standard orders</span>
+                <span className="pb-stat-value">{offer.stat2Value}</span>
+                <span className="pb-stat-label">{offer.stat2Label}</span>
               </div>
               <p className="pb-panel-note">
-                Same dispatch and support as the rest of the store — only checkout perks change so you keep
-                full confidence.
+                {offer.panelNote}
               </p>
             </aside>
           </div>

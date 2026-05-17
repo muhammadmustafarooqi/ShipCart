@@ -65,7 +65,7 @@ export default function Navbar() {
               aria-label="AllInOne Store, home"
               style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
             >
-              <NavLogo height={44} maxWidth={160} />
+              <NavLogo height={60} maxWidth={180} />
             </Link>
 
             {/* Right: Search + Cart */}
@@ -97,7 +97,7 @@ export default function Navbar() {
               aria-label="AllInOne Store, home"
               className="nav-logo-link"
             >
-              <NavLogo height={52} maxWidth={200} />
+              <NavLogo height={64} maxWidth={220} />
             </Link>
 
             {/* Nav links — pill rail */}
@@ -222,13 +222,13 @@ export default function Navbar() {
       <style>{`
         /* ── Shell: floating bar + accent ── */
         .nav-mobile-drawer {
-          top: calc(78px + var(--announcement-h, 0px));
+          top: calc(88px + var(--announcement-h, 0px));
           width: 100% !important;
           max-width: none !important;
           border-right: none !important;
         }
         .nav-menu-overlay {
-          top: calc(78px + var(--announcement-h, 0px));
+          top: calc(88px + var(--announcement-h, 0px));
         }
 
         .nav-shell {
@@ -274,10 +274,19 @@ export default function Navbar() {
         /* ── Mobile vs Desktop visibility ── */
         .mobile-header {
           position: relative;
+          display: grid;
+          grid-template-columns: 100px 1fr 100px; /* FIX: was 44px 1fr 100px — equal sides center the logo */
+          align-items: center;
+          justify-items: start;
+          height: 88px;
+          gap: 0;
+        }
+        .mobile-header > div:last-child {
+          grid-column: 3;
+          justify-self: end;
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          height: 78px;
+          gap: 8px;
         }
         .desktop-header { display: none; }
 
@@ -296,9 +305,12 @@ export default function Navbar() {
 
         /* ── Logo center on mobile ── */
         .logo-center {
-          position: absolute;
-          left: 50%;
-          transform: translateX(-50%);
+          position: static;
+          grid-column: 2;
+          display: flex !important;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
         }
 
         .nav-logo-link {
@@ -315,10 +327,10 @@ export default function Navbar() {
           transform: scale(0.98);
         }
         .logo-center.nav-logo-link:hover {
-          transform: translateX(-50%) scale(1.04);
+          transform: scale(1.04);
         }
         .logo-center.nav-logo-link:active {
-          transform: translateX(-50%) scale(0.98);
+          transform: scale(0.98);
         }
 
         /* ── Desktop: pill rail + search row ── */

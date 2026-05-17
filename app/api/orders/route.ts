@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Order from "@/models/Order";
+import Settings from "@/models/Settings";
 import { generateOrderId, validatePakistaniPhone, calculateShipping } from "@/lib/utils";
 import { auth } from "@/lib/auth";
 
@@ -60,6 +61,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Order must contain at least one item" }, { status: 400 });
     }
 
+    // Fetch settings for dynamic shipping calculation
+    let settings = await Settings.findOne();
+    const freeDeliveryAbove = settings?.freeDeliveryAbove || 3000;
+    const deliveryFee = settings?.deliveryFee || 200;
+
     // Validate and recalculate totals server-side (never trust the client)
     const validatedItems = body.items.map((item: { productId: string; name: string; price: number; quantity: number; image?: string }) => {
       if (!item.productId || !item.name || typeof item.price !== "number" || item.price <= 0 || typeof item.quantity !== "number" || item.quantity < 1) {
@@ -78,7 +84,7 @@ export async function POST(request: NextRequest) {
       (sum: number, i: { price: number; quantity: number }) => sum + i.price * i.quantity,
       0
     );
-    const recalcShipping = calculateShipping(recalcSubtotal);
+    const recalcShipping = calculateShipping(recalcSubtotal, freeDeliveryAbove, deliveryFee);
     const recalcTotal = recalcSubtotal + recalcShipping;
 
     // Generate unique order ID

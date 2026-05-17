@@ -157,7 +157,7 @@ export default async function HomePage() {
       <StatsSection />
 
       {/* WhatsApp CTA */}
-      <WhatsAppCTA />
+      {/* <WhatsAppCTA /> */}
 
       <Footer />
     </main>

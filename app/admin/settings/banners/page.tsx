@@ -31,6 +31,7 @@ export default function AdminBannersPage() {
   const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
   const [form, setForm] = useState(EMPTY_BANNER);
   const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetchBanners();
@@ -38,7 +39,7 @@ export default function AdminBannersPage() {
 
   const fetchBanners = async () => {
     try {
-      const res = await fetch("/api/banners");
+      const res = await fetch("/api/banners?includeInactive=true");
       const data = await res.json();
       setBanners(data.banners || []);
     } catch {
@@ -54,6 +55,63 @@ export default function AdminBannersPage() {
     setShowForm(true);
   };
 
+  const openEditForm = (banner: Banner) => {
+    setEditingBanner(banner);
+    setForm({
+      title: banner.title,
+      subtitle: banner.subtitle,
+      image: banner.image,
+      link: banner.link,
+      isActive: banner.isActive,
+      order: banner.order,
+    });
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this banner?")) return;
+    
+    try {
+      const res = await fetch(`/api/banners/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error();
+      toast.success("Banner deleted!");
+      fetchBanners();
+    } catch {
+      toast.error("Failed to delete banner");
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      
+      if (!res.ok) throw new Error();
+      
+      const data = await res.json();
+      setForm((f) => ({ ...f, image: data.url }));
+      toast.success("Image uploaded!");
+    } catch {
+      toast.error("Failed to upload image");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title || !form.image) {
@@ -64,8 +122,13 @@ export default function AdminBannersPage() {
     setSubmitting(true);
     try {
       if (editingBanner) {
-        // Implementation for update
-        toast.success("Banner updated! (Note: API route needs PUT handler)");
+        const res = await fetch(`/api/banners/${editingBanner._id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        });
+        if (!res.ok) throw new Error();
+        toast.success("Banner updated!");
       } else {
         const res = await fetch("/api/banners", {
           method: "POST",
@@ -124,10 +187,10 @@ export default function AdminBannersPage() {
               </div>
 
               <div style={{ display: "flex", gap: "8px" }}>
-                <button style={{ background: "rgba(59,130,246,0.1)", border: "none", borderRadius: "6px", padding: "8px", cursor: "pointer", color: "#3b82f6" }}>
+                <button onClick={() => openEditForm(banner)} style={{ background: "rgba(59,130,246,0.1)", border: "none", borderRadius: "6px", padding: "8px", cursor: "pointer", color: "#3b82f6" }}>
                   <Edit size={16} />
                 </button>
-                <button style={{ background: "rgba(239,68,68,0.1)", border: "none", borderRadius: "6px", padding: "8px", cursor: "pointer", color: "#ef4444" }}>
+                <button onClick={() => handleDelete(banner._id)} style={{ background: "rgba(239,68,68,0.1)", border: "none", borderRadius: "6px", padding: "8px", cursor: "pointer", color: "#ef4444" }}>
                   <Trash2 size={16} />
                 </button>
               </div>
@@ -165,9 +228,24 @@ export default function AdminBannersPage() {
               <div className="form-group" style={{ margin: 0 }}>
                 <label>Image URL *</label>
                 <div style={{ display: "flex", gap: "8px" }}>
-                  <input type="url" value={form.image} onChange={(e) => setForm((f) => ({ ...f, image: e.target.value }))} required style={{ flex: 1 }} />
-                  <button type="button" className="btn-secondary" style={{ padding: "10px 16px" }}><Upload size={16} /></button>
+                  <input type="url" value={form.image} onChange={(e) => setForm((f) => ({ ...f, image: e.target.value }))} required style={{ flex: 1 }} placeholder="https://example.com/image.jpg" />
+                  <label htmlFor="banner-upload" className="btn-secondary" style={{ padding: "10px 16px", cursor: uploading ? "not-allowed" : "pointer", opacity: uploading ? 0.6 : 1 }}>
+                    {uploading ? "Uploading..." : <Upload size={16} />}
+                  </label>
+                  <input 
+                    id="banner-upload" 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleImageUpload} 
+                    style={{ display: "none" }} 
+                    disabled={uploading}
+                  />
                 </div>
+                {form.image && (
+                  <div style={{ marginTop: "12px", borderRadius: "8px", overflow: "hidden", border: "1px solid #e5e7eb" }}>
+                    <Image src={form.image} alt="Preview" width={400} height={200} style={{ width: "100%", height: "auto", objectFit: "cover" }} unoptimized />
+                  </div>
+                )}
               </div>
               <div className="form-group" style={{ margin: 0 }}>
                 <label>Link / URL</label>

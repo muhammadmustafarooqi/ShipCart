@@ -1,69 +1,52 @@
 "use client";
 
-import { MessageSquare, Star, Package, CheckCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { MessageSquare, Star } from "lucide-react";
 
-const testimonials = [
-  {
-    name: "Ayesha Khan",
-    city: "Lahore",
-    rating: 5,
-    text: "Absolutely amazing quality! The kitchen gadgets I ordered were exactly as described. Fast delivery and the packaging was superb. Will definitely order again!",
-    product: "Rechargeable Coffee Beater",
-    avatar: "AK",
-    color: "#3b82f6",
-  },
-  {
-    name: "Muhammad Ali",
-    city: "Karachi",
-    rating: 5,
-    text: "Best online store in Pakistan! I was skeptical about online shopping, but the cash on delivery option and the authentic products changed my mind completely.",
-    product: "Mini Jet Fan",
-    avatar: "MA",
-    color: "#10b981",
-  },
-  {
-    name: "Fatima Zahra",
-    city: "Islamabad",
-    rating: 5,
-    text: "The product quality is top-notch. Received my order in 3 days to Islamabad. The team is very responsive on WhatsApp. Highly recommended!",
-    product: "Silicone Ice Roller",
-    avatar: "FZ",
-    color: "#f59e0b",
-  },
-  {
-    name: "Hassan Raza",
-    city: "Faisalabad",
-    rating: 5,
-    text: "I've ordered 5 times now and every single time the experience has been flawless. Great products, great prices, and excellent customer service.",
-    product: "Air Humidifier USB",
-    avatar: "HR",
-    color: "#8b5cf6",
-  },
-  {
-    name: "Sana Malik",
-    city: "Rawalpindi",
-    rating: 5,
-    text: "The IPL hair removal device works exactly as promised. Saved so much money compared to salon visits. Very happy with my purchase!",
-    product: "IPL Laser Hair Removal",
-    avatar: "SM",
-    color: "#ec4899",
-  },
-  {
-    name: "Bilal Ahmed",
-    city: "Multan",
-    rating: 5,
-    text: "Ordered a massage device for my elderly father. The delivery was on time and the product quality exceeded my expectations. 10/10!",
-    product: "Shoulder & Back Massager",
-    avatar: "BA",
-    color: "#14b8a6",
-  },
-];
+interface Testimonial {
+  _id: string;
+  name: string;
+  rating: number;
+  text: string;
+  product: string;
+  image: string;
+  avatarColor: string;
+  isActive: boolean;
+  order: number;
+}
 
 export default function Testimonials() {
-  // Duplicate array multiple times for truly infinite scroll
-  const allScrollItems = [...testimonials, ...testimonials, ...testimonials, ...testimonials];
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const res = await fetch("/api/testimonials");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.length > 0) {
+            setTestimonials(data);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching testimonials:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTestimonials();
+  }, []);
+
+  const getInitials = (name: string) => {
+    return name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2);
+  };
+
+  if (loading || testimonials.length === 0) return null;
   
-  // Split into two rows for alternating scroll
+  const allScrollItems = [...testimonials, ...testimonials, ...testimonials, ...testimonials];
   const row1 = allScrollItems.filter((_, i) => i % 2 === 0);
   const row2 = allScrollItems.filter((_, i) => i % 2 === 1);
 
@@ -81,9 +64,7 @@ export default function Testimonials() {
         </div>
       </div>
 
-      {/* Dual Scrolling Marquee */}
       <div style={{ width: "100%", overflow: "hidden", display: "flex", flexDirection: "column", gap: "24px" }}>
-        {/* Row 1 - Scrolling Left */}
         <div style={{ width: "100%", position: "relative" }}>
           <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "15vw", background: "linear-gradient(to right, var(--bg-primary), transparent)", zIndex: 10, pointerEvents: "none" }} />
           <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "15vw", background: "linear-gradient(to left, var(--bg-primary), transparent)", zIndex: 10, pointerEvents: "none" }} />
@@ -93,18 +74,22 @@ export default function Testimonials() {
               <div key={index} className="testimonial-dark-card">
                 <div style={{
                   width: "56px", height: "56px", borderRadius: "50%",
-                  background: `linear-gradient(135deg, ${t.color}, #2a0f1a)`,
+                  background: t.image ? "transparent" : `linear-gradient(135deg, ${t.avatarColor}, #2a0f1a)`,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   color: "#FEF5E7", fontWeight: 900, fontSize: "18px", fontFamily: "Outfit, sans-serif",
-                  flexShrink: 0
+                  flexShrink: 0, overflow: "hidden", position: "relative"
                 }}>
-                  {t.avatar}
+                  {t.image ? (
+                    <Image src={t.image} alt={t.name} fill style={{ objectFit: "cover" }} unoptimized />
+                  ) : (
+                    getInitials(t.name)
+                  )}
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "4px", flex: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                     <div style={{ fontWeight: 800, fontSize: "15px", color: "#FEF5E7", fontFamily: "Outfit, sans-serif" }}>{t.name}</div>
                     <div style={{ display: "flex", gap: "2px" }}>
-                      {Array.from({ length: 5 }).map((_, i) => (
+                      {Array.from({ length: t.rating }).map((_, i) => (
                         <Star key={i} size={14} color="#FEF5E7" fill="#FEF5E7" />
                       ))}
                     </div>
@@ -118,7 +103,6 @@ export default function Testimonials() {
           </div>
         </div>
 
-        {/* Row 2 - Scrolling Right */}
         <div style={{ width: "100%", position: "relative" }}>
           <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "15vw", background: "linear-gradient(to right, var(--bg-primary), transparent)", zIndex: 10, pointerEvents: "none" }} />
           <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: "15vw", background: "linear-gradient(to left, var(--bg-primary), transparent)", zIndex: 10, pointerEvents: "none" }} />
@@ -128,18 +112,22 @@ export default function Testimonials() {
               <div key={index} className="testimonial-dark-card">
                 <div style={{
                   width: "56px", height: "56px", borderRadius: "50%",
-                  background: `linear-gradient(135deg, ${t.color}, #2a0f1a)`,
+                  background: t.image ? "transparent" : `linear-gradient(135deg, ${t.avatarColor}, #2a0f1a)`,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   color: "#FEF5E7", fontWeight: 900, fontSize: "18px", fontFamily: "Outfit, sans-serif",
-                  flexShrink: 0
+                  flexShrink: 0, overflow: "hidden", position: "relative"
                 }}>
-                  {t.avatar}
+                  {t.image ? (
+                    <Image src={t.image} alt={t.name} fill style={{ objectFit: "cover" }} unoptimized />
+                  ) : (
+                    getInitials(t.name)
+                  )}
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: "4px", flex: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                     <div style={{ fontWeight: 800, fontSize: "15px", color: "#FEF5E7", fontFamily: "Outfit, sans-serif" }}>{t.name}</div>
                     <div style={{ display: "flex", gap: "2px" }}>
-                      {Array.from({ length: 5 }).map((_, i) => (
+                      {Array.from({ length: t.rating }).map((_, i) => (
                         <Star key={i} size={14} color="#FEF5E7" fill="#FEF5E7" />
                       ))}
                     </div>
@@ -160,10 +148,10 @@ export default function Testimonials() {
           100% { transform: translateX(calc(-25%)); }
         }
 
-    @keyframes scroll-right {
-  0% { transform: translateX(-25%); }
-  100% { transform: translateX(0); }
-}
+        @keyframes scroll-right {
+          0% { transform: translateX(-25%); }
+          100% { transform: translateX(0); }
+        }
 
         .testimonial-track-left {
           display: flex;

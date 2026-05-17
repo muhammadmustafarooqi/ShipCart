@@ -1,15 +1,57 @@
 "use client";
 
-import { Users, Package, MapPin, Star } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Users, Package, MapPin, Star, TrendingUp, Award, Truck, Shield, Clock } from "lucide-react";
 
-const stats = [
-  { value: "10K+", label: "Happy Customers", Icon: Users },
-  { value: "500+", label: "Premium Products", Icon: Package },
-  { value: "50+", label: "Cities Delivered", Icon: MapPin },
-  { value: "4.9", label: "Average Rating", Icon: Star },
-];
+interface Stat {
+  _id: string;
+  value: string;
+  label: string;
+  icon: string;
+  isActive: boolean;
+  order: number;
+}
 
 export default function StatsSection() {
+  const [stats, setStats] = useState<Stat[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch("/api/stats");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.length > 0) {
+            setStats(data);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  const getIcon = (iconName: string) => {
+    const icons: Record<string, any> = { 
+      users: Users, 
+      package: Package, 
+      truck: Truck,
+      shield: Shield,
+      clock: Clock,
+      star: Star, 
+      trending: TrendingUp, 
+      award: Award 
+    };
+    return icons[iconName.toLowerCase()] || Package;
+  };
+
+  if (loading || stats.length === 0) return null;
+  
   return (
     <section className="stats-showcase" aria-label="Store highlights">
       <div className="stats-showcase-blobs" aria-hidden>
@@ -25,20 +67,23 @@ export default function StatsSection() {
         </header>
 
         <ul className="stats-showcase-grid">
-          {stats.map(({ value, label, Icon }) => (
-            <li key={label} className="stats-showcase-card">
-              <div className="stats-showcase-card-border" aria-hidden />
-              <div className="stats-showcase-card-glow" aria-hidden />
-              <div className="stats-showcase-card-body">
-                <Icon className="stats-showcase-watermark" size={88} strokeWidth={1.25} aria-hidden />
-                <div className="stats-showcase-icon-ring">
-                  <Icon size={22} strokeWidth={2.2} aria-hidden />
+          {stats.map((stat) => {
+            const Icon = getIcon(stat.icon);
+            return (
+              <li key={stat._id} className="stats-showcase-card">
+                <div className="stats-showcase-card-border" aria-hidden />
+                <div className="stats-showcase-card-glow" aria-hidden />
+                <div className="stats-showcase-card-body">
+                  <Icon className="stats-showcase-watermark" size={88} strokeWidth={1.25} aria-hidden />
+                  <div className="stats-showcase-icon-ring">
+                    <Icon size={22} strokeWidth={2.2} aria-hidden />
+                  </div>
+                  <p className="stats-showcase-value">{stat.value}</p>
+                  <p className="stats-showcase-label">{stat.label}</p>
                 </div>
-                <p className="stats-showcase-value">{value}</p>
-                <p className="stats-showcase-label">{label}</p>
-              </div>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       </div>
 

@@ -6,44 +6,39 @@ import { ChevronDown, HelpCircle } from "lucide-react";
 const MOBILE_FAQ_MAX = 5;
 const MOBILE_MQ = "(max-width: 768px)";
 
-const faqs = [
-  {
-    question: "What payment methods do you accept?",
-    answer: "We currently accept Cash on Delivery (COD) only. You can pay with cash when your order is delivered to your doorstep. No advance payment or online transaction is required."
-  },
-  {
-    question: "Do you offer free shipping?",
-    answer: "Yes! We offer FREE shipping on all orders above Rs. 1,500. For orders below Rs. 1,500, a standard delivery fee of Rs. 200 applies to anywhere in Pakistan."
-  },
-  {
-    question: "How long does delivery take?",
-    answer: "Orders are typically delivered within 3-5 business days for major cities (Karachi, Lahore, Islamabad, Rawalpindi, Faisalabad). Remote areas may take 5-7 business days. We dispatch orders within 1-2 business days."
-  },
-  {
-    question: "Can I return or exchange a product?",
-    answer: "Yes, we have a 7-day return and exchange policy. If you're not satisfied with your purchase, you can return it within 7 days of delivery for a full refund or exchange. The product must be unused and in original packaging."
-  },
-  {
-    question: "How can I track my order?",
-    answer: "Once your order is dispatched, you'll receive a WhatsApp message with tracking details. You can also contact our customer support team on WhatsApp for real-time order updates."
-  },
-  {
-    question: "Are the products original and authentic?",
-    answer: "Absolutely! We guarantee 100% original and authentic products. All items are sourced directly from authorized distributors and come with proper warranties where applicable."
-  },
-  {
-    question: "Do I need to create an account to place an order?",
-    answer: "No, you don't need to create an account. You can checkout as a guest by simply providing your delivery details. However, creating an account helps you track orders and speeds up future checkouts."
-  },
-  {
-    question: "What if I receive a damaged or defective product?",
-    answer: "If you receive a damaged or defective product, please contact us immediately via WhatsApp with photos. We'll arrange a free replacement or full refund within 24-48 hours."
-  }
-];
+interface FAQ {
+  _id: string;
+  question: string;
+  answer: string;
+  isActive: boolean;
+  order: number;
+}
 
 export default function FAQ() {
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [isMobileLayout, setIsMobileLayout] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFAQs = async () => {
+      try {
+        const res = await fetch("/api/faqs");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.length > 0) {
+            setFaqs(data);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching FAQs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFAQs();
+  }, []);
 
   useEffect(() => {
     const mq = window.matchMedia(MOBILE_MQ);
@@ -65,6 +60,8 @@ export default function FAQ() {
     setOpenIndex(openIndex === index ? null : index);
   };
 
+  if (loading || faqs.length === 0) return null;
+
   return (
     <section style={{
       padding: "80px 0",
@@ -72,7 +69,6 @@ export default function FAQ() {
       position: "relative"
     }}>
       <div className="page-container">
-        {/* Header */}
         <div style={{ textAlign: "center", marginBottom: "56px" }}>
           <div className="section-tag" style={{ justifyContent: "center" }}>
             <HelpCircle size={14} color="var(--color-icon)" /> From cart to doorstep
@@ -103,22 +99,9 @@ export default function FAQ() {
             >
               Shopping should feel effortless—never a guessing game.
             </span>
-            {/* <span style={{ display: "block" }}>
-              Tap a topic for crystal-clear answers on{" "}
-              <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>cash on delivery</strong>
-              ,{" "}
-              <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>fast delivery</strong>{" "}
-              anywhere in Pakistan,{" "}
-              <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>free shipping</strong>{" "}
-              when your order qualifies,{" "}
-              <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>returns and exchanges</strong>
-              , and how we keep every product{" "}
-              <strong style={{ color: "var(--text-primary)", fontWeight: 700 }}>100% authentic</strong>.
-            </span> */}
           </p>
         </div>
 
-        {/* FAQ Grid */}
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(2, 1fr)",
@@ -131,7 +114,7 @@ export default function FAQ() {
 
             return (
               <div
-                key={faq.question}
+                key={faq._id}
                 style={{
                   background: "var(--white)",
                   border: "2px solid",
