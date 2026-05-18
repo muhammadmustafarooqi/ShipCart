@@ -122,17 +122,11 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; on
             onClick={() => setSettingsOpen(!settingsOpen)}
             className={`nav-item ${pathname.startsWith("/admin/settings") ? "active" : ""}`}
             style={{
-              width: "100%",
+              width: "calc(100% - 24px)",
               cursor: "pointer",
               background: "none",
               border: "none",
-              fontFamily: "Poppins, sans-serif",
-              fontSize: "14px",
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              padding: "12px",
-              color: pathname.startsWith("/admin/settings") ? "#ff6b00" : "rgba(255,255,255,0.7)",
+              textAlign: "left",
             }}
           >
             <Settings size={18} strokeWidth={2} style={{ color: pathname.startsWith("/admin/settings") ? "#ff6b00" : "rgba(255,255,255,0.7)" }} />
@@ -200,17 +194,11 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; on
           onClick={() => signOut({ callbackUrl: "/admin/login" })}
           className="nav-item"
           style={{
-            width: "100%",
+            width: "calc(100% - 24px)",
             cursor: "pointer",
             background: "none",
             border: "none",
-            color: "rgba(255,255,255,0.7)",
-            fontFamily: "Poppins, sans-serif",
-            fontSize: "14px",
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            padding: "12px",
+            textAlign: "left",
           }}
         >
           <LogOut size={18} strokeWidth={2} style={{ color: "rgba(255,255,255,0.7)" }} />

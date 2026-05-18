@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Package, ShoppingBag, TrendingUp, Clock, ArrowRight } from "lucide-react";
+import { Package, ShoppingBag, TrendingUp, Clock, ArrowRight, Banknote, ListOrdered } from "lucide-react";
 
 interface DashboardData {
   todayOrders: number;
@@ -75,7 +75,7 @@ export default function AdminDashboard() {
     {
       label: "Total Revenue",
       value: `Rs. ${(data?.totalRevenue || 0).toLocaleString()}`,
-      icon: <TrendingUp size={24} />,
+      icon: <Banknote size={24} />,
       bg: "linear-gradient(135deg, #10b981, #059669)",
       sub: "From confirmed orders",
     },
@@ -89,7 +89,7 @@ export default function AdminDashboard() {
     {
       label: "Total Orders",
       value: data?.totalOrders || 0,
-      icon: <ShoppingBag size={24} />,
+      icon: <ListOrdered size={24} />,
       bg: "linear-gradient(135deg, #1a1a2e, #16213e)",
       sub: "All time orders",
     },
