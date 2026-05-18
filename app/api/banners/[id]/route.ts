@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import connectDB from "@/lib/mongodb";
 import Banner from "@/models/Banner";
 import { auth } from "@/lib/auth";
@@ -22,6 +23,8 @@ export async function PUT(
     if (!banner) {
       return NextResponse.json({ error: "Banner not found" }, { status: 404 });
     }
+    // Revalidate homepage to show updated banner
+    revalidatePath("/");
     return NextResponse.json({ banner });
   } catch (error) {
     console.error("Banner PUT error:", error);
@@ -45,6 +48,8 @@ export async function DELETE(
     if (!banner) {
       return NextResponse.json({ error: "Banner not found" }, { status: 404 });
     }
+    // Revalidate homepage when banner is deleted
+    revalidatePath("/");
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Banner DELETE error:", error);

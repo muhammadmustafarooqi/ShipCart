@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import connectDB from "@/lib/mongodb";
 import Banner from "@/models/Banner";
 import { auth } from "@/lib/auth";
@@ -31,6 +32,8 @@ export async function POST(request: NextRequest) {
     await connectDB();
     const body = await request.json();
     const banner = await Banner.create(body);
+    // Revalidate homepage to show new banner
+    revalidatePath("/");
     return NextResponse.json({ banner }, { status: 201 });
   } catch (error) {
     console.error("Banners POST error:", error);

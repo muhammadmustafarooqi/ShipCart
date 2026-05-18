@@ -17,6 +17,9 @@ import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
 import Banner from "@/models/Banner";
 
+// Revalidate banners, products, and other dynamic content every 60 seconds
+export const revalidate = 60;
+
 async function getProducts(query: Record<string, unknown>, limit = 8) {
   try {
     await connectDB();

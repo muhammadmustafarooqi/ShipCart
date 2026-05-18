@@ -278,22 +278,21 @@ export default function WhatsAppCTA() {
           border-radius: 18px;
           text-decoration: none;
           color: var(--white);
-          background: var(--whatsapp-btn-bg);
-          border: var(--whatsapp-btn-border);
+          background: #2AB540;
+          border: none;
           font-family: "Plus Jakarta Sans", sans-serif;
           font-weight: 800;
           box-shadow:
-            0 3px 0 rgba(74, 16, 32, 0.35),
-            var(--whatsapp-btn-shadow);
+            0 3px 0 rgba(0, 0, 0, 0.2);
           transition: transform 0.35s cubic-bezier(0.33, 1, 0.32, 1), box-shadow 0.35s ease, filter 0.25s ease;
         }
 
         .wa-btn:hover {
           transform: translateY(-5px) scale(1.01);
-          filter: brightness(1.05);
+          filter: brightness(1.12);
           box-shadow:
-            0 5px 0 rgba(74, 16, 32, 0.28),
-            0 26px 52px rgba(74, 16, 32, 0.35);
+            0 5px 0 rgba(0, 0, 0, 0.15),
+            0 26px 52px rgba(42, 181, 64, 0.35);
         }
 
         .wa-btn-ico {

@@ -155,7 +155,7 @@ export default function Footer() {
                   <CreditCard size={16} color="var(--gold)" aria-hidden />
                   Cash on Delivery
                 </div>
-                <div className="footer-cod-desc">Secure payments at your doorstep. Free shipping over Rs. 1,500.</div>
+                <div className="footer-cod-desc">Secure payments at your doorstep. Free shipping over Rs. 3000.</div>
               </div>
             </div>
           </div>
