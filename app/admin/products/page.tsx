@@ -335,7 +335,14 @@ export default function AdminProductsPage() {
                 <div className="form-group" style={{ gridColumn: "1/-1" }}>
                   <label>Product Images (URLs)</label>
                   <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
-                    <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="https://example.com/image.jpg" style={{ flex: 1, padding: "10px 14px", border: "2px solid #e5e7eb", borderRadius: "8px", fontSize: "14px" }} />
+                    <input
+                      type="url"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddImage(); } }}
+                      placeholder="https://example.com/image.jpg"
+                      style={{ flex: 1, padding: "10px 14px", border: "2px solid #e5e7eb", borderRadius: "8px", fontSize: "14px" }}
+                    />
                     <button type="button" onClick={handleAddImage} className="btn-primary" style={{ padding: "10px 16px", whiteSpace: "nowrap" }}>
                       <Upload size={14} /> Add
                     </button>
@@ -355,17 +362,37 @@ export default function AdminProductsPage() {
                 </div>
 
                 <div className="form-group" style={{ gridColumn: "1/-1" }}>
-                  <label>Card hover preview video (optional URL)</label>
+                  <label>Product Video — shown in gallery on product page (optional URL)</label>
                   <input
                     type="url"
                     value={form.previewVideoUrl}
                     onChange={(e) => setForm((f) => ({ ...f, previewVideoUrl: e.target.value }))}
-                    placeholder="https://…/clip.mp4 — plays on hover (max ~5s), muted"
+                    placeholder="https://…/video.mp4  — MP4 / WebM URL"
                     style={{ width: "100%", padding: "10px 14px", border: "2px solid #e5e7eb", borderRadius: "8px", fontSize: "14px" }}
                   />
                   <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "6px" }}>
-                    If set, this overrides image carousel on hover. Leave empty to cycle product images instead.
+                    If set, the video appears as the first thumbnail in the product gallery so customers can play it. It also plays on hover in the product card.
                   </p>
+                  {form.previewVideoUrl && (
+                    <div style={{ marginTop: "10px", borderRadius: "10px", overflow: "hidden", border: "2px solid #e5e7eb", maxWidth: "280px" }}>
+                      <video
+                        src={form.previewVideoUrl}
+                        controls
+                        muted
+                        style={{ width: "100%", display: "block", background: "#000" }}
+                      />
+                      <div style={{ padding: "6px 10px", background: "#f9fafb", fontSize: "11px", color: "#6b7280", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span>Video preview</span>
+                        <button
+                          type="button"
+                          onClick={() => setForm((f) => ({ ...f, previewVideoUrl: "" }))}
+                          style={{ background: "none", border: "none", cursor: "pointer", color: "#ef4444", fontSize: "12px", fontWeight: 600 }}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Tags */}
