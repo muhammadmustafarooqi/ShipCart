@@ -66,19 +66,17 @@ export async function POST(request: NextRequest) {
     await connectDB();
     const body = await request.json();
 
-    // Find existing settings or create new one
-    let settings = await Settings.findOne();
-    
-    if (!settings) {
-      // Create new settings document
-      settings = new Settings(body);
-    } else {
-      // Update existing settings
-      Object.assign(settings, body);
-    }
+    // Use findOneAndUpdate to properly merge nested objects
+    const settings = await Settings.findOneAndUpdate(
+      {}, // Match any single document
+      body, // Update with the provided data
+      {
+        new: true, // Return the updated document
+        upsert: true, // Create if doesn't exist
+        runValidators: true,
+      }
+    );
 
-    await settings.save();
-    
     return NextResponse.json(settings, { status: 200 });
   } catch (error) {
     console.error("Error saving settings:", error);

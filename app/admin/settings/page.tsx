@@ -19,7 +19,12 @@ export default function AdminSettingsPage() {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const response = await fetch("/api/settings");
+        const response = await fetch("/api/settings", {
+          cache: "no-store",
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+          },
+        });
         if (response.ok) {
           const data = await response.json();
           setForm({
@@ -46,8 +51,13 @@ export default function AdminSettingsPage() {
     setLoading(true);
     
     try {
-      // Fetch current settings to preserve marqueeItems
-      const currentRes = await fetch("/api/settings");
+      // Fetch current settings to preserve all existing data
+      const currentRes = await fetch("/api/settings", {
+        cache: "no-store",
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+        },
+      });
       const currentData = await currentRes.json();
 
       const response = await fetch("/api/settings", {

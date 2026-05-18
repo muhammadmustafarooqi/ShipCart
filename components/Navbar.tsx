@@ -5,27 +5,31 @@ import { useState, useEffect } from "react";
 import { Search, ShoppingCart, Menu, X, ArrowRight, User } from "lucide-react";
 import { NavLogo } from "@/components/BrandLogo";
 import { useCart } from "./CartProvider";
+import { useSettings } from "@/lib/useSettings";
+
+const DEFAULT_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "Shop All", href: "/products" },
+  { label: "Kitchen", href: "/products?category=kitchen-cooking" },
+  { label: "Personal Care", href: "/products?category=personal-care-beauty" },
+  { label: "Electronics", href: "/products?category=electronics-gadgets" },
+];
 
 export default function Navbar() {
   const { totalItems } = useCart();
+  const { settings, loading: settingsLoading } = useSettings();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
+
+  const navLinks = settings?.navbar?.links || DEFAULT_LINKS;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "Shop All", href: "/products" },
-    { label: "Kitchen", href: "/products?category=kitchen-cooking" },
-    { label: "Personal Care", href: "/products?category=personal-care-beauty" },
-    { label: "Electronics", href: "/products?category=electronics-gadgets" },
-  ];
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();

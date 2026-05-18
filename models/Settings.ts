@@ -30,6 +30,22 @@ export interface ISettings extends Document {
     stat2Label: string;
     panelNote: string;
   };
+  navbar: {
+    links: Array<{ label: string; href: string }>;
+  };
+  footer: {
+    description: string;
+    contactEmail: string;
+    contactPhone: string;
+    contactAddress: string;
+    socialLinks: Array<{ platform: string; url: string }>;
+    footerLinks: Array<{
+      title: string;
+      links: Array<{ label: string; href: string }>;
+    }>;
+    policies: Array<{ label: string; href: string }>;
+    codMessage: string;
+  };
   adminEmail: string;
   updatedAt: Date;
 }
@@ -111,6 +127,105 @@ const SettingsSchema = new Schema<ISettings>(
       },
     },
     adminEmail: { type: String, default: "" },
+    navbar: {
+      links: {
+        type: [
+          {
+            label: String,
+            href: String,
+          },
+        ],
+        default: [
+          { label: "Home", href: "/" },
+          { label: "Shop All", href: "/products" },
+          { label: "Kitchen", href: "/products?category=kitchen-cooking" },
+          { label: "Personal Care", href: "/products?category=personal-care-beauty" },
+          { label: "Electronics", href: "/products?category=electronics-gadgets" },
+        ],
+      },
+    },
+    footer: {
+      description: {
+        type: String,
+        default: "Pakistan's premier destination for ultra-premium tech, modern home appliances, and intelligent daily accessories.",
+      },
+      contactEmail: {
+        type: String,
+        default: "support@allinonestore.pk",
+      },
+      contactPhone: {
+        type: String,
+        default: "923001234567",
+      },
+      contactAddress: {
+        type: String,
+        default: "Islamabad, Pakistan",
+      },
+      socialLinks: {
+        type: [
+          {
+            platform: String,
+            url: String,
+          },
+        ],
+        default: [
+          { platform: "facebook", url: "#" },
+          { platform: "instagram", url: "#" },
+          { platform: "whatsapp", url: "#" },
+        ],
+      },
+      footerLinks: {
+        type: [
+          {
+            title: String,
+            links: [
+              {
+                label: String,
+                href: String,
+              },
+            ],
+          },
+        ],
+        default: [
+          {
+            title: "Explore",
+            links: [
+              { label: "Home", href: "/" },
+              { label: "Premium Collection", href: "/products" },
+              { label: "Shopping Cart", href: "/cart" },
+              { label: "Admin Portal", href: "/admin/dashboard" },
+            ],
+          },
+          {
+            title: "Departments",
+            links: [
+              { label: "Smart Kitchen", href: "/products?category=kitchen-cooking" },
+              { label: "Personal Care", href: "/products?category=personal-care-beauty" },
+              { label: "Home Essentials", href: "/products?category=home-cleaning" },
+              { label: "Fitness & Health", href: "/products?category=fitness-health" },
+              { label: "Tech Gadgets", href: "/products?category=electronics-gadgets" },
+            ],
+          },
+        ],
+      },
+      policies: {
+        type: [
+          {
+            label: String,
+            href: String,
+          },
+        ],
+        default: [
+          { label: "Privacy Policy", href: "#" },
+          { label: "Terms of Service", href: "#" },
+          { label: "Return Policy", href: "#" },
+        ],
+      },
+      codMessage: {
+        type: String,
+        default: "Secure payments at your doorstep. Free shipping over Rs. 3000.",
+      },
+    },
   },
   { timestamps: true }
 );

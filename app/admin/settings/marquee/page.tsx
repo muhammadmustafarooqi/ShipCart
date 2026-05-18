@@ -18,7 +18,12 @@ export default function AdminMarqueePage() {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const response = await fetch("/api/settings");
+        const response = await fetch("/api/settings", {
+          cache: "no-store",
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+          },
+        });
         if (response.ok) {
           const data = await response.json();
           if (data.marqueeItems && data.marqueeItems.length > 0) {
@@ -41,7 +46,12 @@ export default function AdminMarqueePage() {
 
     try {
       // Fetch current settings first
-      const currentRes = await fetch("/api/settings");
+      const currentRes = await fetch("/api/settings", {
+        cache: "no-store",
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+        },
+      });
       const currentData = await currentRes.json();
 
       // Update only marqueeItems

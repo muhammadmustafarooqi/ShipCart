@@ -34,7 +34,12 @@ export default function AdminOfferBannerPage() {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const response = await fetch("/api/settings");
+        const response = await fetch("/api/settings", {
+          cache: "no-store",
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+          },
+        });
         if (response.ok) {
           const data = await response.json();
           if (data.offerBanner) {
@@ -56,7 +61,12 @@ export default function AdminOfferBannerPage() {
     setLoading(true);
 
     try {
-      const currentRes = await fetch("/api/settings");
+      const currentRes = await fetch("/api/settings", {
+        cache: "no-store",
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+        },
+      });
       const currentData = await currentRes.json();
 
       const response = await fetch("/api/settings", {

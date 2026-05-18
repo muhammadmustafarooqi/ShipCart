@@ -34,6 +34,8 @@ const navItems = [
 
 const settingsItems = [
   { label: "General Settings", href: "/admin/settings", icon: Sliders },
+  { label: "Navigation Menu", href: "/admin/settings/navbar", icon: Package },
+  { label: "Footer", href: "/admin/settings/footer", icon: Package },
   { label: "Categories", href: "/admin/settings/categories", icon: FolderTree },
   { label: "Banners", href: "/admin/settings/banners", icon: ImageIcon },
   { label: "Marquee Banner", href: "/admin/settings/marquee", icon: List },
