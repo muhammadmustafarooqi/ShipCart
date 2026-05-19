@@ -21,6 +21,8 @@ export interface IOrder extends Document {
   paymentMethod: "COD";
   status: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Cancelled";
   notes: string;
+  trackingNumber?: string;
+  courierName?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -51,6 +53,8 @@ const OrderSchema = new Schema<IOrder>(
       default: "Pending",
     },
     notes: { type: String, default: "" },
+    trackingNumber: { type: String, default: "" },
+    courierName: { type: String, default: "" },
   },
   { timestamps: true }
 );

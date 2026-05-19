@@ -8,11 +8,12 @@ export async function GET(
 ) {
   try {
     await connectDB();
-    const { id } = await params;
+    const resolvedParams = await params;
+    const id = resolvedParams.id;
     const order = await Order.findOne({ orderId: id }).lean();
 
     if (!order) {
-      return NextResponse.json({ error: "Order not found" }, { status: 404 });
+      return NextResponse.json({ error: "Order not found", requestedId: id || "undefined_id" }, { status: 404 });
     }
 
     return NextResponse.json({ order });
@@ -28,17 +29,23 @@ export async function PATCH(
 ) {
   try {
     await connectDB();
-    const { id } = await params;
+    const resolvedParams = await params;
+    const id = resolvedParams.id;
     const body = await request.json();
+
+    const updateFields: any = {};
+    if (body.status) updateFields.status = body.status;
+    if (body.trackingNumber !== undefined) updateFields.trackingNumber = body.trackingNumber;
+    if (body.courierName !== undefined) updateFields.courierName = body.courierName;
 
     const order = await Order.findOneAndUpdate(
       { orderId: id },
-      { status: body.status },
+      { $set: updateFields },
       { new: true }
     );
 
     if (!order) {
-      return NextResponse.json({ error: "Order not found" }, { status: 404 });
+      return NextResponse.json({ error: "Order not found", requestedId: id || "undefined_id" }, { status: 404 });
     }
 
     return NextResponse.json({ order });

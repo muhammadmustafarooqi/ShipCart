@@ -22,6 +22,7 @@ const DEFAULT_FOOTER = {
         { label: "Home", href: "/" },
         { label: "Premium Collection", href: "/products" },
         { label: "Shopping Cart", href: "/cart" },
+        { label: "Track Your Order", href: "/track-order" },
         { label: "Admin Portal", href: "/admin/dashboard" },
       ],
     },

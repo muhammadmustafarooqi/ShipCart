@@ -17,6 +17,8 @@ interface Order {
   total: number;
   status: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Cancelled";
   notes: string;
+  trackingNumber?: string;
+  courierName?: string;
   createdAt: string;
 }
 
@@ -76,7 +78,8 @@ export default function AdminOrdersPage() {
   const generateWhatsAppUrl = (order: Order) => {
     const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923001234567";
     const customerPhone = order.phone.replace(/^0/, "92");
-    const msg = `Hi ${order.customerName}! Your order #${order.orderId} from ALLInONE Store is now ${order.status}. Total: Rs. ${order.total.toLocaleString()} (COD).\n\nThank you for shopping with us!`;
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://allinonestore.pk";
+    const msg = `Hi ${order.customerName}! Your order #${order.orderId} from ALLInONE Store is now *${order.status}*.\nTotal: Rs. ${order.total.toLocaleString()} (COD).\n\n📦 *Track your order live here:*\n${siteUrl}/track-order\n\nTo track your order, simply enter:\nOrder ID: *${order.orderId}*\nPhone: *${order.phone}*\n\nThank you for shopping with us!`;
     return `https://wa.me/${customerPhone}?text=${encodeURIComponent(msg)}`;
   };
 
@@ -245,6 +248,43 @@ export default function AdminOrdersPage() {
                   ))}
                 </select>
                 <ChevronDown size={16} style={{ color: "#9ca3af" }} />
+              </div>
+            </div>
+
+            {/* Tracking Update */}
+            <div style={{ marginBottom: "20px", padding: "16px", background: "#fdf8f6", borderRadius: "12px", border: "1px solid #fce7d4" }}>
+              <label style={{ fontSize: "12px", color: "#ff6b00", fontWeight: 700, textTransform: "uppercase", display: "block", marginBottom: "12px" }}>Shipment Tracking</label>
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                <input 
+                  type="text" 
+                  placeholder="Courier (e.g. TCS, Leopard)" 
+                  value={selectedOrder.courierName || ""}
+                  onChange={(e) => setSelectedOrder({...selectedOrder, courierName: e.target.value})}
+                  style={{ padding: "10px 14px", borderRadius: "8px", border: "1px solid #e5e7eb", fontSize: "13px", fontFamily: "Poppins, sans-serif" }}
+                />
+                <input 
+                  type="text" 
+                  placeholder="Tracking Number" 
+                  value={selectedOrder.trackingNumber || ""}
+                  onChange={(e) => setSelectedOrder({...selectedOrder, trackingNumber: e.target.value})}
+                  style={{ padding: "10px 14px", borderRadius: "8px", border: "1px solid #e5e7eb", fontSize: "13px", fontFamily: "Poppins, sans-serif" }}
+                />
+                <button 
+                  onClick={async () => {
+                    try {
+                      const res = await fetch(`/api/orders/${selectedOrder.orderId}`, {
+                        method: "PATCH", headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ trackingNumber: selectedOrder.trackingNumber, courierName: selectedOrder.courierName }),
+                      });
+                      if (!res.ok) throw new Error();
+                      toast.success("Tracking details saved!");
+                      fetchOrders();
+                    } catch { toast.error("Failed to save tracking"); }
+                  }}
+                  style={{ padding: "10px", background: "#ff6b00", color: "white", border: "none", borderRadius: "8px", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}
+                >
+                  Save Tracking Info
+                </button>
               </div>
             </div>
 
