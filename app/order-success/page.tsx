@@ -21,6 +21,45 @@ interface Order {
   createdAt: string;
 }
 
+const playSuccessSound = () => {
+  try {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+
+    const playTone = (freq: number, type: OscillatorType, startTime: number, duration: number, vol: number) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, startTime);
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(vol, startTime + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    };
+
+    const now = ctx.currentTime;
+    // Ascending high-end melodic chime (C5 -> E5 -> G5 -> C6 -> E6)
+    playTone(523.25, "sine", now, 0.4, 0.12);
+    playTone(523.25 * 2, "triangle", now, 0.15, 0.03);
+
+    playTone(659.25, "sine", now + 0.08, 0.4, 0.12);
+
+    playTone(783.99, "sine", now + 0.16, 0.4, 0.12);
+
+    playTone(1046.50, "sine", now + 0.24, 0.6, 0.15);
+    playTone(1046.50 * 1.5, "triangle", now + 0.24, 0.3, 0.04);
+
+    playTone(1318.51, "sine", now + 0.32, 0.8, 0.15);
+    playTone(1318.51 * 2, "triangle", now + 0.32, 0.4, 0.05);
+  } catch (error) {
+    console.warn("Failed to play success ringtone:", error);
+  }
+};
+
 function OrderSuccessContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
@@ -29,6 +68,7 @@ function OrderSuccessContent() {
 
   useEffect(() => {
     if (orderId) {
+      playSuccessSound();
       fetch(`/api/orders/${orderId}`)
         .then((r) => r.json())
         .then((d) => setOrder(d.order))

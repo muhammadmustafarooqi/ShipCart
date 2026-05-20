@@ -52,6 +52,92 @@ export default function AdminProductsPage() {
   const [imageUrl, setImageUrl] = useState("");
   const [tagInput, setTagInput] = useState("");
   const [colorInput, setColorInput] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploadingImage(true);
+    const toastId = toast.loading("Uploading image(s)...");
+
+    try {
+      const uploadedUrls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.error || "Failed to upload");
+        }
+
+        const data = await res.json();
+        if (data.url) {
+          uploadedUrls.push(data.url);
+        }
+      }
+
+      setForm((f) => {
+        const newImages = [...f.images];
+        uploadedUrls.forEach((url) => {
+          if (!newImages.includes(url)) {
+            newImages.push(url);
+          }
+        });
+        return { ...f, images: newImages };
+      });
+      toast.success("Uploaded successfully!", { id: toastId });
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Failed to upload image(s)", { id: toastId });
+    } finally {
+      setUploadingImage(false);
+      e.target.value = "";
+    }
+  };
+
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingVideo(true);
+    const toastId = toast.loading("Uploading video...");
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || "Failed to upload video");
+      }
+
+      const data = await res.json();
+      if (data.url) {
+        setForm((f) => ({ ...f, previewVideoUrl: data.url }));
+        toast.success("Video uploaded successfully!", { id: toastId });
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Failed to upload video", { id: toastId });
+    } finally {
+      setUploadingVideo(false);
+      e.target.value = "";
+    }
+  };
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -333,27 +419,68 @@ export default function AdminProductsPage() {
 
                 {/* Images */}
                 <div className="form-group" style={{ gridColumn: "1/-1" }}>
-                  <label>Product Images (URLs)</label>
-                  <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
-                    <input
-                      type="url"
-                      value={imageUrl}
-                      onChange={(e) => setImageUrl(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddImage(); } }}
-                      placeholder="https://example.com/image.jpg"
-                      style={{ flex: 1, padding: "10px 14px", border: "2px solid #e5e7eb", borderRadius: "8px", fontSize: "14px" }}
-                    />
-                    <button type="button" onClick={handleAddImage} className="btn-primary" style={{ padding: "10px 16px", whiteSpace: "nowrap" }}>
-                      <Upload size={14} /> Add
-                    </button>
+                  <label style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span>Product Images *</span>
+                    <span style={{ fontSize: "12px", color: "#6b7280", fontWeight: 500 }}>
+                      {form.images.length} added
+                    </span>
+                  </label>
+                  
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px", background: "#f9fafb", padding: "16px", borderRadius: "12px", border: "1px solid #e5e7eb" }}>
+                    {/* Add via URL */}
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <input
+                        type="url"
+                        value={imageUrl}
+                        onChange={(e) => setImageUrl(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddImage(); } }}
+                        placeholder="Paste image URL (e.g., https://example.com/image.jpg)"
+                        style={{ flex: 1, padding: "10px 14px", border: "1.5px solid #e5e7eb", borderRadius: "8px", fontSize: "14px" }}
+                      />
+                      <button type="button" onClick={handleAddImage} className="btn-secondary" style={{ padding: "10px 16px", whiteSpace: "nowrap", height: "42px", fontSize: "13px" }}>
+                        Add URL
+                      </button>
+                    </div>
+
+                    {/* Or Upload from device */}
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", border: "2px dashed #d1d5db", borderRadius: "8px", padding: "16px", background: "white", cursor: "pointer", transition: "border-color 0.2s ease" }}
+                         onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#ff6b00")}
+                         onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#d1d5db")}
+                    >
+                      <label style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", cursor: "pointer", width: "100%" }}>
+                        <div style={{ background: "rgba(255, 107, 0, 0.1)", color: "#ff6b00", borderRadius: "50%", width: "42px", height: "42px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <Upload size={20} />
+                        </div>
+                        <div style={{ textAlign: "center" }}>
+                          <span style={{ fontSize: "14px", fontWeight: 600, color: "#1f2937" }}>
+                            {uploadingImage ? "Uploading..." : "Click to upload images from device"}
+                          </span>
+                          <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "2px" }}>
+                            Supports PNG, JPG, JPEG, WEBP (Multiple allowed)
+                          </p>
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          disabled={uploadingImage}
+                          onChange={handleImageUpload}
+                          style={{ display: "none" }}
+                        />
+                      </label>
+                    </div>
                   </div>
+
                   {form.images.length > 0 && (
-                    <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "12px" }}>
                       {form.images.map((img, i) => (
-                        <div key={i} style={{ position: "relative", width: "70px", height: "70px" }}>
-                          <Image src={img} alt="" width={70} height={70} style={{ borderRadius: "8px", objectFit: "cover", width: "100%", height: "100%" }} unoptimized />
-                          <button type="button" onClick={() => handleRemoveImage(img)} style={{ position: "absolute", top: "-4px", right: "-4px", background: "#ef4444", border: "none", borderRadius: "50%", width: "18px", height: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <X size={10} style={{ color: "white" }} />
+                        <div key={i} style={{ position: "relative", width: "76px", height: "76px", borderRadius: "8px", overflow: "hidden", border: "2px solid #e5e7eb", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
+                          <Image src={img} alt="" width={76} height={76} style={{ width: "100%", height: "100%", objectFit: "cover" }} unoptimized />
+                          <button type="button" onClick={() => handleRemoveImage(img)} style={{ position: "absolute", top: "2px", right: "2px", background: "rgba(239, 68, 68, 0.9)", border: "none", borderRadius: "50%", width: "20px", height: "20px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s ease" }}
+                                  onMouseEnter={(e) => (e.currentTarget.style.background = "#ef4444")}
+                                  onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(239, 68, 68, 0.9)")}
+                          >
+                            <X size={12} style={{ color: "white" }} />
                           </button>
                         </div>
                       ))}
@@ -362,27 +489,59 @@ export default function AdminProductsPage() {
                 </div>
 
                 <div className="form-group" style={{ gridColumn: "1/-1" }}>
-                  <label>Product Video — shown in gallery on product page (optional URL)</label>
-                  <input
-                    type="url"
-                    value={form.previewVideoUrl}
-                    onChange={(e) => setForm((f) => ({ ...f, previewVideoUrl: e.target.value }))}
-                    placeholder="https://…/video.mp4  — MP4 / WebM URL"
-                    style={{ width: "100%", padding: "10px 14px", border: "2px solid #e5e7eb", borderRadius: "8px", fontSize: "14px" }}
-                  />
+                  <label>Product Video — shown in gallery on product page (optional)</label>
+                  
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px", background: "#f9fafb", padding: "16px", borderRadius: "12px", border: "1px solid #e5e7eb" }}>
+                    {/* Paste URL */}
+                    <input
+                      type="url"
+                      value={form.previewVideoUrl}
+                      onChange={(e) => setForm((f) => ({ ...f, previewVideoUrl: e.target.value }))}
+                      placeholder="Paste video URL (e.g., https://example.com/video.mp4)"
+                      style={{ width: "100%", padding: "10px 14px", border: "1.5px solid #e5e7eb", borderRadius: "8px", fontSize: "14px" }}
+                    />
+
+                    {/* Or Upload from device */}
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", border: "2px dashed #d1d5db", borderRadius: "8px", padding: "16px", background: "white", cursor: "pointer", transition: "border-color 0.2s ease" }}
+                         onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#ff6b00")}
+                         onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#d1d5db")}
+                    >
+                      <label style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", cursor: "pointer", width: "100%" }}>
+                        <div style={{ background: "rgba(255, 107, 0, 0.1)", color: "#ff6b00", borderRadius: "50%", width: "42px", height: "42px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <Upload size={20} />
+                        </div>
+                        <div style={{ textAlign: "center" }}>
+                          <span style={{ fontSize: "14px", fontWeight: 600, color: "#1f2937" }}>
+                            {uploadingVideo ? "Uploading..." : "Click to upload video from device"}
+                          </span>
+                          <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "2px" }}>
+                            Supports MP4, WebM, OGG
+                          </p>
+                        </div>
+                        <input
+                          type="file"
+                          accept="video/*"
+                          disabled={uploadingVideo}
+                          onChange={handleVideoUpload}
+                          style={{ display: "none" }}
+                        />
+                      </label>
+                    </div>
+                  </div>
+
                   <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "6px" }}>
                     If set, the video appears as the first thumbnail in the product gallery so customers can play it. It also plays on hover in the product card.
                   </p>
                   {form.previewVideoUrl && (
-                    <div style={{ marginTop: "10px", borderRadius: "10px", overflow: "hidden", border: "2px solid #e5e7eb", maxWidth: "280px" }}>
+                    <div style={{ marginTop: "12px", borderRadius: "10px", overflow: "hidden", border: "2px solid #e5e7eb", maxWidth: "280px" }}>
                       <video
                         src={form.previewVideoUrl}
                         controls
                         muted
                         style={{ width: "100%", display: "block", background: "#000" }}
                       />
-                      <div style={{ padding: "6px 10px", background: "#f9fafb", fontSize: "11px", color: "#6b7280", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <span>Video preview</span>
+                      <div style={{ padding: "8px 12px", background: "#f9fafb", fontSize: "12px", color: "#6b7280", display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #e5e7eb" }}>
+                        <span style={{ fontWeight: 500 }}>Video preview</span>
                         <button
                           type="button"
                           onClick={() => setForm((f) => ({ ...f, previewVideoUrl: "" }))}
