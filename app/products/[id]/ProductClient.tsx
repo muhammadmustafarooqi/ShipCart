@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,6 +24,9 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
   const { settings, loading: settingsLoading } = useSettings();
   const cartBtnRef = useRef<HTMLButtonElement>(null);
 
+  // Compute total media count from props so it's available before early returns (required by hooks rules)
+  const mediaCount = (initialProduct.previewVideoUrl ? 1 : 0) + Math.max(initialProduct.images.length, 1);
+
   const [product, setProduct] = useState<Product | null>(initialProduct);
   const [related, setRelated] = useState<Product[]>(initialRelated);
   const [loading, setLoading] = useState(false);
@@ -31,11 +34,28 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
   const [quantity, setQuantity] = useState(1);
   const [imgFade, setImgFade] = useState(true);
   const [selectedColor, setSelectedColor] = useState<string>(initialProduct?.colors?.[0] || "");
+  const [isHovered, setIsHovered] = useState(false);
 
   const switchMedia = (i: number) => {
     setImgFade(false);
     setTimeout(() => { setSelectedMedia(i); setImgFade(true); }, 200);
   };
+
+  useEffect(() => {
+    if (mediaCount <= 1 || isHovered) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setImgFade(false);
+      setTimeout(() => {
+        setSelectedMedia((prev) => (prev + 1) % mediaCount);
+        setImgFade(true);
+      }, 200);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [mediaCount, isHovered]);
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -156,7 +176,11 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "60px", marginBottom: "64px" }} className="product-detail-grid">
 
           {/* Gallery */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div 
+            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
             {/* Main viewer */}
             <div style={{
               borderRadius: "var(--radius-xl)", overflow: "hidden",
@@ -257,7 +281,7 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
 
             {/* Rating */}
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
-              <span style={{ color: "var(--color-warning)", fontSize: "18px", letterSpacing: "2px" }}>{"★".repeat(Math.round(product.rating || 4))}<span style={{ color: "var(--border-hover)"}}>{"★".repeat(5 - Math.round(product.rating || 4))}</span></span>
+              <span style={{ color: "var(--color-warning)", fontSize: "18px", letterSpacing: "2px" }}>{"★".repeat(Math.round(product.rating || 4))}<span style={{ color: "var(--border-hover)" }}>{"★".repeat(5 - Math.round(product.rating || 4))}</span></span>
               <span style={{ fontSize: "14px", color: "var(--text-secondary)", fontWeight: 500 }}>{product.rating || 4.5} ({product.reviewCount || 0} reviews)</span>
             </div>
 
@@ -345,10 +369,10 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
             {/* Action Buttons */}
             <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "40px" }}>
               <button ref={cartBtnRef} onClick={handleAddToCart} className="btn-primary" style={{ width: "100%", justifyContent: "center", padding: "18px", fontSize: "16px" }}>
-                <ShoppingCart size={18} color="white" /> Add to Cart — Rs. {(product.price * quantity).toLocaleString()}
+                <ShoppingCart size={18} color="white" /> Add to Cart
               </button>
               <button onClick={handleDirectCheckout} className="btn-primary" style={{ width: "100%", justifyContent: "center", padding: "18px", fontSize: "16px" }}>
-                <Zap size={18} color="white" style={{ marginRight: "6px" }} /> Buy Now — Checkout Rs. {(product.price * quantity).toLocaleString()}
+                <Zap size={18} color="white" style={{ marginRight: "6px" }} /> Buy Now
               </button>
             </div>
 

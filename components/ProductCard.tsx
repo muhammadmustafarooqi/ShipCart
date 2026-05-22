@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ShoppingCart, Eye, Heart, Star, Sparkles, MoreHorizontal } from "lucide-react";
 import { useCart } from "./CartProvider";
+import { useWishlist } from "./WishlistProvider";
 
 interface Product {
   _id: string;
@@ -84,9 +85,10 @@ function formatCategoryLabel(slug: string) {
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
+  const { toggleItem, isWishlisted } = useWishlist();
   const btnRef = useRef<HTMLButtonElement>(null);
   const [added, setAdded] = useState(false);
-  const [wishlisted, setWishlisted] = useState(false);
+  const wishlisted = isWishlisted(product._id);
 
   const discount =
     product.comparePrice && product.comparePrice > product.price
@@ -125,6 +127,9 @@ export default function ProductCard({ product }: { product: Product }) {
 
   const [stageHover, setStageHover] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
+  const [prevGalleryIndex, setPrevGalleryIndex] = useState<number | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [shimmer, setShimmer] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const galleryIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const videoCapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -168,7 +173,7 @@ export default function ProductCard({ product }: { product: Product }) {
       const v = videoRef.current;
       if (v) {
         v.currentTime = 0;
-        void v.play().catch(() => {});
+        void v.play().catch(() => { });
         clearVideoCap();
         videoCapTimerRef.current = setTimeout(() => {
           v.pause();
@@ -180,8 +185,19 @@ export default function ProductCard({ product }: { product: Product }) {
     if (hasGalleryCycle) {
       clearGalleryInterval();
       galleryIntervalRef.current = setInterval(() => {
-        setGalleryIndex((i) => (i + 1) % galleryUrls.length);
-      }, 900);
+        setGalleryIndex((prev) => {
+          const next = (prev + 1) % galleryUrls.length;
+          setPrevGalleryIndex(prev);
+          setIsTransitioning(true);
+          setShimmer(true);
+          setTimeout(() => setShimmer(false), 300);
+          setTimeout(() => {
+            setIsTransitioning(false);
+            setPrevGalleryIndex(null);
+          }, 550);
+          return next;
+        });
+      }, 1100);
     }
   };
 
@@ -189,6 +205,9 @@ export default function ProductCard({ product }: { product: Product }) {
     setStageHover(false);
     clearGalleryInterval();
     clearVideoCap();
+    setPrevGalleryIndex(null);
+    setIsTransitioning(false);
+    setShimmer(false);
     setGalleryIndex(0);
     stopVideo();
   };
@@ -216,17 +235,25 @@ export default function ProductCard({ product }: { product: Product }) {
             onMouseLeave={handleStageLeave}
           >
             <div className={`pc-media${isOutOfStock ? " pc-media--oos" : ""}`}>
-              {galleryUrls.map((src, i) => (
-                <Image
-                  key={`${src}-${i}`}
-                  src={src}
-                  alt={i === 0 ? product.name : ""}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className={`pc-img-layer${i === galleryIndex ? " pc-img-layer--active" : ""}`}
-                  unoptimized
-                />
-              ))}
+              {galleryUrls.map((src, i) => {
+                const isActive = i === galleryIndex;
+                const isLeaving = i === prevGalleryIndex && isTransitioning;
+                let layerClass = "pc-img-layer";
+                if (isActive) layerClass += " pc-img-layer--active";
+                if (isLeaving) layerClass += " pc-img-layer--leaving";
+                return (
+                  <Image
+                    key={`${src}-${i}`}
+                    src={src}
+                    alt={i === 0 ? product.name : ""}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className={layerClass}
+                    unoptimized
+                  />
+                );
+              })}
+              {shimmer && <div className="pc-img-shimmer" aria-hidden />}
               {hasVideo ? (
                 <video
                   ref={videoRef}
@@ -239,6 +266,13 @@ export default function ProductCard({ product }: { product: Product }) {
                 />
               ) : null}
             </div>
+            {hasGalleryCycle && stageHover && (
+              <div className="pc-gallery-dots" aria-hidden>
+                {galleryUrls.map((_, i) => (
+                  <span key={i} className={`pc-dot${i === galleryIndex ? " pc-dot--active" : ""}`} />
+                ))}
+              </div>
+            )}
 
             {isOutOfStock && <div className="pc-oos-ribbon">Out of stock</div>}
 
@@ -253,8 +287,11 @@ export default function ProductCard({ product }: { product: Product }) {
             </div>
 
             {discount > 0 && (
-              <div className="pc-badge-sale-circle">
-                -{discount}%
+              <div className="pc-sale-badge" aria-label={`${discount}% off`}>
+                <span className="pc-sale-badge-fire" aria-hidden>🔥</span>
+                <span className="pc-sale-badge-text">-{discount}%</span>
+                <span className="pc-sale-badge-label">OFF</span>
+                <span className="pc-sale-badge-shine" aria-hidden />
               </div>
             )}
 
@@ -266,10 +303,23 @@ export default function ProductCard({ product }: { product: Product }) {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setWishlisted(!wishlisted);
+                toggleItem({
+                  productId: product._id,
+                  name: product.name,
+                  price: product.price,
+                  comparePrice: product.comparePrice,
+                  image: galleryUrls[0] || "",
+                  category: product.category,
+                  slug: product.slug,
+                });
               }}
             >
-              <Heart size={20} strokeWidth={2} />
+              <Heart
+                size={20}
+                strokeWidth={2}
+                fill={wishlisted ? "currentColor" : "none"}
+                style={{ transition: "fill 0.2s ease, transform 0.2s ease", transform: wishlisted ? "scale(1.15)" : "scale(1)" }}
+              />
             </button>
 
             <button
@@ -368,6 +418,12 @@ export default function ProductCard({ product }: { product: Product }) {
           border: 1px solid rgba(0,0,0,0.03);
           border-radius: 8px;
           overflow: hidden;
+          transition: box-shadow 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .pc-root:hover .pc-stage,
+        .pc-root:focus-within .pc-stage {
+          box-shadow: 0 8px 32px rgba(0,0,0,0.13), 0 2px 8px rgba(0,0,0,0.08);
         }
 
         @media (min-width: 769px) {
@@ -392,13 +448,74 @@ export default function ProductCard({ product }: { product: Product }) {
           padding: 0;
           z-index: 2;
           opacity: 0;
-          transition: opacity 0.45s ease;
+          transform: scale(1.06) translateX(18px);
+          transition:
+            opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1),
+            transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
           pointer-events: none;
         }
 
         .pc-img-layer--active {
           opacity: 1;
           z-index: 3;
+          transform: scale(1) translateX(0);
+        }
+
+        .pc-img-layer--leaving {
+          opacity: 0;
+          z-index: 2;
+          transform: scale(0.95) translateX(-18px);
+          transition:
+            opacity 0.5s cubic-bezier(0.25, 0.8, 0.25, 1),
+            transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        @keyframes pc-shimmer-flash {
+          0%   { opacity: 0; }
+          30%  { opacity: 0.28; }
+          100% { opacity: 0; }
+        }
+
+        .pc-img-shimmer {
+          position: absolute;
+          inset: 0;
+          z-index: 9;
+          pointer-events: none;
+          background: linear-gradient(
+            120deg,
+            transparent 20%,
+            rgba(255,255,255,0.6) 50%,
+            transparent 80%
+          );
+          background-size: 200% 100%;
+          animation: pc-shimmer-flash 0.3s ease-out forwards;
+        }
+
+        .pc-gallery-dots {
+          position: absolute;
+          bottom: 10px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 12;
+          display: flex;
+          gap: 5px;
+          align-items: center;
+          pointer-events: none;
+        }
+
+        .pc-dot {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: rgba(255,255,255,0.55);
+          transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+          box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .pc-dot--active {
+          background: #fff;
+          transform: scale(1.5);
+          box-shadow: 0 0 6px rgba(255,255,255,0.8);
         }
 
         .pc-preview-video {
@@ -478,15 +595,162 @@ export default function ProductCard({ product }: { product: Product }) {
           color: #2e7d32;
         }
 
-        .pc-badge-sale-circle {
+        /* ── Discount / Sale badge ── */
+        @keyframes pc-sale-shimmer {
+          0%   { transform: translateX(-120%) skewX(-18deg); }
+          100% { transform: translateX(220%) skewX(-18deg); }
+        }
+
+        @keyframes pc-sale-pop {
+          0%   { transform: scale(0.6) rotate(-6deg); opacity: 0; }
+          60%  { transform: scale(1.12) rotate(2deg); opacity: 1; }
+          100% { transform: scale(1) rotate(-2deg); opacity: 1; }
+        }
+
+        .pc-sale-badge {
           position: absolute;
-          top: 12px;
-          right: 12px;
+          top: 10px;
+          right: 10px;
           z-index: 10;
-          width: 52px;
-          gap: 0;
-          text-align: left;
-          background: transparent;
+          display: flex;
+          align-items: center;
+          gap: 3px;
+          padding: 5px 10px 5px 8px;
+          border-radius: 99px;
+          background: linear-gradient(135deg, #e11d48 0%, #be123c 55%, #9f1239 100%);
+          box-shadow:
+            0 3px 12px rgba(225,29,72,0.55),
+            inset 0 1px 0 rgba(255,255,255,0.18);
+          overflow: hidden;
+          pointer-events: none;
+          animation: pc-sale-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+          transform-origin: top right;
+        }
+
+        .pc-sale-badge-fire {
+          font-size: 13px;
+          line-height: 1;
+          filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+        }
+
+        .pc-sale-badge-text {
+          font-family: Outfit, sans-serif;
+          font-size: 13px;
+          font-weight: 900;
+          color: #fff;
+          letter-spacing: -0.3px;
+          line-height: 1;
+        }
+
+        .pc-sale-badge-label {
+          font-family: "Plus Jakarta Sans", sans-serif;
+          font-size: 8px;
+          font-weight: 800;
+          color: rgba(255,255,255,0.8);
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          align-self: flex-end;
+          margin-bottom: 1px;
+        }
+
+        .pc-sale-badge-shine {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 40%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255,255,255,0.35) 50%,
+            transparent 100%
+          );
+          animation: pc-sale-shimmer 2.8s ease-in-out 0.5s infinite;
+        }
+
+        /* ── Wishlist heart button ── */
+        .pc-wish {
+          position: absolute;
+          bottom: 10px;
+          right: 10px;
+          z-index: 10;
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          border: none;
+          background: rgba(255,255,255,0.9);
+          color: #9ca3af;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+          transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+          backdrop-filter: blur(4px);
+          opacity: 0;
+          transform: scale(0.85);
+        }
+
+        .pc-root:hover .pc-wish,
+        .pc-root:focus-within .pc-wish {
+          opacity: 1;
+          transform: scale(1);
+        }
+
+        .pc-wish:hover {
+          background: #fff;
+          color: #dc2626;
+          transform: scale(1.15) !important;
+          box-shadow: 0 4px 16px rgba(220,38,38,0.3);
+        }
+
+        .pc-wish--on {
+          background: #dc2626 !important;
+          color: #fff !important;
+          opacity: 1 !important;
+          transform: scale(1) !important;
+          box-shadow: 0 4px 16px rgba(220,38,38,0.45) !important;
+        }
+
+        .pc-wish--on:hover {
+          background: #b91c1c !important;
+          transform: scale(1.12) !important;
+        }
+
+        /* ── More-actions quick-cart button ── */
+        .pc-more-actions {
+          position: absolute;
+          bottom: 10px;
+          left: 10px;
+          z-index: 10;
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          border: none;
+          background: rgba(255,255,255,0.9);
+          color: #374151;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+          transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
+          backdrop-filter: blur(4px);
+          opacity: 0;
+          transform: scale(0.85);
+        }
+
+        .pc-root:hover .pc-more-actions,
+        .pc-root:focus-within .pc-more-actions {
+          opacity: 1;
+          transform: scale(1);
+        }
+
+        .pc-more-actions:hover {
+          background: #111;
+          color: #fff;
+          transform: scale(1.12) !important;
+          box-shadow: 0 4px 14px rgba(0,0,0,0.25);
         }
 
         .pc-cat,

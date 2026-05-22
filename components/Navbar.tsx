@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Search, ShoppingCart, Menu, X, ArrowRight, User } from "lucide-react";
+import { Search, ShoppingCart, Menu, X, ArrowRight, User, Heart } from "lucide-react";
 import { NavLogo } from "@/components/BrandLogo";
 import { useCart } from "./CartProvider";
+import { useWishlist } from "./WishlistProvider";
 import { useSettings } from "@/lib/useSettings";
 
 const DEFAULT_LINKS = [
@@ -18,6 +19,7 @@ const DEFAULT_LINKS = [
 
 export default function Navbar() {
   const { totalItems } = useCart();
+  const { totalItems: wishlistCount } = useWishlist();
   const { settings, loading: settingsLoading } = useSettings();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -73,7 +75,7 @@ export default function Navbar() {
               <NavLogo height={60} maxWidth={180} />
             </Link>
 
-            {/* Right: Search + Cart */}
+            {/* Right: Search + Wishlist + Cart */}
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <button
                 onClick={() => { setSearchOpen(!searchOpen); setMenuOpen(false); }}
@@ -82,6 +84,15 @@ export default function Navbar() {
               >
                 <Search size={20} />
               </button>
+
+              <Link href="/wishlist" className="icon-btn" aria-label={`Wishlist (${wishlistCount})`} style={{ position: "relative", textDecoration: "none", color: "var(--maroon)" }}>
+                <Heart size={20} fill={wishlistCount > 0 ? "currentColor" : "none"} />
+                {wishlistCount > 0 && (
+                  <span className="cart-badge" style={{ background: "linear-gradient(135deg, #dc2626, #b91c1c)" }}>
+                    {wishlistCount > 9 ? "9+" : wishlistCount}
+                  </span>
+                )}
+              </Link>
 
               <Link href="/cart" className="cart-btn" aria-label="Cart">
                 <ShoppingCart size={20} color="var(--white)" />
@@ -129,6 +140,15 @@ export default function Navbar() {
 
               <Link href="/auth/login" className="icon-btn-bordered" aria-label="Account">
                 <User size={20} color="var(--maroon)" />
+              </Link>
+
+              <Link href="/wishlist" className="icon-btn-bordered" aria-label={`Wishlist (${wishlistCount})`} style={{ position: "relative", color: "var(--maroon)" }}>
+                <Heart size={20} fill={wishlistCount > 0 ? "currentColor" : "none"} />
+                {wishlistCount > 0 && (
+                  <span className="cart-badge" style={{ background: "linear-gradient(135deg, #dc2626, #b91c1c)" }}>
+                    {wishlistCount > 9 ? "9+" : wishlistCount}
+                  </span>
+                )}
               </Link>
 
               <Link href="/cart" className="cart-btn" aria-label="Cart">
