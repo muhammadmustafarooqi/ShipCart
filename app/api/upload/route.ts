@@ -1,13 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
+import { auth } from "@/lib/auth";
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+function getCloudinaryConfig() {
+  const cloud_name = process.env.CLOUDINARY_CLOUD_NAME?.trim();
+  const api_key = process.env.CLOUDINARY_API_KEY?.trim();
+  const api_secret = process.env.CLOUDINARY_API_SECRET?.trim();
+
+  if (!cloud_name || !api_key || !api_secret) return null;
+  if (
+    isPlaceholderCredential(cloud_name) ||
+    isPlaceholderCredential(api_key) ||
+    isPlaceholderCredential(api_secret)
+  ) {
+    return null;
+  }
+
+  return { cloud_name, api_key, api_secret };
+}
+
+function isPlaceholderCredential(value?: string) {
+  if (!value) return true;
+  const v = value.toLowerCase();
+  return v === "demo" || v === "your-cloud-name" || v === "your-api-key" || v === "your-api-secret";
+}
 
 export async function POST(request: NextRequest) {
+  const session = await auth();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const config = getCloudinaryConfig();
+  if (!config) {
+    return NextResponse.json(
+      {
+        error:
+          "Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in .env (get free keys at cloudinary.com/console).",
+      },
+      { status: 503 }
+    );
+  }
+
+  cloudinary.config(config);
+
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File;
@@ -43,6 +79,10 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Upload error:", error);
-    return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
+    const message =
+      error instanceof Error && error.message.includes("api_key")
+        ? "Invalid Cloudinary API key. Update CLOUDINARY_* values in .env and restart the dev server."
+        : "Failed to upload file";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

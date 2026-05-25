@@ -16,6 +16,7 @@ export type FeaturedProduct = {
   reviewCount?: number;
   stock?: number;
   previewVideoUrl?: string;
+  shortDescription?: string;
 };
 
 export default function FeaturedCollection({ products }: { products: FeaturedProduct[] }) {

@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { useCart } from "@/components/CartProvider";
 import { useSettings } from "@/lib/useSettings";
-import { ShoppingCart, Minus, Plus, Package, Zap, ShieldCheck, Frown, Play } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Package, Zap, ShieldCheck, Frown } from "lucide-react";
 
 interface Product {
   _id: string; name: string; slug: string; price: number; comparePrice?: number;
@@ -18,44 +18,69 @@ interface Product {
   reviewCount?: number; stock?: number; tags?: string[]; colors?: string[];
 }
 
+type MediaMode = "video" | "photos";
+
 export default function ProductClient({ initialProduct, initialRelated }: { initialProduct: Product; initialRelated: Product[] }) {
   const router = useRouter();
   const { addItem } = useCart();
   const { settings, loading: settingsLoading } = useSettings();
   const cartBtnRef = useRef<HTMLButtonElement>(null);
 
-  // Compute total media count from props so it's available before early returns (required by hooks rules)
-  const mediaCount = (initialProduct.previewVideoUrl ? 1 : 0) + Math.max(initialProduct.images.length, 1);
+  const imageCount = Math.max(initialProduct.images.length, 1);
 
   const [product, setProduct] = useState<Product | null>(initialProduct);
   const [related, setRelated] = useState<Product[]>(initialRelated);
   const [loading, setLoading] = useState(false);
-  const [selectedMedia, setSelectedMedia] = useState(0);
+  const [mediaMode, setMediaMode] = useState<MediaMode>("photos");
+  const [photoIndex, setPhotoIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [imgFade, setImgFade] = useState(true);
   const [selectedColor, setSelectedColor] = useState<string>(initialProduct?.colors?.[0] || "");
   const [isHovered, setIsHovered] = useState(false);
+  const [autoRotate, setAutoRotate] = useState(true);
+  const detailVideoRef = useRef<HTMLVideoElement>(null);
 
-  const switchMedia = (i: number) => {
+  const advancePhoto = () => {
     setImgFade(false);
-    setTimeout(() => { setSelectedMedia(i); setImgFade(true); }, 200);
+    setTimeout(() => {
+      setPhotoIndex((prev) => (prev + 1) % imageCount);
+      setImgFade(true);
+    }, 200);
+  };
+
+  const switchMediaMode = (mode: MediaMode) => {
+    setAutoRotate(false);
+    if (mode === "photos" && mediaMode === "photos" && imageCount > 1) {
+      advancePhoto();
+      return;
+    }
+    setMediaMode(mode);
+    setImgFade(false);
+    if (mode === "video" && detailVideoRef.current) {
+      detailVideoRef.current.currentTime = 0;
+      void detailVideoRef.current.play().catch(() => {});
+    }
+    setTimeout(() => setImgFade(true), 200);
   };
 
   useEffect(() => {
-    if (mediaCount <= 1 || isHovered) {
+    if (imageCount <= 1 || !autoRotate || mediaMode !== "photos" || isHovered) {
       return;
     }
 
-    const interval = setInterval(() => {
-      setImgFade(false);
-      setTimeout(() => {
-        setSelectedMedia((prev) => (prev + 1) % mediaCount);
-        setImgFade(true);
-      }, 200);
-    }, 4000);
-
+    const interval = setInterval(advancePhoto, 4000);
     return () => clearInterval(interval);
-  }, [mediaCount, isHovered]);
+  }, [imageCount, isHovered, autoRotate, mediaMode]);
+
+  useEffect(() => {
+    if (imageCount <= 1 || !isHovered || mediaMode !== "photos") {
+      return;
+    }
+
+    advancePhoto();
+    const interval = setInterval(advancePhoto, 1200);
+    return () => clearInterval(interval);
+  }, [imageCount, isHovered, mediaMode]);
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -150,13 +175,12 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
     ? product.images
     : [getFallbackImage(product.category, product.name)];
 
-  // Media items: video first (if any), then images
-  type MediaItem = { type: "image"; url: string } | { type: "video"; url: string };
-  const mediaItems: MediaItem[] = [
-    ...(product.previewVideoUrl ? [{ type: "video" as const, url: product.previewVideoUrl }] : []),
-    ...allImages.map((url) => ({ type: "image" as const, url })),
-  ];
-  const currentMedia = mediaItems[selectedMedia] ?? { type: "image", url: allImages[0] };
+  const previewVideoUrl = product.previewVideoUrl?.trim() ?? "";
+  const hasVideo =
+    Boolean(previewVideoUrl) &&
+    (/^https?:\/\//i.test(previewVideoUrl) || previewVideoUrl.startsWith("/"));
+  const showMediaToggle = hasVideo || allImages.length > 1;
+  const currentPhoto = allImages[photoIndex] ?? allImages[0];
 
   return (
     <div style={s}>
@@ -176,88 +200,77 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "60px", marginBottom: "64px" }} className="product-detail-grid">
 
           {/* Gallery */}
-          <div 
-            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          <div
+            className="pd-gallery-col"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
             {/* Main viewer */}
-            <div style={{
-              borderRadius: "var(--radius-xl)", overflow: "hidden",
-              background: "var(--bg-card)",
-              border: "1px solid var(--border-default)",
-              aspectRatio: "1",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              position: "relative",
-              boxShadow: "var(--shadow-sm)"
-            }}>
-              {currentMedia.type === "video" ? (
+            <div className="pd-main-viewer">
+              {mediaMode === "video" && hasVideo ? (
                 <video
-                  key={currentMedia.url}
-                  src={currentMedia.url}
+                  ref={detailVideoRef}
+                  key={previewVideoUrl}
+                  src={previewVideoUrl}
                   controls
                   autoPlay
                   loop
                   playsInline
+                  className="pd-main-media"
                   style={{
-                    width: "100%", height: "100%", objectFit: "contain",
                     opacity: imgFade ? 1 : 0,
                     transition: "opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)",
                   }}
                 />
               ) : (
                 <Image
-                  src={currentMedia.url}
+                  src={currentPhoto}
                   alt={product.name}
-                  width={900} height={900}
-                  style={{ width: "100%", height: "100%", objectFit: "contain", opacity: imgFade ? 1 : 0, transition: "opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)", padding: "24px" }}
+                  width={900}
+                  height={900}
+                  className="pd-main-media"
+                  style={{
+                    opacity: imgFade ? 1 : 0,
+                    transition: "opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)",
+                    padding: "24px",
+                  }}
                   unoptimized
                 />
               )}
               {discount > 0 && (
-                <div style={{ position: "absolute", top: "20px", left: "20px", background: "var(--text-primary)", borderRadius: "6px", padding: "6px 12px", fontSize: "12px", color: "white", fontWeight: 700, fontFamily: "Outfit, sans-serif" }}>
+                <div style={{ position: "absolute", top: "20px", left: "20px", background: "var(--text-primary)", borderRadius: "6px", padding: "6px 12px", fontSize: "12px", color: "white", fontWeight: 700, fontFamily: "Outfit, sans-serif", zIndex: 2 }}>
                   −{discount}%
                 </div>
               )}
             </div>
 
-            {/* Thumbnails (show when >1 media item) */}
-            {mediaItems.length > 1 && (
-              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                {mediaItems.map((item, i) => (
-                  <div
-                    key={i}
-                    onClick={() => switchMedia(i)}
-                    style={{
-                      width: "80px", height: "80px", borderRadius: "12px", overflow: "hidden",
-                      background: "var(--bg-card)",
-                      border: `2px solid ${selectedMedia === i ? "var(--text-primary)" : "var(--border-default)"}`,
-                      cursor: "pointer", opacity: selectedMedia === i ? 1 : 0.6,
-                      transition: "all 0.3s ease",
-                      padding: "4px",
-                      position: "relative",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                    }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "var(--text-primary)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
-                    onMouseLeave={(e) => {
-                      if (selectedMedia !== i) {
-                        (e.currentTarget as HTMLElement).style.borderColor = "var(--border-default)";
-                        (e.currentTarget as HTMLElement).style.opacity = "0.6";
-                      }
-                    }}
+            {showMediaToggle && (
+              <div className="pd-media-toggle-wrap">
+                <div
+                  className={`pd-media-toggle${hasVideo ? "" : " pd-media-toggle--solo"} pd-media-toggle--mode-${mediaMode}`}
+                  role="group"
+                  aria-label="Product media"
+                >
+                  <span className="pd-media-toggle-slider" aria-hidden />
+                  {hasVideo && (
+                    <button
+                      type="button"
+                      className={`pd-media-toggle-seg${mediaMode === "video" ? " pd-media-toggle-seg--active" : ""}`}
+                      aria-pressed={mediaMode === "video"}
+                      onClick={() => switchMediaMode("video")}
+                    >
+                      Video
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className={`pd-media-toggle-seg${mediaMode === "photos" ? " pd-media-toggle-seg--active" : ""}`}
+                    aria-pressed={mediaMode === "photos"}
+                    onClick={() => switchMediaMode("photos")}
                   >
-                    {item.type === "video" ? (
-                      <>
-                        <video src={item.url} muted style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "8px" }} />
-                        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.35)", borderRadius: "8px" }}>
-                          <Play size={22} fill="white" color="white" />
-                        </div>
-                      </>
-                    ) : (
-                      <Image src={item.url} alt={`${product.name} ${i + 1}`} width={80} height={80} style={{ width: "100%", height: "100%", objectFit: "contain" }} unoptimized />
-                    )}
-                  </div>
-                ))}
+                    Photos {photoIndex + 1}/{allImages.length}
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -416,7 +429,111 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
       </div>
 
       <Footer />
-      <style>{`@media(max-width:900px){.product-detail-grid{grid-template-columns:1fr!important; gap: 40px !important;}}`}</style>
+      <style>{`
+        @media(max-width:900px){
+          .product-detail-grid{grid-template-columns:1fr!important; gap: 40px !important;}
+        }
+
+        .pd-main-viewer {
+          border-radius: var(--radius-xl);
+          overflow: hidden;
+          background: var(--gradient-card-img);
+          border: 1px solid var(--border-default);
+          aspect-ratio: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          box-shadow: var(--shadow-sm);
+        }
+
+        .pd-main-media {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+
+        .pd-media-toggle-wrap {
+          display: flex;
+          justify-content: center;
+          margin-top: 14px;
+          padding-bottom: 4px;
+        }
+
+        .pd-media-toggle {
+          position: relative;
+          width: fit-content;
+          max-width: 100%;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          align-items: center;
+          min-width: 180px;
+          padding: 4px;
+          border-radius: 999px;
+          background: var(--maroon-deep);
+          border: 1px solid rgba(201, 168, 76, 0.35);
+          box-shadow: 0 4px 14px rgba(86, 18, 40, 0.35);
+          pointer-events: none;
+        }
+
+        .pd-media-toggle--solo {
+          grid-template-columns: 1fr;
+          min-width: 128px;
+        }
+
+        .pd-media-toggle-slider {
+          position: absolute;
+          top: 4px;
+          bottom: 4px;
+          left: 4px;
+          width: calc((100% - 8px) / 2);
+          border-radius: 999px;
+          background: #fff;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+          transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        .pd-media-toggle--solo .pd-media-toggle-slider {
+          width: calc(100% - 8px);
+          transform: none !important;
+        }
+
+        .pd-media-toggle--mode-video .pd-media-toggle-slider {
+          transform: translateX(0);
+        }
+
+        .pd-media-toggle--mode-photos .pd-media-toggle-slider {
+          transform: translateX(100%);
+        }
+
+        .pd-media-toggle-seg {
+          position: relative;
+          z-index: 1;
+          border: none;
+          background: transparent;
+          color: var(--white);
+          font-family: "Plus Jakarta Sans", sans-serif;
+          font-size: 13px;
+          font-weight: 600;
+          line-height: 1.2;
+          padding: 9px 14px;
+          border-radius: 999px;
+          cursor: pointer;
+          white-space: nowrap;
+          transition: color 0.22s ease;
+          pointer-events: auto;
+        }
+
+        .pd-media-toggle-seg--active {
+          color: var(--text);
+        }
+
+        .pd-media-toggle-seg:not(.pd-media-toggle-seg--active):hover {
+          color: var(--white);
+        }
+      `}</style>
     </div>
   );
 }

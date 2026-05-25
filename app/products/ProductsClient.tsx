@@ -11,7 +11,8 @@ import { PRODUCT_CATEGORIES } from "@/lib/utils";
 
 interface Product {
   _id: string; name: string; slug: string; price: number; comparePrice?: number;
-  images: string[]; category: string; isFeatured?: boolean; isNewArrival?: boolean;
+  images: string[]; previewVideoUrl?: string; shortDescription?: string;
+  category: string; isFeatured?: boolean; isNewArrival?: boolean;
   rating?: number; reviewCount?: number; stock?: number;
 }
 

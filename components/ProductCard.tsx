@@ -14,8 +14,9 @@ interface Product {
   price: number;
   comparePrice?: number;
   images: string[];
-  /** Optional MP4/WebM URL — plays on card image hover (muted, max ~5s per hover) */
+  /** Optional MP4/WebM URL — plays when Video segment is selected */
   previewVideoUrl?: string;
+  shortDescription?: string;
   category: string;
   isFeatured?: boolean;
   isNewArrival?: boolean;
@@ -23,6 +24,8 @@ interface Product {
   reviewCount?: number;
   stock?: number;
 }
+
+type MediaMode = "video" | "photos";
 
 function getFallbackImage(category: string, name: string) {
   const fallbacks: Record<string, string[]> = {
@@ -123,8 +126,10 @@ export default function ProductCard({ product }: { product: Product }) {
   const hasVideo =
     Boolean(previewVideoUrl) &&
     (/^https?:\/\//i.test(previewVideoUrl) || previewVideoUrl.startsWith("/"));
-  const hasGalleryCycle = galleryUrls.length >= 2 && !hasVideo;
+  const hasGalleryCycle = galleryUrls.length >= 2;
+  const showMediaToggle = hasVideo || galleryUrls.length > 1;
 
+  const [mediaMode, setMediaMode] = useState<MediaMode>("photos");
   const [stageHover, setStageHover] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [prevGalleryIndex, setPrevGalleryIndex] = useState<number | null>(null);
@@ -164,40 +169,72 @@ export default function ProductCard({ product }: { product: Product }) {
     return true;
   };
 
+  const playPreviewVideo = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.currentTime = 0;
+    void v.play().catch(() => { });
+    clearVideoCap();
+    videoCapTimerRef.current = setTimeout(() => {
+      v.pause();
+    }, 5000);
+  };
+
+  const advanceGallery = () => {
+    if (!hasGalleryCycle) return;
+    setGalleryIndex((prev) => {
+      const next = (prev + 1) % galleryUrls.length;
+      setPrevGalleryIndex(prev);
+      setIsTransitioning(true);
+      setShimmer(true);
+      setTimeout(() => setShimmer(false), 300);
+      setTimeout(() => {
+        setIsTransitioning(false);
+        setPrevGalleryIndex(null);
+      }, 550);
+      return next;
+    });
+  };
+
+  const startPhotoCycle = () => {
+    clearGalleryInterval();
+    advanceGallery();
+    galleryIntervalRef.current = setInterval(advanceGallery, 1200);
+  };
+
+  const switchMediaMode = (mode: MediaMode, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (mode === "photos" && mediaMode === "photos" && hasGalleryCycle) {
+      advanceGallery();
+      if (stageHover) startPhotoCycle();
+      return;
+    }
+    setMediaMode(mode);
+    clearGalleryInterval();
+    if (mode === "video" && hasVideo) {
+      setPrevGalleryIndex(null);
+      setIsTransitioning(false);
+      setShimmer(false);
+      playPreviewVideo();
+    } else {
+      clearVideoCap();
+      stopVideo();
+      if (stageHover && hasGalleryCycle) startPhotoCycle();
+    }
+  };
+
   const handleStageEnter = () => {
-    if (!hoverMediaAllowed()) return;
     setStageHover(true);
 
-    if (hasVideo) {
+    if (mediaMode === "video" && hasVideo) {
       clearGalleryInterval();
-      const v = videoRef.current;
-      if (v) {
-        v.currentTime = 0;
-        void v.play().catch(() => { });
-        clearVideoCap();
-        videoCapTimerRef.current = setTimeout(() => {
-          v.pause();
-        }, 5000);
-      }
+      if (hoverMediaAllowed()) playPreviewVideo();
       return;
     }
 
-    if (hasGalleryCycle) {
-      clearGalleryInterval();
-      galleryIntervalRef.current = setInterval(() => {
-        setGalleryIndex((prev) => {
-          const next = (prev + 1) % galleryUrls.length;
-          setPrevGalleryIndex(prev);
-          setIsTransitioning(true);
-          setShimmer(true);
-          setTimeout(() => setShimmer(false), 300);
-          setTimeout(() => {
-            setIsTransitioning(false);
-            setPrevGalleryIndex(null);
-          }, 550);
-          return next;
-        });
-      }, 1100);
+    if (hasGalleryCycle && mediaMode === "photos") {
+      startPhotoCycle();
     }
   };
 
@@ -257,7 +294,7 @@ export default function ProductCard({ product }: { product: Product }) {
               {hasVideo ? (
                 <video
                   ref={videoRef}
-                  className={`pc-preview-video${stageHover ? " pc-preview-video--visible" : ""}`}
+                  className={`pc-preview-video${mediaMode === "video" ? " pc-preview-video--visible" : ""}`}
                   src={previewVideoUrl}
                   muted
                   playsInline
@@ -265,14 +302,36 @@ export default function ProductCard({ product }: { product: Product }) {
                   aria-label={`${product.name} preview clip`}
                 />
               ) : null}
+
+              {showMediaToggle && (
+                <div
+                  className={`pc-media-toggle${hasVideo ? "" : " pc-media-toggle--solo"} pc-media-toggle--mode-${mediaMode}`}
+                  role="group"
+                  aria-label="Product media"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <span className="pc-media-toggle-slider" aria-hidden />
+                  {hasVideo && (
+                    <button
+                      type="button"
+                      className={`pc-media-toggle-seg${mediaMode === "video" ? " pc-media-toggle-seg--active" : ""}`}
+                      aria-pressed={mediaMode === "video"}
+                      onClick={(e) => switchMediaMode("video", e)}
+                    >
+                      Video
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className={`pc-media-toggle-seg${mediaMode === "photos" ? " pc-media-toggle-seg--active" : ""}`}
+                    aria-pressed={mediaMode === "photos"}
+                    onClick={(e) => switchMediaMode("photos", e)}
+                  >
+                    Photos {galleryIndex + 1}/{galleryUrls.length}
+                  </button>
+                </div>
+              )}
             </div>
-            {hasGalleryCycle && stageHover && (
-              <div className="pc-gallery-dots" aria-hidden>
-                {galleryUrls.map((_, i) => (
-                  <span key={i} className={`pc-dot${i === galleryIndex ? " pc-dot--active" : ""}`} />
-                ))}
-              </div>
-            )}
 
             {isOutOfStock && <div className="pc-oos-ribbon">Out of stock</div>}
 
@@ -339,6 +398,9 @@ export default function ProductCard({ product }: { product: Product }) {
           <div className="pc-body">
             <p className="pc-cat">{formatCategoryLabel(product.category)}</p>
             <h3 className="pc-title">{product.name}</h3>
+            {product.shortDescription?.trim() ? (
+              <p className="pc-desc">{product.shortDescription.trim()}</p>
+            ) : null}
 
             <div className="pc-rating">
               <div className="pc-stars" aria-hidden>
@@ -414,9 +476,9 @@ export default function ProductCard({ product }: { product: Product }) {
           flex: 1;
           min-height: 220px;
           margin: 0;
-          background: #f7f7f7;
-          border: 1px solid rgba(0,0,0,0.03);
-          border-radius: 8px;
+          background: var(--gradient-card-img);
+          border: 1px solid var(--border-default);
+          border-radius: var(--radius-sm);
           overflow: hidden;
           transition: box-shadow 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
@@ -436,11 +498,17 @@ export default function ProductCard({ product }: { product: Product }) {
           position: absolute;
           inset: 0;
           transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+          z-index: 1;
         }
 
         .pc-root:hover .pc-media,
         .pc-root:focus-within .pc-media {
           transform: scale(1.04);
+        }
+
+        .pc-root:hover .pc-media-toggle,
+        .pc-root:focus-within .pc-media-toggle {
+          transform: none;
         }
 
         .pc-img-layer {
@@ -491,31 +559,83 @@ export default function ProductCard({ product }: { product: Product }) {
           animation: pc-shimmer-flash 0.3s ease-out forwards;
         }
 
-        .pc-gallery-dots {
+        .pc-media-toggle {
           position: absolute;
+          left: 0;
+          right: 0;
           bottom: 10px;
-          left: 50%;
-          transform: translateX(-50%);
-          z-index: 12;
-          display: flex;
-          gap: 5px;
+          width: fit-content;
+          max-width: calc(100% - 20px);
+          margin-inline: auto;
+          z-index: 15;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
           align-items: center;
+          min-width: 168px;
+          padding: 4px;
+          border-radius: 999px;
+          background: var(--maroon-deep);
+          border: 1px solid rgba(201, 168, 76, 0.35);
+          box-shadow: 0 4px 14px rgba(86, 18, 40, 0.35);
           pointer-events: none;
         }
 
-        .pc-dot {
-          width: 5px;
-          height: 5px;
-          border-radius: 50%;
-          background: rgba(255,255,255,0.55);
-          transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-          box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        .pc-media-toggle--solo {
+          grid-template-columns: 1fr;
+          min-width: 118px;
         }
 
-        .pc-dot--active {
+        .pc-media-toggle-slider {
+          position: absolute;
+          top: 4px;
+          bottom: 4px;
+          left: 4px;
+          width: calc((100% - 8px) / 2);
+          border-radius: 999px;
           background: #fff;
-          transform: scale(1.5);
-          box-shadow: 0 0 6px rgba(255,255,255,0.8);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+          transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        .pc-media-toggle--solo .pc-media-toggle-slider {
+          width: calc(100% - 8px);
+          transform: none !important;
+        }
+
+        .pc-media-toggle--mode-video .pc-media-toggle-slider {
+          transform: translateX(0);
+        }
+
+        .pc-media-toggle--mode-photos .pc-media-toggle-slider {
+          transform: translateX(100%);
+        }
+
+        .pc-media-toggle-seg {
+          position: relative;
+          z-index: 1;
+          border: none;
+          background: transparent;
+          color: var(--white);
+          pointer-events: auto;
+          font-family: "Plus Jakarta Sans", sans-serif;
+          font-size: 12px;
+          font-weight: 600;
+          line-height: 1.2;
+          padding: 8px 12px;
+          border-radius: 999px;
+          cursor: pointer;
+          white-space: nowrap;
+          transition: color 0.22s ease;
+        }
+
+        .pc-media-toggle-seg--active {
+          color: var(--text);
+        }
+
+        .pc-media-toggle-seg:not(.pc-media-toggle-seg--active):hover {
+          color: #fff;
         }
 
         .pc-preview-video {
@@ -529,7 +649,7 @@ export default function ProductCard({ product }: { product: Product }) {
           opacity: 0;
           transition: opacity 0.35s ease;
           pointer-events: none;
-          background: #f7f7f7;
+          background: var(--cream-dark);
         }
 
         .pc-preview-video--visible {
@@ -759,7 +879,7 @@ export default function ProductCard({ product }: { product: Product }) {
         }
 
         .pc-title {
-          margin: 0 0 6px;
+          margin: 0 0 4px;
           font-family: "Plus Jakarta Sans", sans-serif;
           font-size: 14px;
           font-weight: 700;
@@ -771,6 +891,19 @@ export default function ProductCard({ product }: { product: Product }) {
           -webkit-box-orient: vertical;
           overflow: hidden;
           letter-spacing: 0.2px;
+        }
+
+        .pc-desc {
+          margin: 0 0 8px;
+          font-family: "Plus Jakarta Sans", sans-serif;
+          font-size: 12px;
+          font-weight: 500;
+          line-height: 1.45;
+          color: #6b7280;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
         }
 
         .pc-prices {
