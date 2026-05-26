@@ -434,6 +434,29 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
           box-sizing: border-box;
         }
 
+        .pd-main-viewer {
+          border-radius: var(--radius-xl);
+          overflow: hidden;
+          background: var(--gradient-card-img);
+          border: 1px solid var(--border-default);
+          aspect-ratio: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          box-shadow: var(--shadow-sm);
+        }
+
+        .pd-main-media,
+        .pd-main-viewer img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          padding: 24px;
+          box-sizing: border-box;
+          border-radius: 0;
+        }
+
         @media (max-width: 900px) {
           .pd-page {
             padding: 0 0 32px;
@@ -450,19 +473,24 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
             max-width: 100vw;
             margin-left: calc(50% - 50vw);
             margin-right: calc(50% - 50vw);
+            border-radius: 0;
           }
 
           .pd-main-viewer {
             width: 100%;
-            border-radius: 0;
+            border-radius: 0 !important;
             border: none;
             aspect-ratio: 4 / 5;
             box-shadow: none;
+            background: #000;
           }
 
-          .pd-main-media {
+          .pd-main-media,
+          .pd-main-viewer img,
+          .pd-main-viewer video {
             object-fit: cover !important;
             padding: 0 !important;
+            border-radius: 0 !important;
           }
 
           .pd-media-toggle-wrap {
@@ -477,27 +505,6 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
             margin-left: 16px;
             margin-right: 16px;
           }
-        }
-
-        .pd-main-viewer {
-          border-radius: var(--radius-xl);
-          overflow: hidden;
-          background: var(--gradient-card-img);
-          border: 1px solid var(--border-default);
-          aspect-ratio: 1;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: relative;
-          box-shadow: var(--shadow-sm);
-        }
-
-        .pd-main-media {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          padding: 24px;
-          box-sizing: border-box;
         }
 
         .pd-media-toggle-wrap {
@@ -584,3 +591,4 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
     </div>
   );
 }
+
