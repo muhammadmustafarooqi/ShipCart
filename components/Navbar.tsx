@@ -53,36 +53,17 @@ export default function Navbar() {
         <div className="nav-shell-accent" aria-hidden />
         <div className="page-container">
 
-          {/* ── MOBILE HEADER (3-column: left | center | right) ── */}
+          {/* ── MOBILE HEADER: left actions | centered logo | right actions ── */}
           <div className="mobile-header">
 
-            {/* Left: Hamburger */}
-            <button
-              onClick={() => { setMenuOpen(!menuOpen); setSearchOpen(false); }}
-              className="icon-btn"
-              aria-label="Menu"
-            >
-              {menuOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
+            <div className="mobile-header-left">
 
-            {/* Center: Logo */}
-            <Link
-              href="/"
-              className="logo-center nav-logo-link"
-              aria-label="AllInOne Store, home"
-              style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
-            >
-              <NavLogo height={60} maxWidth={180} />
-            </Link>
-
-            {/* Right: Search + Wishlist + Cart */}
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <button
-                onClick={() => { setSearchOpen(!searchOpen); setMenuOpen(false); }}
+                onClick={() => { setMenuOpen(!menuOpen); setSearchOpen(false); }}
                 className="icon-btn"
-                aria-label="Search"
+                aria-label="Menu"
               >
-                <Search size={20} />
+                {menuOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
 
               <Link href="/wishlist" className="icon-btn" aria-label={`Wishlist (${wishlistCount})`} style={{ position: "relative", textDecoration: "none", color: "var(--maroon)" }}>
@@ -94,6 +75,20 @@ export default function Navbar() {
                 )}
               </Link>
 
+
+            </div>
+
+            <Link
+              href="/"
+              className="logo-center nav-logo-link"
+              aria-label="AllInOne Store, home"
+              style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
+            >
+              <NavLogo height={48} maxWidth={130} className="nav-logo-mobile" />
+            </Link>
+
+            <div className="mobile-header-right">
+
               <Link href="/cart" className="cart-btn" aria-label="Cart">
                 <ShoppingCart size={20} color="var(--white)" />
                 {totalItems > 0 && (
@@ -102,6 +97,14 @@ export default function Navbar() {
                   </span>
                 )}
               </Link>
+
+              <button
+                onClick={() => { setSearchOpen(!searchOpen); setMenuOpen(false); }}
+                className="icon-btn"
+                aria-label="Search"
+              >
+                <Search size={20} />
+              </button>
             </div>
           </div>
 
@@ -247,13 +250,13 @@ export default function Navbar() {
       <style>{`
         /* ── Shell: floating bar + accent ── */
         .nav-mobile-drawer {
-          top: calc(88px + var(--announcement-h, 0px));
+          top: calc(72px + var(--announcement-h, 0px));
           width: 100% !important;
           max-width: none !important;
           border-right: none !important;
         }
         .nav-menu-overlay {
-          top: calc(88px + var(--announcement-h, 0px));
+          top: calc(72px + var(--announcement-h, 0px));
         }
 
         .nav-shell {
@@ -294,25 +297,46 @@ export default function Navbar() {
         }
 
         /* ── Layout helpers ── */
-        .page-container { max-width: 1400px; margin: 0 auto; padding: 0 16px; }
+        .page-container {
+          width: 100%;
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 0 16px;
+          box-sizing: border-box;
+        }
 
-        /* ── Mobile vs Desktop visibility ── */
+        /* ── Mobile: equal side columns so logo stays truly centered ── */
         .mobile-header {
           position: relative;
           display: grid;
-          grid-template-columns: 100px 1fr 100px; /* FIX: was 44px 1fr 100px — equal sides center the logo */
+          grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
           align-items: center;
-          justify-items: start;
-          height: 88px;
-          gap: 0;
+          column-gap: 8px;
+          height: 72px;
+          width: 100%;
+          min-width: 0;
         }
-        .mobile-header > div:last-child {
-          grid-column: 3;
-          justify-self: end;
+
+        .mobile-header-left,
+        .mobile-header-right {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 4px;
+          min-width: 0;
         }
+
+        .mobile-header-left {
+          grid-column: 1;
+          justify-content: flex-start;
+          justify-self: start;
+        }
+
+        .mobile-header-right {
+          grid-column: 3;
+          justify-content: flex-end;
+          justify-self: end;
+        }
+
         .desktop-header { display: none; }
 
         @media (min-width: 1025px) {
@@ -328,14 +352,46 @@ export default function Navbar() {
           .page-container { padding: 0 32px; }
         }
 
-        /* ── Logo center on mobile ── */
+        /* ── Logo: center grid column (between equal 1fr sides) ── */
         .logo-center {
-          position: static;
           grid-column: 2;
+          justify-self: center;
           display: flex !important;
           justify-content: center;
           align-items: center;
-          width: 100%;
+          max-width: min(120px, 36vw);
+          min-width: 0;
+          flex-shrink: 0;
+        }
+
+        .nav-logo-mobile {
+          width: min(120px, 36vw) !important;
+          max-width: 100% !important;
+        }
+
+        @media (max-width: 1024px) {
+          .nav-shell .page-container {
+            padding: 0 10px;
+            max-width: 100%;
+          }
+        }
+
+        @media (max-width: 380px) {
+          .mobile-header {
+            height: 68px;
+          }
+          .mobile-header-left,
+          .mobile-header-right {
+            gap: 2px;
+          }
+          .icon-btn {
+            width: 36px;
+            height: 36px;
+          }
+          .cart-btn {
+            width: 38px;
+            height: 38px;
+          }
         }
 
         .nav-logo-link {
