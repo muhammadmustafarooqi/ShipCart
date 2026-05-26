@@ -60,23 +60,8 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
   };
 
   return (
-    <section style={{ 
-      background: "var(--bg-primary)", 
-      padding: "40px 20px 20px",
-      display: "flex",
-      justifyContent: "center"
-    }} className="hero-section">
-      <div style={{
-        maxWidth: "1400px",
-        width: "100%",
-        height: "640px",
-        borderRadius: "var(--radius-xl)",
-        position: "relative",
-        overflow: "hidden",
-        border: "1px solid var(--border-default)",
-        boxShadow: "var(--shadow-xl)",
-        background: "var(--maroon)"
-      }} className="hero-container">
+    <section className="hero-section">
+      <div className="hero-container">
         
         {/* Animated Tech Grid Background */}
         <div className="hero-grid-bg" />
@@ -116,17 +101,7 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
               }} className="hero-image" />
 
               {/* Glow Behind Text */}
-              <div style={{
-                position: "absolute",
-                left: "-10%",
-                top: "10%",
-                width: "800px",
-                height: "800px",
-                background: "radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 60%)",
-                borderRadius: "50%",
-                filter: "blur(60px)",
-                pointerEvents: "none"
-              }} />
+              <div className="hero-glow" aria-hidden />
 
               {/* Content Area (Left) */}
               <div style={{ 
@@ -249,6 +224,42 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
       </div>
 
       <style>{`
+        .hero-section {
+          background: var(--bg-primary);
+          padding: 40px 20px 20px;
+          display: flex;
+          justify-content: center;
+          width: 100%;
+          max-width: 100%;
+          overflow: hidden;
+          box-sizing: border-box;
+        }
+
+        .hero-container {
+          max-width: 1400px;
+          width: 100%;
+          height: 640px;
+          border-radius: var(--radius-xl);
+          position: relative;
+          overflow: hidden;
+          border: 1px solid var(--border-default);
+          box-shadow: var(--shadow-xl);
+          background: var(--maroon);
+          box-sizing: border-box;
+        }
+
+        .hero-glow {
+          position: absolute;
+          left: -10%;
+          top: 10%;
+          width: min(800px, 120vw);
+          height: min(800px, 120vw);
+          background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 60%);
+          border-radius: 50%;
+          filter: blur(60px);
+          pointer-events: none;
+        }
+
         .hero-grid-bg {
           position: absolute;
           inset: 0;
@@ -289,12 +300,16 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
 
         @media (max-width: 768px) {
           .hero-section {
-            padding: 20px 16px 16px !important;
+            padding: 16px 12px 12px !important;
           }
 
           .hero-container {
             height: 500px !important;
-            border-radius: 20px !important;
+            border-radius: 16px !important;
+          }
+
+          .hero-glow {
+            display: none;
           }
 
           .hero-image {
@@ -305,8 +320,10 @@ export default function HeroSlider({ banners }: { banners: Banner[] }) {
           }
 
           .hero-content-wrapper {
-            padding-left: 20px !important;
-            padding-right: 20px !important;
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+            max-width: 100% !important;
+            box-sizing: border-box;
             display: flex;
             align-items: center;
             height: 100%;
