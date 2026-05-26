@@ -24,7 +24,9 @@ export function NavLogo({
         alignItems: "center",
         height,
         width: maxWidth,
-        flexShrink: 0,
+        maxWidth: "100%",
+        flexShrink: 1,
+        minWidth: 0,
         position: "relative",
       }}
     >
