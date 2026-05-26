@@ -204,12 +204,18 @@ export default function FeaturedCollection({ products }: { products: FeaturedPro
         }
 
         @media (max-width: 768px) {
+          .fc-section {
+            overflow: hidden;
+          }
           .fc-grid-wrap {
-            padding: 0 16px;
+            width: 100%;
+            max-width: 100%;
+            padding: 0 10px;
+            box-sizing: border-box;
           }
           .fc-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
           }
         }
 
