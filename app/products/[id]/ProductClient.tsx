@@ -186,7 +186,7 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
     <div style={s}>
       <Navbar />
 
-      <div className="page-container" style={{ padding: "40px 24px" }}>
+      <div className="page-container pd-page">
         {/* Breadcrumb */}
         {/* <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "32px", fontSize: "13px", color: "var(--text-secondary)", fontWeight: 500 }}>
           <Link href="/" style={{ color: "var(--text-secondary)", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-primary)")} onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-secondary)")}>Home</Link>
@@ -226,13 +226,12 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
                 <Image
                   src={currentPhoto}
                   alt={product.name}
-                  width={900}
-                  height={900}
+                  fill
+                  sizes="(max-width: 900px) 100vw, 50vw"
                   className="pd-main-media"
                   style={{
                     opacity: imgFade ? 1 : 0,
                     transition: "opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)",
-                    padding: "24px",
                   }}
                   unoptimized
                 />
@@ -276,7 +275,7 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
           </div>
 
           {/* Product Info */}
-          <div>
+          <div className="pd-product-info">
             {/* Category badge */}
             <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "20px" }}>
               <span style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", color: "var(--text-secondary)", padding: "4px 14px", borderRadius: "100px", fontSize: "12px", fontWeight: 600, display: "flex", alignItems: "center", gap: "6px", boxShadow: "var(--shadow-sm)" }}>
@@ -408,7 +407,7 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
 
         {/* Description */}
         {product.description && (
-          <div style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "var(--radius-xl)", padding: "40px", marginBottom: "64px", boxShadow: "var(--shadow-sm)" }}>
+          <div className="pd-page-section" style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "var(--radius-xl)", padding: "40px", marginBottom: "64px", boxShadow: "var(--shadow-sm)" }}>
             <h2 style={{ fontSize: "24px", fontWeight: 800, color: "var(--text-primary)", marginBottom: "24px", fontFamily: "Outfit, sans-serif" }}>Product Details</h2>
             <div style={{ color: "var(--text-secondary)", lineHeight: 1.8, fontSize: "15px", fontWeight: 500 }} dangerouslySetInnerHTML={{ __html: product.description }} />
           </div>
@@ -416,7 +415,7 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
 
         {/* Related Products */}
         {related.length > 0 && (
-          <div>
+          <div className="pd-page-section">
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "32px" }}>
               <h2 className="section-title">Similar Products</h2>
               <Link href={`/products?category=${product.category}`} style={{ fontSize: "14px", color: "var(--color-brand)", textDecoration: "none", fontWeight: 600, fontFamily: "Plus Jakarta Sans, sans-serif" }}>See All &rarr;</Link>
@@ -430,8 +429,54 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
 
       <Footer />
       <style>{`
-        @media(max-width:900px){
-          .product-detail-grid{grid-template-columns:1fr!important; gap: 40px !important;}
+        .pd-page {
+          padding: 40px 24px;
+          box-sizing: border-box;
+        }
+
+        @media (max-width: 900px) {
+          .pd-page {
+            padding: 0 0 32px;
+          }
+
+          .product-detail-grid {
+            grid-template-columns: 1fr !important;
+            gap: 20px !important;
+            margin-bottom: 40px !important;
+          }
+
+          .pd-gallery-col {
+            width: 100vw;
+            max-width: 100vw;
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+          }
+
+          .pd-main-viewer {
+            width: 100%;
+            border-radius: 0;
+            border: none;
+            aspect-ratio: 4 / 5;
+            box-shadow: none;
+          }
+
+          .pd-main-media {
+            object-fit: cover !important;
+            padding: 0 !important;
+          }
+
+          .pd-media-toggle-wrap {
+            padding: 0 16px;
+          }
+
+          .pd-product-info {
+            padding: 0 16px;
+          }
+
+          .pd-page-section {
+            margin-left: 16px;
+            margin-right: 16px;
+          }
         }
 
         .pd-main-viewer {
@@ -451,6 +496,8 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
           width: 100%;
           height: 100%;
           object-fit: contain;
+          padding: 24px;
+          box-sizing: border-box;
         }
 
         .pd-media-toggle-wrap {
