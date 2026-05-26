@@ -918,9 +918,22 @@ export default function ProductCard({ product }: { product: Product }) {
           }
 
           .pc-stage {
-            height: 200px;
+            height: 280px;
             flex: none;
-            min-height: 200px;
+            min-height: 280px;
+            border-radius: 0;
+          }
+
+          .pc-title {
+            font-size: 15px;
+          }
+
+          .pc-desc {
+            font-size: 13px;
+          }
+
+          .pc-price {
+            font-size: 16px;
           }
 
           .pc-wish {
