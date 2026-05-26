@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { useCart } from "@/components/CartProvider";
 import { useSettings } from "@/lib/useSettings";
-import { ShoppingCart, Minus, Plus, Package, Zap, ShieldCheck, Frown } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Package, Zap, ShieldCheck, Frown, Truck, RefreshCcw } from "lucide-react";
 
 interface Product {
   _id: string; name: string; slug: string; price: number; comparePrice?: number;
@@ -379,7 +379,7 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
             </div>
 
             {/* Action Buttons */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "40px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "24px" }}>
               <button ref={cartBtnRef} onClick={handleAddToCart} className="btn-primary" style={{ width: "100%", justifyContent: "center", padding: "18px", fontSize: "16px" }}>
                 <ShoppingCart size={18} color="white" /> Add to Cart
               </button>
@@ -388,12 +388,36 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
               </button>
             </div>
 
-            {/* Delivery Info Cards */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "16px" }}>
+            {/* Delivery & returns */}
+            <div className="pd-delivery-panel">
+              <div className="pd-delivery-col">
+                <div className="pd-delivery-icon" aria-hidden>
+                  <Truck size={28} color="var(--maroon)" strokeWidth={1.75} />
+                </div>
+                <h3 className="pd-delivery-heading">Estimate Delivery Times</h3>
+                <p className="pd-delivery-line">1-2 days karachi</p>
+                <p className="pd-delivery-line">3-5 days pakistn</p>
+              </div>
+              <div className="pd-delivery-divider" aria-hidden />
+              <div className="pd-delivery-col">
+                <div className="pd-delivery-icon" aria-hidden>
+                  <RefreshCcw size={28} color="var(--maroon)" strokeWidth={1.75} />
+                </div>
+                <h3 className="pd-delivery-heading">Return And Exchange Within</h3>
+                <p className="pd-delivery-line">
+                  <strong>7 Days</strong> Of Purchase.
+                </p>
+                <p className="pd-delivery-line pd-delivery-line--muted">
+                  Duties, Taxes &amp; Shipping Are Non-Refundable.
+                </p>
+              </div>
+            </div>
+
+            {/* Trust badges */}
+            <div className="pd-trust-badges">
               {[
                 { icon: <ShieldCheck size={20} color="var(--color-icon)" />, title: "100% Original", sub: "Quality checked" },
                 { icon: <Zap size={20} color="var(--color-icon)" />, title: "Fast Shipping", sub: settings ? `Free over Rs.${settings.freeDeliveryAbove.toLocaleString()}` : "Free over Rs.3000" },
-                { icon: <Package size={20} color="var(--color-icon)" />, title: "Easy Returns", sub: "7-day policy" },
               ].map((item) => (
                 <div key={item.title} style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", padding: "16px 12px", textAlign: "center", boxShadow: "var(--shadow-sm)" }}>
                   <div style={{ display: "flex", justifyContent: "center", marginBottom: "8px" }}>{item.icon}</div>
@@ -587,8 +611,85 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
         .pd-media-toggle-seg:not(.pd-media-toggle-seg--active):hover {
           color: var(--white);
         }
+
+        .pd-delivery-panel {
+          display: grid;
+          grid-template-columns: 1fr auto 1fr;
+          align-items: stretch;
+          margin-bottom: 24px;
+          background: var(--bg-card);
+          border: 1px solid var(--border-default);
+          border-radius: var(--radius-md);
+          overflow: hidden;
+        }
+
+        .pd-delivery-col {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          padding: 20px 16px;
+          gap: 6px;
+        }
+
+        .pd-delivery-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 4px;
+        }
+
+        .pd-delivery-heading {
+          font-family: "Plus Jakarta Sans", sans-serif;
+          font-size: 13px;
+          font-weight: 700;
+          color: var(--text-primary);
+          margin: 0 0 4px;
+          line-height: 1.35;
+        }
+
+        .pd-delivery-line {
+          margin: 0;
+          font-size: 12px;
+          font-weight: 500;
+          color: var(--text-secondary);
+          line-height: 1.5;
+        }
+
+        .pd-delivery-line strong {
+          font-weight: 800;
+          color: var(--text-primary);
+        }
+
+        .pd-delivery-line--muted {
+          font-size: 11px;
+          line-height: 1.45;
+        }
+
+        .pd-delivery-divider {
+          width: 1px;
+          background: var(--border-default);
+          margin: 12px 0;
+        }
+
+        .pd-trust-badges {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 16px;
+        }
+
+        @media (max-width: 520px) {
+          .pd-delivery-panel {
+            grid-template-columns: 1fr;
+          }
+
+          .pd-delivery-divider {
+            width: auto;
+            height: 1px;
+            margin: 0 12px;
+          }
+        }
       `}</style>
     </div>
   );
 }
-
