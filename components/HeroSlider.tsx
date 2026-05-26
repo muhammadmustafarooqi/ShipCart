@@ -1,403 +1,656 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, ShoppingCart, Menu, X, ArrowRight, User, Heart } from "lucide-react";
+import { NavLogo } from "@/components/BrandLogo";
+import { useCart } from "./CartProvider";
+import { useWishlist } from "./WishlistProvider";
+import { useSettings } from "@/lib/useSettings";
 
-interface Banner { _id: string; title: string; subtitle: string; image: string; link: string; }
-
-const DEFAULT_BANNERS: Banner[] = [
-  { 
-    _id: "1", 
-    title: "Next-Gen\nSmart Devices", 
-    subtitle: "Elevate your lifestyle with our ultra-premium collection of intelligent tech.", 
-    image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=1200&auto=format&fit=crop", 
-    link: "/products" 
-  },
-  { 
-    _id: "2", 
-    title: "Pro Audio\nExperience", 
-    subtitle: "Immerse yourself in studio-quality sound with our flagship acoustics.", 
-    image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?q=80&w=1200&auto=format&fit=crop", 
-    link: "/products?category=electronics-gadgets" 
-  },
-  { 
-    _id: "3", 
-    title: "Advanced\nFlight Tech", 
-    subtitle: "Capture the world from above with state-of-the-art cinematic drones.", 
-    image: "https://images.unsplash.com/photo-1507644837895-467ce4af94e6?q=80&w=1200&auto=format&fit=crop", 
-    link: "/products?category=electronics-gadgets" 
-  },
+const DEFAULT_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "Shop All", href: "/products" },
+  { label: "Kitchen", href: "/products?category=kitchen-cooking" },
+  { label: "Personal Care", href: "/products?category=personal-care-beauty" },
+  { label: "Electronics", href: "/products?category=electronics-gadgets" },
+  { label: "Track Order", href: "/track-order" },
 ];
 
-export default function HeroSlider({ banners }: { banners: Banner[] }) {
-  const slides = banners.length > 0 ? banners : DEFAULT_BANNERS;
-  const [current, setCurrent] = useState(0);
-  const [progress, setProgress] = useState(0);
+export default function Navbar() {
+  const { totalItems } = useCart();
+  const { totalItems: wishlistCount } = useWishlist();
+  const { settings, loading: settingsLoading } = useSettings();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [scrolled, setScrolled] = useState(false);
+
+  const navLinks = settings?.navbar?.links || DEFAULT_LINKS;
 
   useEffect(() => {
-    setProgress(0);
-    const interval = 50; 
-    const slideDuration = 7000; 
-    const steps = slideDuration / interval;
-    
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          setCurrent((c) => (c + 1) % slides.length);
-          return 0;
-        }
-        return prev + (100 / steps);
-      });
-    }, interval);
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-    return () => clearInterval(timer);
-  }, [current, slides.length]);
-
-  const goTo = (i: number) => {
-    setCurrent(i);
-    setProgress(0);
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      window.location.href = `/products?search=${encodeURIComponent(searchQuery)}`;
+      setSearchOpen(false);
+      setMenuOpen(false);
+    }
   };
 
   return (
-    <section className="hero-section">
-      <div className="hero-container">
-        
-        {/* Animated Tech Grid Background */}
-        <div className="hero-grid-bg" />
+    <>
+      <nav
+        className="nav-shell"
+        data-scrolled={scrolled ? "true" : "false"}
+        aria-label="Main"
+      >
+        <div className="nav-shell-accent" aria-hidden />
+        <div className="page-container">
 
-        {slides.map((slide, index) => {
-          const isActive = index === current;
-          const titleLines = slide.title.split("\n");
+          {/* ── MOBILE HEADER: left actions | centered logo | right actions ── */}
+          <div className="mobile-header">
 
-          return (
-            <div 
-              key={slide._id}
-              style={{
-                position: "absolute",
-                inset: 0,
-                opacity: isActive ? 1 : 0,
-                visibility: isActive ? "visible" : "hidden",
-                transition: "opacity 1s cubic-bezier(0.16, 1, 0.3, 1), visibility 1s",
-                display: "flex",
-                alignItems: "center"
-              }}
-            >
-              {/* Product Image Side (Right) */}
-              <div style={{
-                position: "absolute",
-                right: 0,
-                top: 0,
-                width: "65%",
-                height: "100%",
-                backgroundImage: `url(${slide.image || DEFAULT_BANNERS[index % DEFAULT_BANNERS.length].image})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                opacity: 0.85,
-                transform: isActive ? "scale(1)" : "scale(1.1)",
-                transition: "transform 8s cubic-bezier(0.16, 1, 0.3, 1)",
-                maskImage: "linear-gradient(to left, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%)",
-                WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%)"
-              }} className="hero-image" />
+            <div className="mobile-header-left">
 
-              {/* Glow Behind Text */}
-              <div className="hero-glow" aria-hidden />
+              <button
+                onClick={() => { setMenuOpen(!menuOpen); setSearchOpen(false); }}
+                className="icon-btn"
+                aria-label="Menu"
+              >
+                {menuOpen ? <X size={22} /> : <Menu size={22} />}
+              </button>
 
-              {/* Content Area (Left) */}
-              <div style={{ 
-                position: "relative", 
-                zIndex: 10,
-                paddingLeft: "clamp(32px, 8vw, 100px)",
-                width: "100%",
-                maxWidth: "800px",
-                transform: isActive ? "translateX(0)" : "translateX(-40px)",
-                transition: "transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s"
-              }} className="hero-content-wrapper">
-                {/* Minimalist Card */}
-                <div style={{
-                  background: "rgba(255, 255, 255, 0.95)",
-                  backdropFilter: "blur(32px)",
-                  WebkitBackdropFilter: "blur(32px)",
-                  border: "1px solid rgba(255, 255, 255, 0.5)",
-                  borderRadius: "24px",
-                  padding: "56px 48px",
-                  boxShadow: "0 24px 48px rgba(0,0,0,0.12)"
-                }} className="hero-card">
-                  <div style={{ 
-                    display: "inline-flex", 
-                    alignItems: "center", 
-                    gap: "8px", 
-                    background: "var(--color-brand-dim)", 
-                    borderRadius: "100px", 
-                    padding: "8px 16px", 
-                    fontSize: "13px", 
-                    color: "var(--color-brand)", 
-                    fontWeight: 700, 
-                    marginBottom: "32px",
-                    textTransform: "uppercase",
-                    letterSpacing: "2px",
-                    fontFamily: "Outfit, sans-serif"
-                  }}>
-                    <Sparkles size={16} color="var(--color-icon)" fill="var(--color-icon)" /> Premium Selection
-                  </div>
-                  
-                  <h1 style={{ 
-                    fontSize: "clamp(3rem, 5vw, 4.5rem)", 
-                    fontWeight: 900, 
-                    color: "var(--text-primary)", 
-                    lineHeight: 1.05, 
-                    marginBottom: "24px",
-                    letterSpacing: "-0.04em",
-                    fontFamily: "Outfit, sans-serif"
-                  }}>
-                    {titleLines[0]}
-                    {titleLines[1] && (
-                      <><br /><span style={{
-                        background: "var(--gradient-brand)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                        backgroundClip: "text"
-                      }}>{titleLines[1]}</span></>
-                    )}
-                  </h1>
-                  
-                  <p style={{ 
-                    fontSize: "18px", 
-                    color: "var(--text-secondary)", 
-                    marginBottom: "48px", 
-                    lineHeight: 1.6,
-                    maxWidth: "500px",
-                    fontWeight: 500
-                  }}>
-                    {slide.subtitle}
-                  </p>
-                  
-                  <Link 
-                    href={slide.link} 
-                    className="hero-btn"
-                  >
-                    Discover Now <ArrowRight size={20} color="currentColor" />
-                  </Link>
-                </div>
-              </div>
+              <Link href="/wishlist" className="icon-btn" aria-label={`Wishlist (${wishlistCount})`} style={{ position: "relative", textDecoration: "none", color: "var(--maroon)" }}>
+                <Heart size={20} fill={wishlistCount > 0 ? "currentColor" : "none"} />
+                {wishlistCount > 0 && (
+                  <span className="cart-badge" style={{ background: "linear-gradient(135deg, #dc2626, #b91c1c)" }}>
+                    {wishlistCount > 9 ? "9+" : wishlistCount}
+                  </span>
+                )}
+              </Link>
+
+
             </div>
-          );
-        })}
 
-        {/* Custom Progress Navigation */}
-        <div style={{
-          position: "absolute",
-          bottom: "48px",
-          right: "clamp(32px, 8vw, 100px)",
-          display: "flex",
-          gap: "12px",
-          zIndex: 20
-        }} className="hero-progress">
-          {slides.map((_, i) => (
-            <div 
-              key={i} 
-              onClick={() => goTo(i)}
-              style={{
-                width: i === current ? "80px" : "12px",
-                height: "6px",
-                background: "rgba(255, 255, 255, 0.3)",
-                borderRadius: "3px",
-                cursor: "pointer",
-                overflow: "hidden",
-                position: "relative",
-                transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)"
-              }}
+            <Link
+              href="/"
+              className="logo-center nav-logo-link"
+              aria-label="AllInOne Store, home"
+              style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
             >
-              <div style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                height: "100%",
-                width: i === current ? `${progress}%` : (i < current ? "100%" : "0%"),
-                background: "#ffffff",
-                boxShadow: i === current ? "0 0 12px rgba(255,255,255,0.8)" : "none",
-                transition: i === current ? "none" : "width 0.3s ease"
-              }} />
+              <NavLogo height={48} maxWidth={130} className="nav-logo-mobile" />
+            </Link>
+
+            <div className="mobile-header-right">
+
+              <Link href="/cart" className="cart-btn" aria-label="Cart">
+                <ShoppingCart size={20} color="var(--white)" />
+                {totalItems > 0 && (
+                  <span className="cart-badge">
+                    {totalItems > 9 ? "9+" : totalItems}
+                  </span>
+                )}
+              </Link>
+
+              <button
+                onClick={() => { setSearchOpen(!searchOpen); setMenuOpen(false); }}
+                className="icon-btn"
+                aria-label="Search"
+              >
+                <Search size={20} />
+              </button>
             </div>
-          ))}
+          </div>
+
+          {/* ── DESKTOP HEADER ── */}
+          <div className="desktop-header">
+            {/* Logo only — no wordmark */}
+            <Link
+              href="/"
+              aria-label="AllInOne Store, home"
+              className="nav-logo-link"
+            >
+              <NavLogo height={64} maxWidth={220} />
+            </Link>
+
+            {/* Nav links — pill rail */}
+            <div className="nav-pill-rail">
+              {navLinks.map((link) => (
+                <Link key={link.href} href={link.href} className="desktop-nav-link">
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+
+            {/* Right Actions */}
+            <div className="nav-actions-desktop">
+              <form onSubmit={handleSearchSubmit} className="nav-search-form">
+                <Search size={16} color="var(--maroon-soft)" strokeWidth={2} />
+                <input
+                  type="text"
+                  placeholder="Search products…"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="nav-search-input"
+                />
+              </form>
+
+              <Link href="/auth/login" className="icon-btn-bordered" aria-label="Account">
+                <User size={20} color="var(--maroon)" />
+              </Link>
+
+              <Link href="/wishlist" className="icon-btn-bordered" aria-label={`Wishlist (${wishlistCount})`} style={{ position: "relative", color: "var(--maroon)" }}>
+                <Heart size={20} fill={wishlistCount > 0 ? "currentColor" : "none"} />
+                {wishlistCount > 0 && (
+                  <span className="cart-badge" style={{ background: "linear-gradient(135deg, #dc2626, #b91c1c)" }}>
+                    {wishlistCount > 9 ? "9+" : wishlistCount}
+                  </span>
+                )}
+              </Link>
+
+              <Link href="/cart" className="cart-btn" aria-label="Cart">
+                <ShoppingCart size={20} color="var(--white)" />
+                {totalItems > 0 && (
+                  <span className="cart-badge">
+                    {totalItems > 9 ? "9+" : totalItems}
+                  </span>
+                )}
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* ── MOBILE SEARCH BAR (slides down) ── */}
+        <div className={`mobile-search-bar ${searchOpen ? "open" : ""}`}>
+          <form onSubmit={handleSearchSubmit} className="nav-search-form nav-search-form--mobile">
+            <Search size={17} color="var(--maroon-soft)" strokeWidth={2} />
+            <input
+              type="text"
+              placeholder="Search products…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              autoFocus={searchOpen}
+              className="nav-search-input nav-search-input--mobile"
+            />
+            {searchQuery && (
+              <button type="button" onClick={() => setSearchQuery("")}
+                style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-secondary)", display: "flex" }}>
+                <X size={16} />
+              </button>
+            )}
+          </form>
+        </div>
+      </nav>
+
+      {/* ── MOBILE DRAWER ── */}
+      <div
+        className={`mobile-drawer nav-mobile-drawer ${menuOpen ? "open" : ""}`}
+        style={{
+          position: "fixed",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "var(--white)",
+          zIndex: 99,
+          overflowY: "auto",
+          transform: menuOpen ? "translateX(0)" : "translateX(-100%)",
+          transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
+      >
+        <div style={{ padding: "28px 20px" }}>
+          {/* Category Label */}
+          <div style={{
+            fontSize: "11px", color: "var(--text-secondary)", fontWeight: 700,
+            letterSpacing: "1.5px", textTransform: "uppercase",
+            paddingLeft: "4px", marginBottom: "14px"
+          }}>
+            Navigate
+          </div>
+
+          {/* Links */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "36px" }}>
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className="drawer-link"
+              >
+                {link.label}
+                <ArrowRight size={16} />
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
 
+      {/* Overlay */}
+      {menuOpen && (
+        <div
+          className="nav-menu-overlay"
+          onClick={() => setMenuOpen(false)}
+          style={{
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(42, 21, 24, 0.45)",
+            zIndex: 98,
+            backdropFilter: "blur(2px)",
+          }}
+        />
+      )}
+
       <style>{`
-        .hero-section {
-          background: var(--bg-primary);
-          padding: 40px 20px 20px;
-          display: flex;
-          justify-content: center;
-          width: 100%;
-          max-width: 100%;
-          overflow: hidden;
-          box-sizing: border-box;
+        /* ── Shell: floating bar + accent ── */
+        .nav-mobile-drawer {
+          top: calc(72px + var(--announcement-h, 0px));
+          width: 100% !important;
+          max-width: none !important;
+          border-right: none !important;
+        }
+        .nav-menu-overlay {
+          top: calc(72px + var(--announcement-h, 0px));
         }
 
-        .hero-container {
-          max-width: 1400px;
-          width: 100%;
-          height: 640px;
-          border-radius: var(--radius-xl);
-          position: relative;
-          overflow: hidden;
-          border: 1px solid var(--border-default);
-          box-shadow: var(--shadow-xl);
-          background: var(--maroon);
-          box-sizing: border-box;
+        .nav-shell {
+          position: sticky;
+          top: var(--announcement-h, 0px);
+          z-index: 100;
+          isolation: isolate;
+          background: linear-gradient(180deg, rgba(255, 253, 249, 0.99) 0%, rgba(250, 243, 232, 0.94) 100%);
+          backdrop-filter: blur(16px) saturate(1.2);
+          -webkit-backdrop-filter: blur(16px) saturate(1.2);
+          border-bottom: 1px solid rgba(232, 216, 188, 0.65);
+          box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 8px 32px rgba(42, 21, 24, 0.06);
+          transition: box-shadow 0.35s ease, border-color 0.35s ease, background 0.35s ease;
         }
-
-        .hero-glow {
+        .nav-shell[data-scrolled="true"] {
+          background: rgba(255, 253, 249, 0.97);
+          border-bottom-color: var(--cream-mid);
+          box-shadow:
+            0 1px 0 rgba(255, 255, 255, 0.5) inset,
+            0 12px 40px rgba(42, 21, 24, 0.1);
+        }
+        .nav-shell-accent {
           position: absolute;
-          left: -10%;
-          top: 10%;
-          width: min(800px, 120vw);
-          height: min(800px, 120vw);
-          background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 60%);
-          border-radius: 50%;
-          filter: blur(60px);
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 3px;
+          background: linear-gradient(
+            90deg,
+            var(--maroon-deep) 0%,
+            var(--maroon) 22%,
+            var(--gold) 50%,
+            var(--maroon) 78%,
+            var(--maroon-deep) 100%
+          );
+          opacity: 0.95;
           pointer-events: none;
         }
 
-        .hero-grid-bg {
-          position: absolute;
-          inset: 0;
-          background-size: 60px 60px;
-          background-image: 
-            linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-          mask-image: radial-gradient(circle at right, black 30%, transparent 80%);
-          -webkit-mask-image: radial-gradient(circle at right, black 30%, transparent 80%);
-          z-index: 0;
+        /* ── Layout helpers ── */
+        .page-container {
+          width: 100%;
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 0 16px;
+          box-sizing: border-box;
         }
 
-        .hero-btn {
-          display: inline-flex;
+        /* ── Mobile: equal side columns so logo stays truly centered ── */
+        .mobile-header {
+          position: relative;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
           align-items: center;
-          gap: 12px;
-          background: var(--text-primary);
-          color: #ffffff;
-          font-weight: 700;
-          font-size: 16px;
-          padding: 18px 40px;
-          border-radius: 100px;
-          text-decoration: none;
-          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-          box-shadow: 0 12px 24px rgba(15, 23, 42, 0.2);
-          font-family: "Plus Jakarta Sans", sans-serif;
+          column-gap: 8px;
+          height: 72px;
+          width: 100%;
+          min-width: 0;
         }
 
-        .hero-btn:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 20px 32px rgba(15, 23, 42, 0.3);
-          background: var(--color-brand);
+        .mobile-header-left,
+        .mobile-header-right {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          min-width: 0;
         }
 
-        .hero-btn:active {
-          transform: translateY(0) scale(0.98);
+        .mobile-header-left {
+          grid-column: 1;
+          justify-content: flex-start;
+          justify-self: start;
         }
 
-        @media (max-width: 768px) {
-          .hero-section {
-            padding: 16px 12px 12px !important;
-          }
+        .mobile-header-right {
+          grid-column: 3;
+          justify-content: flex-end;
+          justify-self: end;
+        }
 
-          .hero-container {
-            height: 500px !important;
-            border-radius: 16px !important;
-          }
+        .desktop-header { display: none; }
 
-          .hero-glow {
-            display: none;
-          }
-
-          .hero-image {
-            width: 100% !important;
-            opacity: 0.3 !important;
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 100%) !important;
-            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 100%) !important;
-          }
-
-          .hero-content-wrapper {
-            padding-left: 16px !important;
-            padding-right: 16px !important;
-            max-width: 100% !important;
-            box-sizing: border-box;
+        @media (min-width: 1025px) {
+          .mobile-header { display: none; }
+          .desktop-header {
             display: flex;
             align-items: center;
-            height: 100%;
+            justify-content: space-between;
+            gap: 16px;
+            height: 88px;
+            min-width: 0;
           }
+          .page-container { padding: 0 32px; }
+        }
 
-          .hero-card {
-            padding: 32px 24px !important;
-            background: rgba(255, 255, 255, 0.98) !important;
-            backdrop-filter: blur(20px) !important;
-            -webkit-backdrop-filter: blur(20px) !important;
-            border-radius: 20px !important;
-          }
+        /* ── Logo: center grid column (between equal 1fr sides) ── */
+        .logo-center {
+          grid-column: 2;
+          justify-self: center;
+          display: flex !important;
+          justify-content: center;
+          align-items: center;
+          max-width: min(120px, 36vw);
+          min-width: 0;
+          flex-shrink: 0;
+        }
 
-          .hero-card > div:first-child {
-            padding: 6px 14px !important;
-            font-size: 11px !important;
-            margin-bottom: 20px !important;
-          }
+        .nav-logo-mobile {
+          width: min(120px, 36vw) !important;
+          max-width: 100% !important;
+        }
 
-          .hero-card h1 {
-            font-size: clamp(1.75rem, 8vw, 2.5rem) !important;
-            margin-bottom: 16px !important;
-            line-height: 1.1 !important;
-          }
-
-          .hero-card p {
-            font-size: 14px !important;
-            margin-bottom: 28px !important;
-            line-height: 1.5 !important;
-          }
-
-          .hero-btn {
-            padding: 14px 28px !important;
-            font-size: 14px !important;
-            width: 100%;
-            justify-content: center;
-          }
-
-          .hero-progress {
-            bottom: 24px !important;
-            right: 20px !important;
-            left: 20px !important;
-            justify-content: center;
-          }
-
-          .hero-grid-bg { 
-            background-size: 30px 30px; 
+        @media (max-width: 1024px) {
+          .nav-shell .page-container {
+            padding: 0 10px;
+            max-width: 100%;
           }
         }
 
-        @media (max-width: 480px) {
-          .hero-container {
-            height: 450px !important;
+        @media (max-width: 380px) {
+          .mobile-header {
+            height: 68px;
           }
-
-          .hero-card {
-            padding: 28px 20px !important;
+          .mobile-header-left,
+          .mobile-header-right {
+            gap: 2px;
           }
-
-          .hero-card h1 {
-            font-size: clamp(1.5rem, 7vw, 2rem) !important;
+          .icon-btn {
+            width: 36px;
+            height: 36px;
           }
-
-          .hero-card p {
-            font-size: 13px !important;
-            margin-bottom: 24px !important;
-          }
-
-          .hero-btn {
-            padding: 12px 24px !important;
-            font-size: 13px !important;
+          .cart-btn {
+            width: 38px;
+            height: 38px;
           }
         }
+
+        .nav-logo-link {
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          flex-shrink: 0;
+          transition: transform 0.25s ease;
+        }
+        .nav-logo-link:hover {
+          transform: scale(1.04);
+        }
+        .nav-logo-link:active {
+          transform: scale(0.98);
+        }
+        .logo-center.nav-logo-link:hover {
+          transform: scale(1.04);
+        }
+        .logo-center.nav-logo-link:active {
+          transform: scale(0.98);
+        }
+
+        /* ── Desktop: pill rail + search row ── */
+        .nav-pill-rail {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex: 1;
+          gap: 2px;
+          padding: 5px 6px;
+          margin: 0 4px;
+          max-width: min(720px, 52vw);
+          min-width: 0;
+          margin-left: auto;
+          margin-right: auto;
+          background: rgba(107, 30, 46, 0.06);
+          border: 1px solid rgba(107, 30, 46, 0.1);
+          border-radius: 999px;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+          overflow-x: auto;
+          overflow-y: hidden;
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior-x: contain;
+          scrollbar-width: thin;
+        }
+        .nav-pill-rail::-webkit-scrollbar {
+          height: 4px;
+        }
+        .nav-pill-rail::-webkit-scrollbar-thumb {
+          background: rgba(107, 30, 46, 0.25);
+          border-radius: 99px;
+        }
+        .nav-actions-desktop {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          flex-shrink: 0;
+        }
+        .nav-search-form {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 16px;
+          min-width: 96px;
+          flex: 1 1 120px;
+          max-width: 240px;
+          background: var(--white);
+          border-radius: 999px;
+          border: 1px solid var(--cream-mid);
+          box-shadow: inset 0 2px 4px rgba(42, 21, 24, 0.04);
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .nav-search-form:focus-within {
+          border-color: rgba(107, 30, 46, 0.35);
+          box-shadow:
+            inset 0 2px 4px rgba(42, 21, 24, 0.04),
+            0 0 0 3px rgba(201, 168, 76, 0.25);
+        }
+        .nav-search-form--mobile {
+          width: 100%;
+          max-width: none;
+          flex: none;
+          padding: 12px 18px;
+          border-radius: 14px;
+        }
+        .nav-search-input {
+          flex: 1;
+          min-width: 0;
+          width: 100%;
+          background: transparent;
+          border: none;
+          outline: none;
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--text-primary);
+          font-family: "Plus Jakarta Sans", sans-serif;
+        }
+        .nav-search-input::placeholder { color: var(--text-secondary); opacity: 0.85; }
+        .nav-search-input--mobile { font-size: 15px; }
+
+        /* ── Icon button ── */
+        .icon-btn {
+          background: rgba(107, 30, 46, 0.07);
+          border: 1px solid transparent;
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          cursor: pointer;
+          color: var(--maroon);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+          flex-shrink: 0;
+        }
+        .icon-btn:hover {
+          background: rgba(107, 30, 46, 0.12);
+          border-color: rgba(107, 30, 46, 0.12);
+          transform: scale(1.04);
+        }
+
+        .icon-btn-bordered {
+          background: var(--white);
+          border: 1px solid var(--cream-mid);
+          width: 46px;
+          height: 46px;
+          border-radius: 50%;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-decoration: none;
+          transition: all 0.22s ease;
+          flex-shrink: 0;
+          box-shadow: 0 2px 8px rgba(42, 21, 24, 0.06);
+        }
+        .icon-btn-bordered:hover {
+          border-color: var(--maroon-soft);
+          background: var(--cream-dark);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(107, 30, 46, 0.12);
+        }
+
+        /* ── Cart button ── */
+        .cart-btn {
+          position: relative;
+          background: linear-gradient(145deg, var(--maroon) 0%, var(--maroon-deep) 100%);
+          border: 1px solid rgba(201, 168, 76, 0.35);
+          width: 46px;
+          height: 46px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-decoration: none;
+          flex-shrink: 0;
+          transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+          box-shadow:
+            0 4px 14px rgba(107, 30, 46, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        }
+        .cart-btn:hover {
+          filter: brightness(1.06);
+          transform: translateY(-2px) scale(1.02);
+          box-shadow:
+            0 8px 22px rgba(107, 30, 46, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        /* ── Cart badge ── */
+        .cart-badge {
+          position: absolute;
+          top: -4px;
+          right: -4px;
+          background: linear-gradient(135deg, var(--gold), #d4b45c);
+          color: var(--text);
+          border-radius: 50%;
+          width: 21px;
+          height: 21px;
+          font-size: 10px;
+          font-weight: 800;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 2px solid var(--white);
+          font-family: Outfit, sans-serif;
+          box-shadow: 0 2px 8px rgba(201, 168, 76, 0.45);
+        }
+
+        /* ── Desktop nav link (inside pill rail) ── */
+        .desktop-nav-link {
+          text-decoration: none;
+          color: var(--text-primary);
+          font-weight: 600;
+          font-size: 13px;
+          padding: 9px 16px;
+          border-radius: 999px;
+          transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+          white-space: nowrap;
+        }
+        .desktop-nav-link:hover {
+          color: var(--maroon);
+          background: rgba(255, 253, 249, 0.95);
+          box-shadow: 0 1px 3px rgba(42, 21, 24, 0.08);
+        }
+
+        @media (min-width: 1025px) and (max-width: 1320px) {
+          .desktop-nav-link {
+            font-size: 12px;
+            padding: 8px 12px;
+          }
+          .nav-pill-rail {
+            max-width: min(560px, 48vw);
+          }
+          .nav-actions-desktop {
+            gap: 8px;
+          }
+        }
+
+        /* ── Mobile search slide-down ── */
+        .mobile-search-bar {
+          max-height: 0;
+          overflow: hidden;
+          padding: 0 16px;
+          transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        .mobile-search-bar.open {
+          max-height: 88px;
+          padding: 8px 16px 16px;
+        }
+        @media (min-width: 1025px) {
+          .mobile-search-bar { display: none; }
+        }
+
+        /* ── Drawer link ── */
+        .drawer-link {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 15px 18px;
+          border-radius: 14px;
+          text-decoration: none;
+          color: var(--text-primary);
+          font-weight: 600;
+          font-size: 15px;
+          font-family: "Plus Jakarta Sans", sans-serif;
+          background: var(--white);
+          border: 1px solid var(--cream-mid);
+          box-shadow: 0 2px 8px rgba(42, 21, 24, 0.04);
+          transition: all 0.22s ease;
+        }
+        .drawer-link:hover {
+          background: var(--maroon);
+          color: var(--white);
+          border-color: var(--maroon);
+          transform: translateX(4px);
+        }
+        .drawer-link:hover svg { color: var(--white); }
       `}</style>
-    </section>
+    </>
   );
 }
