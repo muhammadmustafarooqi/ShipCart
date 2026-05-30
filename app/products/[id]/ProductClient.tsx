@@ -396,7 +396,7 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
                 </div>
                 <h3 className="pd-delivery-heading">Estimate Delivery Times</h3>
                 <p className="pd-delivery-line">1-2 days karachi</p>
-                <p className="pd-delivery-line">3-5 days pakistn</p>
+                <p className="pd-delivery-line">3-5 days pakistan</p>
               </div>
               <div className="pd-delivery-divider" aria-hidden />
               <div className="pd-delivery-col">
