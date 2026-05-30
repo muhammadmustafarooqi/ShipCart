@@ -7,6 +7,7 @@ import { NavLogo } from "@/components/BrandLogo";
 import { useCart } from "./CartProvider";
 import { useWishlist } from "./WishlistProvider";
 import { useSettings } from "@/lib/useSettings";
+import { fbq } from "@/lib/fpq";
 
 const DEFAULT_LINKS = [
   { label: "Home", href: "/" },
@@ -37,6 +38,7 @@ export default function Navbar() {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      fbq("track", "Search", { search_string: searchQuery });
       window.location.href = `/products?search=${encodeURIComponent(searchQuery)}`;
       setSearchOpen(false);
       setMenuOpen(false);

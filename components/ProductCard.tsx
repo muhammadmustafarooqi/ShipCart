@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ShoppingCart, Eye, Heart, Star, Sparkles, MoreHorizontal } from "lucide-react";
 import { useCart } from "./CartProvider";
 import { useWishlist } from "./WishlistProvider";
+import { fbq } from "@/lib/fpq";
 
 interface Product {
   _id: string;
@@ -101,6 +102,12 @@ export default function ProductCard({ product }: { product: Product }) {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    fbq("track", "AddToCart", {
+      content_ids: [product._id],
+      content_name: product.name,
+      value: product.price,
+      currency: "PKR"
+    });
     addItem({
       productId: product._id,
       name: product.name,
@@ -335,6 +342,14 @@ export default function ProductCard({ product }: { product: Product }) {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                if (!wishlisted) {
+                  fbq("track", "AddToWishlist", {
+                    content_ids: [product._id],
+                    content_name: product.name,
+                    value: product.price,
+                    currency: "PKR"
+                  });
+                }
                 toggleItem({
                   productId: product._id,
                   name: product.name,

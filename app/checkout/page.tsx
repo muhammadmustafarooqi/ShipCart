@@ -11,6 +11,7 @@ import { PAKISTANI_CITIES, validatePakistaniPhone, calculateShipping } from "@/l
 import { CheckCircle, Truck, ShoppingBag, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { fbq } from "@/lib/fpq";
 
 interface FormData { customerName: string; phone: string; city: string; address: string; notes: string; }
 interface FormErrors { customerName?: string; phone?: string; city?: string; address?: string; }
@@ -44,6 +45,12 @@ export default function CheckoutPage() {
       setTotal(subtotal + fee);
     }
   }, [subtotal, settings]);
+
+  useEffect(() => {
+    if (items.length > 0) {
+      fbq("track", "InitiateCheckout");
+    }
+  }, [items.length]);
 
   // Fetch user data if logged in
   useEffect(() => {

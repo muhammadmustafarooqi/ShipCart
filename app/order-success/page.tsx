@@ -6,6 +6,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { CheckCircle, Package, Phone, Home, MessageCircle, PartyPopper, Banknote, Truck } from "lucide-react";
+import { fbq } from "@/lib/fpq";
 
 interface Order {
   orderId: string;
@@ -71,7 +72,13 @@ function OrderSuccessContent() {
       playSuccessSound();
       fetch(`/api/orders/${orderId}`)
         .then((r) => r.json())
-        .then((d) => setOrder(d.order))
+        .then((d) => {
+          setOrder(d.order);
+          fbq("track", "Purchase", {
+            value: d.order.total,
+            currency: "PKR"
+          });
+        })
         .catch(console.error)
         .finally(() => setLoading(false));
     }

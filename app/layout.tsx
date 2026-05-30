@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 import CartProvider from "@/components/CartProvider";
 import WishlistProvider from "@/components/WishlistProvider";
+import MetaPixel from "@/components/MetaPixel";
 import { FAVICON_URL } from "@/lib/site";
 
 const jakarta = Plus_Jakarta_Sans({ 
@@ -62,6 +63,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className={jakarta.className} suppressHydrationWarning>
         <CartProvider>
           <WishlistProvider>
+          <MetaPixel />
           {children}
           <WhatsAppFloat />
           <Toaster

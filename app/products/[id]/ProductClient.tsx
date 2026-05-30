@@ -9,7 +9,8 @@ import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { useCart } from "@/components/CartProvider";
 import { useSettings } from "@/lib/useSettings";
-import { ShoppingCart, Minus, Plus, Package, Zap, ShieldCheck, Frown, Truck, RefreshCcw } from "lucide-react";
+import { fbq } from "@/lib/fpq";
+import { ShoppingCart, Minus, Plus, Package, Zap, ShieldCheck, Frown, Truck, RefreshCcw, Play } from "lucide-react";
 
 interface Product {
   _id: string; name: string; slug: string; price: number; comparePrice?: number;
@@ -82,8 +83,25 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
     return () => clearInterval(interval);
   }, [imageCount, isHovered, mediaMode]);
 
+  useEffect(() => {
+    if (product) {
+      fbq("track", "ViewContent", {
+        content_ids: [product._id],
+        content_name: product.name,
+        value: product.price,
+        currency: "PKR"
+      });
+    }
+  }, [product]);
+
   const handleAddToCart = () => {
     if (!product) return;
+    fbq("track", "AddToCart", {
+      content_ids: [product._id],
+      content_name: product.name,
+      value: product.price,
+      currency: "PKR"
+    });
     addItem({ productId: product._id, name: product.name, price: product.price, quantity, image: allImages[0] });
     if (cartBtnRef.current) {
       cartBtnRef.current.style.background = "var(--color-success)";
@@ -101,6 +119,12 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
 
   const handleDirectCheckout = () => {
     if (!product) return;
+    fbq("track", "AddToCart", {
+      content_ids: [product._id],
+      content_name: product.name,
+      value: product.price,
+      currency: "PKR"
+    });
     addItem({ productId: product._id, name: product.name, price: product.price, quantity, image: allImages[0] });
     router.push('/checkout');
   };
