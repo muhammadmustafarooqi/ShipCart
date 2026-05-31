@@ -212,13 +212,13 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
 
       <div className="page-container pd-page">
         {/* Breadcrumb */}
-        {/* <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "32px", fontSize: "13px", color: "var(--text-secondary)", fontWeight: 500 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px", fontSize: "13px", color: "var(--text-secondary)", fontWeight: 500, overflowX: "auto", whiteSpace: "nowrap", paddingBottom: "4px" }}>
           <Link href="/" style={{ color: "var(--text-secondary)", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-primary)")} onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-secondary)")}>Home</Link>
           <span>/</span>
           <Link href="/products" style={{ color: "var(--text-secondary)", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-primary)")} onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-secondary)")}>Collection</Link>
           <span>/</span>
           <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>{product.name}</span>
-        </div> */}
+        </div>
 
         {/* Main Grid */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "60px", marginBottom: "64px" }} className="product-detail-grid">
@@ -483,7 +483,7 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
         }
 
         .pd-main-viewer {
-          border-radius: var(--radius-xl);
+          border-radius: 0;
           overflow: hidden;
           background: var(--gradient-card-img);
           border: 1px solid var(--border-default);
@@ -507,7 +507,7 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
 
         @media (max-width: 900px) {
           .pd-page {
-            padding: 0 0 32px;
+            padding: 20px 16px 32px;
           }
 
           .product-detail-grid {
@@ -516,21 +516,11 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
             margin-bottom: 40px !important;
           }
 
-          .pd-gallery-col {
-            width: 100vw;
-            max-width: 100vw;
-            margin-left: calc(50% - 50vw);
-            margin-right: calc(50% - 50vw);
-            border-radius: 0;
-          }
-
           .pd-main-viewer {
             width: 100%;
             border-radius: 0 !important;
-            border: none;
-            aspect-ratio: 4 / 5;
-            box-shadow: none;
-            background: #000;
+            aspect-ratio: 1;
+            background: var(--gradient-card-img);
           }
 
           .pd-main-media,
