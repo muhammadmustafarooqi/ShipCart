@@ -63,7 +63,7 @@ export default function AdminLogin() {
             Admin Portal
           </h1>
           <p style={{ color: "#6b7280", fontSize: "15px" }}>
-            Sign in to manage your ALLInONE store
+            Sign in to manage your AllnOne store
           </p>
         </div>
 

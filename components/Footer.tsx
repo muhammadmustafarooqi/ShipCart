@@ -69,7 +69,7 @@ export default function Footer() {
                     lineHeight: 1.1,
                   }}
                 >
-                  AllInOne
+                  AllnOne
                 </div>
                 <div
                   style={{
