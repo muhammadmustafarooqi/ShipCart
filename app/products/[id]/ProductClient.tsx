@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +10,8 @@ import ProductCard from "@/components/ProductCard";
 import { useCart } from "@/components/CartProvider";
 import { useSettings } from "@/lib/useSettings";
 import { fbq } from "@/lib/fpq";
-import { ShoppingCart, Minus, Plus, Package, Zap, ShieldCheck, Frown, Truck, RefreshCcw, Play } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Package, Zap, ShieldCheck, Frown, Truck, RefreshCcw } from "lucide-react";
+import ProductDetailTabs from "@/components/ProductDetailTabs";
 
 interface Product {
   _id: string; name: string; slug: string; price: number; comparePrice?: number;
@@ -40,6 +41,15 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
   const [isHovered, setIsHovered] = useState(false);
   const [autoRotate, setAutoRotate] = useState(true);
   const detailVideoRef = useRef<HTMLVideoElement>(null);
+
+  const handleReviewStatsChange = useCallback(
+    (stats: { rating: number; reviewCount: number }) => {
+      setProduct((p) =>
+        p ? { ...p, rating: stats.rating, reviewCount: stats.reviewCount } : p
+      );
+    },
+    []
+  );
 
   const advancePhoto = () => {
     setImgFade(false);
@@ -453,13 +463,13 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
           </div>
         </div>
 
-        {/* Description */}
-        {product.description && (
-          <div className="pd-page-section" style={{ background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "var(--radius-xl)", padding: "40px", marginBottom: "64px", boxShadow: "var(--shadow-sm)" }}>
-            <h2 style={{ fontSize: "24px", fontWeight: 800, color: "var(--text-primary)", marginBottom: "24px", fontFamily: "Outfit, sans-serif" }}>Product Details</h2>
-            <div style={{ color: "var(--text-secondary)", lineHeight: 1.8, fontSize: "15px", fontWeight: 500 }} dangerouslySetInnerHTML={{ __html: product.description }} />
-          </div>
-        )}
+        <ProductDetailTabs
+          productId={product._id}
+          description={product.description || ""}
+          initialRating={product.rating}
+          initialReviewCount={product.reviewCount}
+          onStatsChange={handleReviewStatsChange}
+        />
 
         {/* Related Products */}
         {related.length > 0 && (
