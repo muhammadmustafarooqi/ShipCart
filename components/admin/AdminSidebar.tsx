@@ -23,6 +23,7 @@ import {
   MessageSquare,
   HelpCircle,
   TrendingUp,
+  Sparkles,
 } from "lucide-react";
 
 const navItems = [
@@ -30,6 +31,7 @@ const navItems = [
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
   { label: "Customers", href: "/admin/customers", icon: Users },
+  { label: "Spin Results", href: "/admin/spins", icon: Sparkles },
 ];
 
 const settingsItems = [

@@ -6,6 +6,7 @@ import WhatsAppFloat from "@/components/WhatsAppFloat";
 import CartProvider from "@/components/CartProvider";
 import WishlistProvider from "@/components/WishlistProvider";
 import MetaPixel from "@/components/MetaPixel";
+import AppSessionProvider from "@/components/AppSessionProvider";
 import { FAVICON_URL } from "@/lib/site";
 
 const jakarta = Plus_Jakarta_Sans({ 
@@ -61,36 +62,38 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning className={`${jakarta.variable} ${outfit.variable}`}>
       <body className={jakarta.className} suppressHydrationWarning>
-        <CartProvider>
-          <WishlistProvider>
-          <MetaPixel />
-          {children}
-          <WhatsAppFloat />
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 3000,
-              style: {
-                background: "#0f172a",
-                color: "#ffffff",
-                border: "1px solid #1e293b",
-                fontFamily: "var(--font-jakarta), sans-serif",
-                fontWeight: 500,
-                fontSize: "14px",
-                borderRadius: "12px",
-                padding: "16px",
-                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)",
-              },
-              success: {
-                iconTheme: {
-                  primary: '#10b981',
-                  secondary: '#ffffff',
+        <AppSessionProvider>
+          <CartProvider>
+            <WishlistProvider>
+            <MetaPixel />
+            {children}
+            <WhatsAppFloat />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 3000,
+                style: {
+                  background: "#0f172a",
+                  color: "#ffffff",
+                  border: "1px solid #1e293b",
+                  fontFamily: "var(--font-jakarta), sans-serif",
+                  fontWeight: 500,
+                  fontSize: "14px",
+                  borderRadius: "12px",
+                  padding: "16px",
+                  boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)",
                 },
-              },
-            }}
-          />
-          </WishlistProvider>
-        </CartProvider>
+                success: {
+                  iconTheme: {
+                    primary: '#10b981',
+                    secondary: '#ffffff',
+                  },
+                },
+              }}
+            />
+            </WishlistProvider>
+          </CartProvider>
+        </AppSessionProvider>
       </body>
     </html>
   );

@@ -9,7 +9,7 @@ import CategoryShowcase from "@/components/CategoryShowcase";
 import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 import WhatsAppCTA from "@/components/WhatsAppCTA";
-import PromoBanner from "@/components/PromoBanner";
+import SpinnerBanner from "@/components/SpinnerBanner";
 import FeaturedCollection from "@/components/FeaturedCollection";
 import { LucideByName } from "@/components/LucideByName";
 import Link from "next/link";
@@ -78,8 +78,8 @@ export default async function HomePage() {
 
       <FeaturedCollection products={featuredProducts} />
 
-      {/* Promo Banner */}
-      <PromoBanner />
+      {/* Spinner Banner */}
+      <SpinnerBanner />
 
       {/* New Arrivals */}
       <section style={{ padding: "80px 0", background: "var(--bg-primary)" }}>

@@ -7,6 +7,9 @@ export interface IUser extends Document {
   phone: string;
   city: string;
   address: string;
+  spinResult?: string;
+  hasSpun?: boolean;
+  spunAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -19,6 +22,9 @@ const UserSchema = new Schema<IUser>(
     phone: { type: String, required: true },
     city: { type: String, default: "" },
     address: { type: String, default: "" },
+    spinResult: { type: String, default: "" },
+    hasSpun: { type: Boolean, default: false },
+    spunAt: { type: Date },
   },
   { timestamps: true }
 );
