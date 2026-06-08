@@ -16,12 +16,15 @@ const ALLOWED_TYPES = new Set([
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json({ error: "Invalid product id" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid product id" },
+        { status: 400 },
+      );
     }
 
     await connectDB();
@@ -34,20 +37,23 @@ export async function POST(
     const file = formData.get("file");
 
     if (!file || !(file instanceof File)) {
-      return NextResponse.json({ error: "Please choose a photo to upload" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Please choose a photo to upload" },
+        { status: 400 },
+      );
     }
 
     if (!ALLOWED_TYPES.has(file.type)) {
       return NextResponse.json(
         { error: "Only JPG, PNG, or WebP images are allowed" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (file.size > MAX_BYTES) {
       return NextResponse.json(
         { error: "Image must be 5 MB or smaller" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -57,21 +63,27 @@ export async function POST(
     const { url } = await uploadImageBuffer(
       buffer,
       file.type,
-      "allinonestore/reviews"
+      "ShipCartstore/reviews",
     );
 
     return NextResponse.json({ url });
   } catch (error) {
     console.error("Review image upload error:", error);
-    if (error instanceof Error && error.message === "CLOUDINARY_NOT_CONFIGURED") {
+    if (
+      error instanceof Error &&
+      error.message === "CLOUDINARY_NOT_CONFIGURED"
+    ) {
       return NextResponse.json(
         {
           error:
             "Photo upload is not available right now. You can still post your review without a photo.",
         },
-        { status: 503 }
+        { status: 503 },
       );
     }
-    return NextResponse.json({ error: "Failed to upload photo" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to upload photo" },
+      { status: 500 },
+    );
   }
 }

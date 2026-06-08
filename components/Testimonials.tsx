@@ -74,7 +74,7 @@ export default function Testimonials() {
               <div key={index} className="testimonial-dark-card">
                 <div style={{
                   width: "56px", height: "56px", borderRadius: "50%",
-                  background: t.image ? "transparent" : `linear-gradient(135deg, ${t.avatarColor}, #2a0f1a)`,
+                  background: t.image ? "transparent" : `linear-gradient(135deg, ${t.avatarColor}, var(--maroon-deep))`,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   color: "#FEF5E7", fontWeight: 900, fontSize: "18px", fontFamily: "Outfit, sans-serif",
                   flexShrink: 0, overflow: "hidden", position: "relative"
@@ -112,7 +112,7 @@ export default function Testimonials() {
               <div key={index} className="testimonial-dark-card">
                 <div style={{
                   width: "56px", height: "56px", borderRadius: "50%",
-                  background: t.image ? "transparent" : `linear-gradient(135deg, ${t.avatarColor}, #2a0f1a)`,
+                  background: t.image ? "transparent" : `linear-gradient(135deg, ${t.avatarColor}, var(--maroon-deep))`,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   color: "#FEF5E7", fontWeight: 900, fontSize: "18px", fontFamily: "Outfit, sans-serif",
                   flexShrink: 0, overflow: "hidden", position: "relative"
@@ -180,7 +180,7 @@ export default function Testimonials() {
         .testimonial-dark-card {
           width: 420px;
           flex-shrink: 0;
-          background: #7E1A35;
+          background: var(--maroon);
           border: none;
           border-radius: 100px;
           padding: 20px 24px;
@@ -190,13 +190,13 @@ export default function Testimonials() {
           gap: 20px;
           position: relative;
           overflow: hidden;
-          box-shadow: 0 12px 32px rgba(126,26,53,0.15);
+          box-shadow: 0 12px 32px rgba(15,42,85,0.15);
           transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
         }
 
         .testimonial-dark-card:hover {
           transform: translateY(-6px);
-          box-shadow: 0 18px 48px rgba(126,26,53,0.25);
+          box-shadow: 0 18px 48px rgba(15,42,85,0.25);
         }
 
         @media (max-width: 768px) {

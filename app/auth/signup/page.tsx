@@ -4,7 +4,19 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { BrandLogoMark } from "@/components/BrandLogo";
-import { User, Mail, Lock, Phone, ArrowRight, Eye, EyeOff, MapPin, ShieldCheck, Sparkles, Gift } from "lucide-react";
+import {
+  User,
+  Mail,
+  Lock,
+  Phone,
+  ArrowRight,
+  Eye,
+  EyeOff,
+  MapPin,
+  ShieldCheck,
+  Sparkles,
+  Gift,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { signIn } from "next-auth/react";
 import { PAKISTANI_CITIES } from "@/lib/utils";
@@ -16,22 +28,37 @@ export default function SignupPage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
   const [form, setForm] = useState({
-    name: "", email: "", password: "", confirmPassword: "",
-    phone: "", city: "", address: "",
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phone: "",
+    city: "",
+    address: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.password !== form.confirmPassword) { toast.error("Passwords do not match"); return; }
-    if (form.password.length < 6) { toast.error("Password must be at least 6 characters"); return; }
+    if (form.password !== form.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    if (form.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: form.name, email: form.email, password: form.password,
-          phone: form.phone, city: form.city, address: form.address,
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          phone: form.phone,
+          city: form.city,
+          address: form.address,
         }),
       });
       const data = await res.json();
@@ -39,7 +66,9 @@ export default function SignupPage() {
       toast.success("Account created! Please login.");
       router.push("/auth/login");
     } catch (error: unknown) {
-      toast.error(error instanceof Error ? error.message : "Something went wrong");
+      toast.error(
+        error instanceof Error ? error.message : "Something went wrong",
+      );
     } finally {
       setLoading(false);
     }
@@ -53,7 +82,6 @@ export default function SignupPage() {
   return (
     <>
       <div className="signup-page">
-
         {/* ── MOBILE HERO (hidden on desktop) ── */}
         <div className="signup-mobile-hero">
           <div className="signup-mh-orb signup-mh-orb-1" aria-hidden />
@@ -64,9 +92,10 @@ export default function SignupPage() {
               <BrandLogoMark size={68} tone="elevated" decorative />
             </Link>
             <div className="signup-mh-text">
-              <p className="signup-mh-eyebrow">AllInOne Store</p>
+              <p className="signup-mh-eyebrow">ShipCart Store</p>
               <h1 className="signup-mh-title">
-                Join the<br />
+                Join the
+                <br />
                 <span className="signup-mh-gold">Family</span>
               </h1>
             </div>
@@ -92,20 +121,34 @@ export default function SignupPage() {
               <BrandLogoMark size={72} tone="elevated" decorative />
             </Link>
             <div className="signup-left-text">
-              <p className="signup-eyebrow">Join AllInOne Store</p>
+              <p className="signup-eyebrow">Join ShipCart Store</p>
               <h2 className="signup-headline">
-                Start Your<br />
+                Start Your
+                <br />
                 <span className="signup-headline-gold">Premium Journey</span>
               </h2>
               <p className="signup-sub">
-                Create your free account and unlock exclusive deals, faster checkouts, and order tracking.
+                Create your free account and unlock exclusive deals, faster
+                checkouts, and order tracking.
               </p>
             </div>
             <div className="signup-benefits">
               {[
-                { icon: <Gift size={18} />, title: "Welcome Offers", desc: "Exclusive deals for new members" },
-                { icon: <ShieldCheck size={18} />, title: "Secure & Private", desc: "Your data is fully encrypted" },
-                { icon: <Sparkles size={18} />, title: "Fast Checkout", desc: "Save your info for faster orders" },
+                {
+                  icon: <Gift size={18} />,
+                  title: "Welcome Offers",
+                  desc: "Exclusive deals for new members",
+                },
+                {
+                  icon: <ShieldCheck size={18} />,
+                  title: "Secure & Private",
+                  desc: "Your data is fully encrypted",
+                },
+                {
+                  icon: <Sparkles size={18} />,
+                  title: "Fast Checkout",
+                  desc: "Save your info for faster orders",
+                },
               ].map((b, i) => (
                 <div key={i} className="signup-benefit">
                   <div className="signup-benefit-icon">{b.icon}</div>
@@ -125,11 +168,15 @@ export default function SignupPage() {
         <div className="signup-right">
           <div className="signup-form-wrap">
             <div className="signup-form-header">
-              <div className="signup-form-tag"><Sparkles size={13} /> New Account</div>
+              <div className="signup-form-tag">
+                <Sparkles size={13} /> New Account
+              </div>
               <h2 className="signup-form-title">Create Account</h2>
               <p className="signup-form-sub">
                 Already a member?{" "}
-                <Link href="/auth/login" className="signup-switch-link">Sign in here</Link>
+                <Link href="/auth/login" className="signup-switch-link">
+                  Sign in here
+                </Link>
               </p>
             </div>
 
@@ -140,14 +187,35 @@ export default function SignupPage() {
                   <label className="sl">Full Name *</label>
                   <div className="si-wrap">
                     <User size={16} className="si-icon" />
-                    <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} {...fp("name")} placeholder="Muhammad Ali" required className="si" />
+                    <input
+                      type="text"
+                      value={form.name}
+                      onChange={(e) =>
+                        setForm({ ...form, name: e.target.value })
+                      }
+                      {...fp("name")}
+                      placeholder="Muhammad Ali"
+                      required
+                      className="si"
+                    />
                   </div>
                 </div>
                 <div className={`sf ${focused === "phone" ? "focused" : ""}`}>
                   <label className="sl">Phone *</label>
                   <div className="si-wrap">
                     <Phone size={16} className="si-icon" />
-                    <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} {...fp("phone")} placeholder="03001234567" maxLength={11} required className="si" />
+                    <input
+                      type="tel"
+                      value={form.phone}
+                      onChange={(e) =>
+                        setForm({ ...form, phone: e.target.value })
+                      }
+                      {...fp("phone")}
+                      placeholder="03001234567"
+                      maxLength={11}
+                      required
+                      className="si"
+                    />
                   </div>
                 </div>
               </div>
@@ -157,18 +225,48 @@ export default function SignupPage() {
                 <label className="sl">Email Address *</label>
                 <div className="si-wrap">
                   <Mail size={16} className="si-icon" />
-                  <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} {...fp("email")} placeholder="you@example.com" required className="si" autoComplete="email" />
+                  <input
+                    type="email"
+                    value={form.email}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
+                    {...fp("email")}
+                    placeholder="you@example.com"
+                    required
+                    className="si"
+                    autoComplete="email"
+                  />
                 </div>
               </div>
 
               {/* Row 2 */}
               <div className="signup-row">
-                <div className={`sf ${focused === "password" ? "focused" : ""}`}>
+                <div
+                  className={`sf ${focused === "password" ? "focused" : ""}`}
+                >
                   <label className="sl">Password *</label>
                   <div className="si-wrap">
                     <Lock size={16} className="si-icon" />
-                    <input type={showPassword ? "text" : "password"} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} {...fp("password")} placeholder="Min 6 chars" required minLength={6} className="si" />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="si-eye" tabIndex={-1} aria-label="Toggle">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={form.password}
+                      onChange={(e) =>
+                        setForm({ ...form, password: e.target.value })
+                      }
+                      {...fp("password")}
+                      placeholder="Min 6 chars"
+                      required
+                      minLength={6}
+                      className="si"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="si-eye"
+                      tabIndex={-1}
+                      aria-label="Toggle"
+                    >
                       {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                     </button>
                   </div>
@@ -177,8 +275,25 @@ export default function SignupPage() {
                   <label className="sl">Confirm Password *</label>
                   <div className="si-wrap">
                     <Lock size={16} className="si-icon" />
-                    <input type={showConfirm ? "text" : "password"} value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} {...fp("confirm")} placeholder="Repeat password" required minLength={6} className="si" />
-                    <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="si-eye" tabIndex={-1} aria-label="Toggle">
+                    <input
+                      type={showConfirm ? "text" : "password"}
+                      value={form.confirmPassword}
+                      onChange={(e) =>
+                        setForm({ ...form, confirmPassword: e.target.value })
+                      }
+                      {...fp("confirm")}
+                      placeholder="Repeat password"
+                      required
+                      minLength={6}
+                      className="si"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirm(!showConfirm)}
+                      className="si-eye"
+                      tabIndex={-1}
+                      aria-label="Toggle"
+                    >
                       {showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}
                     </button>
                   </div>
@@ -190,9 +305,18 @@ export default function SignupPage() {
                 <label className="sl">City (Optional)</label>
                 <div className="si-wrap">
                   <MapPin size={16} className="si-icon" />
-                  <select value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} {...fp("city")} className="si si-select">
+                  <select
+                    value={form.city}
+                    onChange={(e) => setForm({ ...form, city: e.target.value })}
+                    {...fp("city")}
+                    className="si si-select"
+                  >
                     <option value="">Select your city</option>
-                    {PAKISTANI_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                    {PAKISTANI_CITIES.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -200,11 +324,30 @@ export default function SignupPage() {
               {/* Address */}
               <div className={`sf ${focused === "address" ? "focused" : ""}`}>
                 <label className="sl">Delivery Address (Optional)</label>
-                <textarea value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} {...fp("address")} placeholder="House/Flat No, Street, Area — saves time at checkout" rows={2} className="si-textarea" />
+                <textarea
+                  value={form.address}
+                  onChange={(e) =>
+                    setForm({ ...form, address: e.target.value })
+                  }
+                  {...fp("address")}
+                  placeholder="House/Flat No, Street, Area — saves time at checkout"
+                  rows={2}
+                  className="si-textarea"
+                />
               </div>
 
-              <button type="submit" disabled={loading} className="signup-submit-btn">
-                {loading ? <span className="s-spinner" /> : <>Create Account <ArrowRight size={18} /></>}
+              <button
+                type="submit"
+                disabled={loading}
+                className="signup-submit-btn"
+              >
+                {loading ? (
+                  <span className="s-spinner" />
+                ) : (
+                  <>
+                    Create Account <ArrowRight size={18} />
+                  </>
+                )}
               </button>
             </form>
 
@@ -213,7 +356,9 @@ export default function SignupPage() {
             <button type="button" onClick={() => signIn("google", { callbackUrl: "/" })} className="s-google-btn">Google</button>
             */}
 
-            <div className="s-back-link"><Link href="/">← Back to Store</Link></div>
+            <div className="s-back-link">
+              <Link href="/">← Back to Store</Link>
+            </div>
           </div>
         </div>
       </div>

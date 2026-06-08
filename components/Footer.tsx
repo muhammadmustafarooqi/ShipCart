@@ -6,8 +6,9 @@ import { BrandLogoMark } from "@/components/BrandLogo";
 import { useSettings } from "@/lib/useSettings";
 
 const DEFAULT_FOOTER = {
-  description: "Pakistan's premier destination for ultra-premium tech, modern home appliances, and intelligent daily accessories.",
-  contactEmail: "support@allinonestore.pk",
+  description:
+    "Pakistan's premier destination for ultra-premium tech, modern home appliances, and intelligent daily accessories.",
+  contactEmail: "support@ShipCartstore.pk",
   contactPhone: "923001234567",
   contactAddress: "Islamabad, Pakistan",
   socialLinks: [
@@ -31,10 +32,19 @@ const DEFAULT_FOOTER = {
       title: "Departments",
       links: [
         { label: "Smart Kitchen", href: "/products?category=kitchen-cooking" },
-        { label: "Personal Care", href: "/products?category=personal-care-beauty" },
+        {
+          label: "Personal Care",
+          href: "/products?category=personal-care-beauty",
+        },
         { label: "Home Essentials", href: "/products?category=home-cleaning" },
-        { label: "Fitness & Health", href: "/products?category=fitness-health" },
-        { label: "Tech Gadgets", href: "/products?category=electronics-gadgets" },
+        {
+          label: "Fitness & Health",
+          href: "/products?category=fitness-health",
+        },
+        {
+          label: "Tech Gadgets",
+          href: "/products?category=electronics-gadgets",
+        },
       ],
     },
   ],
@@ -49,15 +59,31 @@ const DEFAULT_FOOTER = {
 export default function Footer() {
   const { settings, loading } = useSettings();
   const footer = settings?.footer || DEFAULT_FOOTER;
-  const whatsappNumber = settings?.whatsappNumber || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923001234567";
+  const whatsappNumber =
+    settings?.whatsappNumber ||
+    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ||
+    "923001234567";
 
   return (
     <footer className="footer" style={{ padding: "80px 0 0" }}>
       <div className="page-container" style={{ paddingBottom: "40px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: "48px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
+            gap: "48px",
+          }}
+        >
           {/* Brand */}
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "14px",
+                marginBottom: "20px",
+              }}
+            >
               <BrandLogoMark size={52} tone="cream" decorative />
               <div>
                 <div
@@ -69,7 +95,7 @@ export default function Footer() {
                     lineHeight: 1.1,
                   }}
                 >
-                  AllnOne
+                  ShipCart
                 </div>
                 <div
                   style={{
@@ -97,7 +123,12 @@ export default function Footer() {
             </p>
             <div style={{ display: "flex", gap: "12px" }}>
               {footer.socialLinks.map((social) => (
-                <a key={social.platform} href={social.url} className="footer-social" aria-label={social.platform}>
+                <a
+                  key={social.platform}
+                  href={social.url}
+                  className="footer-social"
+                  aria-label={social.platform}
+                >
                   {social.platform === "facebook" && (
                     <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
                       <path
@@ -107,9 +138,29 @@ export default function Footer() {
                     </svg>
                   )}
                   {social.platform === "instagram" && (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-                      <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="2" />
-                      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" />
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      aria-hidden
+                    >
+                      <rect
+                        x="2"
+                        y="2"
+                        width="20"
+                        height="20"
+                        rx="5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="4"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
                       <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
                     </svg>
                   )}
@@ -130,11 +181,19 @@ export default function Footer() {
           {footer.footerLinks.map((section, idx) => (
             <div key={idx}>
               <div className="footer-title">{section.title}</div>
-              <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "12px" }}>
+              <ul
+                style={{
+                  listStyle: "none",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px",
+                }}
+              >
                 {section.links.map((link) => (
                   <li key={link.href}>
                     <Link href={link.href} className="footer-link">
-                      <span className="footer-link-arrow">&rarr;</span> {link.label}
+                      <span className="footer-link-arrow">&rarr;</span>{" "}
+                      {link.label}
                     </Link>
                   </li>
                 ))}
@@ -145,7 +204,9 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <div className="footer-title">Contact Support</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+            >
               <a
                 href={`https://wa.me/${footer.contactPhone}`}
                 target="_blank"
@@ -153,19 +214,34 @@ export default function Footer() {
                 className="footer-contact-row"
               >
                 <span className="footer-contact-ico">
-                  <Phone size={18} strokeWidth={2} color="currentColor" aria-hidden />
+                  <Phone
+                    size={18}
+                    strokeWidth={2}
+                    color="currentColor"
+                    aria-hidden
+                  />
                 </span>
                 WhatsApp Support
               </a>
               <div className="footer-contact-row" style={{ cursor: "default" }}>
                 <span className="footer-contact-ico">
-                  <Mail size={18} strokeWidth={2} color="currentColor" aria-hidden />
+                  <Mail
+                    size={18}
+                    strokeWidth={2}
+                    color="currentColor"
+                    aria-hidden
+                  />
                 </span>
                 {footer.contactEmail}
               </div>
               <div className="footer-contact-row" style={{ cursor: "default" }}>
                 <span className="footer-contact-ico">
-                  <MapPin size={18} strokeWidth={2} color="currentColor" aria-hidden />
+                  <MapPin
+                    size={18}
+                    strokeWidth={2}
+                    color="currentColor"
+                    aria-hidden
+                  />
                 </span>
                 {footer.contactAddress}
               </div>
@@ -182,15 +258,30 @@ export default function Footer() {
       </div>
 
       <div className="footer-bar">
-        <div className="page-container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px", width: "100%" }}>
+        <div
+          className="page-container"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "16px",
+            width: "100%",
+          }}
+        >
           <p className="footer-bar-copy">
             © {new Date().getFullYear()}{" "}
-            <span className="footer-bar-brand-a">AllInOne</span>{" "}
-            <span className="footer-bar-brand-b">Premium Store</span>. All rights reserved.
+            <span className="footer-bar-brand-a">ShipCart</span>{" "}
+            <span className="footer-bar-brand-b">Premium Store</span>. All
+            rights reserved.
           </p>
           <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
             {footer.policies.map((policy) => (
-              <a key={policy.label} href={policy.href} className="footer-policy">
+              <a
+                key={policy.label}
+                href={policy.href}
+                className="footer-policy"
+              >
                 {policy.label}
               </a>
             ))}

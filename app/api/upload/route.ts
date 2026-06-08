@@ -22,7 +22,12 @@ function getCloudinaryConfig() {
 function isPlaceholderCredential(value?: string) {
   if (!value) return true;
   const v = value.toLowerCase();
-  return v === "demo" || v === "your-cloud-name" || v === "your-api-key" || v === "your-api-secret";
+  return (
+    v === "demo" ||
+    v === "your-cloud-name" ||
+    v === "your-api-key" ||
+    v === "your-api-secret"
+  );
 }
 
 export async function POST(request: NextRequest) {
@@ -38,7 +43,7 @@ export async function POST(request: NextRequest) {
         error:
           "Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in .env (get free keys at cloudinary.com/console).",
       },
-      { status: 503 }
+      { status: 503 },
     );
   }
 
@@ -59,7 +64,7 @@ export async function POST(request: NextRequest) {
 
     const isVideo = file.type.startsWith("video/");
     const uploadOptions: any = {
-      folder: "allinonestore",
+      folder: "ShipCartstore",
       resource_type: isVideo ? "video" : "image",
     };
 

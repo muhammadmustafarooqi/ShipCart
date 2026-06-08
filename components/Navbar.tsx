@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Search, ShoppingCart, Menu, X, ArrowRight, User, Heart } from "lucide-react";
+import {
+  Search,
+  ShoppingCart,
+  Menu,
+  X,
+  ArrowRight,
+  User,
+  Heart,
+} from "lucide-react";
 import { NavLogo } from "@/components/BrandLogo";
 import { useCart } from "./CartProvider";
 import { useWishlist } from "./WishlistProvider";
@@ -54,43 +62,61 @@ export default function Navbar() {
       >
         <div className="nav-shell-accent" aria-hidden />
         <div className="page-container">
-
           {/* ── MOBILE HEADER: left actions | centered logo | right actions ── */}
           <div className="mobile-header">
-
             <div className="mobile-header-left">
-
               <button
-                onClick={() => { setMenuOpen(!menuOpen); setSearchOpen(false); }}
+                onClick={() => {
+                  setMenuOpen(!menuOpen);
+                  setSearchOpen(false);
+                }}
                 className="icon-btn"
                 aria-label="Menu"
               >
                 {menuOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
 
-              <Link href="/wishlist" className="icon-btn" aria-label={`Wishlist (${wishlistCount})`} style={{ position: "relative", textDecoration: "none", color: "var(--maroon)" }}>
-                <Heart size={20} fill={wishlistCount > 0 ? "currentColor" : "none"} />
+              <Link
+                href="/wishlist"
+                className="icon-btn"
+                aria-label={`Wishlist (${wishlistCount})`}
+                style={{
+                  position: "relative",
+                  textDecoration: "none",
+                  color: "var(--maroon)",
+                }}
+              >
+                <Heart
+                  size={20}
+                  fill={wishlistCount > 0 ? "currentColor" : "none"}
+                />
                 {wishlistCount > 0 && (
-                  <span className="cart-badge" style={{ background: "linear-gradient(135deg, #dc2626, #b91c1c)" }}>
+                  <span
+                    className="cart-badge"
+                    style={{
+                      background: "linear-gradient(135deg, #dc2626, #b91c1c)",
+                    }}
+                  >
                     {wishlistCount > 9 ? "9+" : wishlistCount}
                   </span>
                 )}
               </Link>
-
-
             </div>
 
             <Link
               href="/"
               className="logo-center nav-logo-link"
-              aria-label="AllInOne Store, home"
-              style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
+              aria-label="ShipCart Store, home"
+              style={{
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+              }}
             >
               <NavLogo height={48} maxWidth={130} className="nav-logo-mobile" />
             </Link>
 
             <div className="mobile-header-right">
-
               <Link href="/cart" className="cart-btn" aria-label="Cart">
                 <ShoppingCart size={20} color="var(--white)" />
                 {totalItems > 0 && (
@@ -101,7 +127,10 @@ export default function Navbar() {
               </Link>
 
               <button
-                onClick={() => { setSearchOpen(!searchOpen); setMenuOpen(false); }}
+                onClick={() => {
+                  setSearchOpen(!searchOpen);
+                  setMenuOpen(false);
+                }}
                 className="icon-btn"
                 aria-label="Search"
               >
@@ -115,7 +144,7 @@ export default function Navbar() {
             {/* Logo only — no wordmark */}
             <Link
               href="/"
-              aria-label="AllInOne Store, home"
+              aria-label="ShipCart Store, home"
               className="nav-logo-link"
             >
               <NavLogo height={64} maxWidth={220} />
@@ -124,7 +153,11 @@ export default function Navbar() {
             {/* Nav links — pill rail */}
             <div className="nav-pill-rail">
               {navLinks.map((link) => (
-                <Link key={link.href} href={link.href} className="desktop-nav-link">
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="desktop-nav-link"
+                >
                   {link.label}
                 </Link>
               ))}
@@ -143,14 +176,31 @@ export default function Navbar() {
                 />
               </form>
 
-              <Link href="/auth/login" className="icon-btn-bordered" aria-label="Account">
+              <Link
+                href="/auth/login"
+                className="icon-btn-bordered"
+                aria-label="Account"
+              >
                 <User size={20} color="var(--maroon)" />
               </Link>
 
-              <Link href="/wishlist" className="icon-btn-bordered" aria-label={`Wishlist (${wishlistCount})`} style={{ position: "relative", color: "var(--maroon)" }}>
-                <Heart size={20} fill={wishlistCount > 0 ? "currentColor" : "none"} />
+              <Link
+                href="/wishlist"
+                className="icon-btn-bordered"
+                aria-label={`Wishlist (${wishlistCount})`}
+                style={{ position: "relative", color: "var(--maroon)" }}
+              >
+                <Heart
+                  size={20}
+                  fill={wishlistCount > 0 ? "currentColor" : "none"}
+                />
                 {wishlistCount > 0 && (
-                  <span className="cart-badge" style={{ background: "linear-gradient(135deg, #dc2626, #b91c1c)" }}>
+                  <span
+                    className="cart-badge"
+                    style={{
+                      background: "linear-gradient(135deg, #dc2626, #b91c1c)",
+                    }}
+                  >
                     {wishlistCount > 9 ? "9+" : wishlistCount}
                   </span>
                 )}
@@ -170,7 +220,10 @@ export default function Navbar() {
 
         {/* ── MOBILE SEARCH BAR (slides down) ── */}
         <div className={`mobile-search-bar ${searchOpen ? "open" : ""}`}>
-          <form onSubmit={handleSearchSubmit} className="nav-search-form nav-search-form--mobile">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="nav-search-form nav-search-form--mobile"
+          >
             <Search size={17} color="var(--maroon-soft)" strokeWidth={2} />
             <input
               type="text"
@@ -181,8 +234,17 @@ export default function Navbar() {
               className="nav-search-input nav-search-input--mobile"
             />
             {searchQuery && (
-              <button type="button" onClick={() => setSearchQuery("")}
-                style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-secondary)", display: "flex" }}>
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "var(--text-secondary)",
+                  display: "flex",
+                }}
+              >
                 <X size={16} />
               </button>
             )}
@@ -207,16 +269,29 @@ export default function Navbar() {
       >
         <div style={{ padding: "28px 20px" }}>
           {/* Category Label */}
-          <div style={{
-            fontSize: "11px", color: "var(--text-secondary)", fontWeight: 700,
-            letterSpacing: "1.5px", textTransform: "uppercase",
-            paddingLeft: "4px", marginBottom: "14px"
-          }}>
+          <div
+            style={{
+              fontSize: "11px",
+              color: "var(--text-secondary)",
+              fontWeight: 700,
+              letterSpacing: "1.5px",
+              textTransform: "uppercase",
+              paddingLeft: "4px",
+              marginBottom: "14px",
+            }}
+          >
             Navigate
           </div>
 
           {/* Links */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "36px" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+              marginBottom: "36px",
+            }}
+          >
             {navLinks.map((link) => (
               <Link
                 key={link.href}
