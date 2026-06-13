@@ -4,6 +4,7 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Search, Package, CheckCircle, Truck, MapPin, XCircle, Clock } from "lucide-react";
+import toast from "react-hot-toast";
 import Image from "next/image";
 
 interface TrackedOrder {
@@ -152,7 +153,16 @@ export default function TrackOrderPage() {
                   <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--maroon)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "4px", fontFamily: "Outfit, sans-serif" }}>Courier Tracking ({order.courierName || "Standard"})</div>
                   <div style={{ fontSize: "18px", fontWeight: 800, color: "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>{order.trackingNumber}</div>
                 </div>
-                <button className="btn-primary" style={{ padding: "10px 20px", fontSize: "14px" }}>Copy</button>
+                <button 
+                  onClick={() => {
+                    navigator.clipboard.writeText(order.trackingNumber || "");
+                    toast.success("Tracking number copied!");
+                  }}
+                  className="btn-primary" 
+                  style={{ padding: "10px 20px", fontSize: "14px" }}
+                >
+                  Copy
+                </button>
               </div>
             )}
 

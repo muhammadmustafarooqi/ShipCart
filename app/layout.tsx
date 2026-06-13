@@ -6,6 +6,7 @@ import WhatsAppFloat from "@/components/WhatsAppFloat";
 import CartProvider from "@/components/CartProvider";
 import WishlistProvider from "@/components/WishlistProvider";
 import MetaPixel from "@/components/MetaPixel";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 import AppSessionProvider from "@/components/AppSessionProvider";
 import { FAVICON_URL } from "@/lib/site";
 
@@ -87,6 +88,7 @@ export default function RootLayout({
           <CartProvider>
             <WishlistProvider>
               <MetaPixel />
+              <AnalyticsTracker />
               {children}
               <WhatsAppFloat />
               <Toaster
