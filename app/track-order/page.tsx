@@ -4,7 +4,6 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Search, Package, CheckCircle, Truck, MapPin, XCircle, Clock } from "lucide-react";
-import toast from "react-hot-toast";
 import Image from "next/image";
 
 interface TrackedOrder {
@@ -81,7 +80,7 @@ export default function TrackOrderPage() {
       <div className="page-container" style={{ padding: "60px 24px", flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
         <div style={{ textAlign: "center", marginBottom: "40px", maxWidth: "600px", width: "100%" }}>
           <div style={{ display: "inline-flex", justifyContent: "center", alignItems: "center", width: "64px", height: "64px", background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "16px", marginBottom: "20px", boxShadow: "var(--shadow-sm)" }}>
-            <MapPin size={28} color="var(--maroon)" />
+            <MapPin size={28} color="var(--orange)" />
           </div>
           <h1 style={{ fontSize: "clamp(2rem, 3vw, 2.5rem)", fontWeight: 800, color: "var(--text-primary)", marginBottom: "12px", fontFamily: "Outfit, sans-serif" }}>Track Your Order</h1>
           <p style={{ color: "var(--text-secondary)", fontSize: "16px", fontWeight: 500 }}>Enter your Order ID and the phone number used during checkout to see live updates.</p>
@@ -148,21 +147,12 @@ export default function TrackOrderPage() {
             </div>
 
             {order.trackingNumber && (
-              <div style={{ background: "var(--maroon-dim)", border: "1px dashed var(--maroon)", borderRadius: "12px", padding: "20px", marginBottom: "32px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ background: "var(--navy-dim)", border: "1px dashed var(--orange)", borderRadius: "12px", padding: "20px", marginBottom: "32px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                  <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--maroon)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "4px", fontFamily: "Outfit, sans-serif" }}>Courier Tracking ({order.courierName || "Standard"})</div>
+                  <div style={{ fontSize: "12px", fontWeight: 700, color: "var(--orange)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "4px", fontFamily: "Outfit, sans-serif" }}>Courier Tracking ({order.courierName || "Standard"})</div>
                   <div style={{ fontSize: "18px", fontWeight: 800, color: "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>{order.trackingNumber}</div>
                 </div>
-                <button 
-                  onClick={() => {
-                    navigator.clipboard.writeText(order.trackingNumber || "");
-                    toast.success("Tracking number copied!");
-                  }}
-                  className="btn-primary" 
-                  style={{ padding: "10px 20px", fontSize: "14px" }}
-                >
-                  Copy
-                </button>
+                <button className="btn-primary" style={{ padding: "10px 20px", fontSize: "14px" }}>Copy</button>
               </div>
             )}
 
@@ -172,7 +162,7 @@ export default function TrackOrderPage() {
                 {order.items.map((item, idx) => (
                   <div key={idx} style={{ display: "flex", alignItems: "center", gap: "16px", background: "var(--bg-primary)", padding: "12px", borderRadius: "12px", border: "1px solid var(--border-default)" }}>
                     <div style={{ width: "48px", height: "48px", borderRadius: "8px", overflow: "hidden", background: "var(--bg-card)", position: "relative" }}>
-                      <Image src={item.image || `https://placehold.co/64x64/ffffff/2563eb?text=P`} alt={item.name} fill style={{ objectFit: "contain" }} unoptimized />
+                      <Image src={item.image || `https://placehold.co/64x64/ffffff/2563eb?text=P`} alt={item.name} fill style={{ objectFit: "contain" }}  />
                     </div>
                     <div>
                       <div style={{ fontSize: "14px", fontWeight: 700, color: "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>{item.name}</div>

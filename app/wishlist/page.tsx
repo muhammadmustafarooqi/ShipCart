@@ -19,6 +19,7 @@ export default function WishlistPage() {
       price: item.price,
       quantity: 1,
       image: item.image,
+      slug: item.slug,
     });
   };
 
@@ -84,14 +85,14 @@ export default function WishlistPage() {
                   return (
                     <div key={item.productId} className="wl-card">
                       {/* Image */}
-                      <Link href={`/products/${item.productId}`} className="wl-card-img-wrap">
+                      <Link href={`/products/${item.slug || item.productId}`} className="wl-card-img-wrap">
                         <Image
                           src={item.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop"}
                           alt={item.name}
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           className="wl-card-img"
-                          unoptimized
+                          
                         />
                         {disc > 0 && (
                           <span className="wl-disc-badge">-{disc}%</span>
@@ -112,7 +113,7 @@ export default function WishlistPage() {
                         <p className="wl-card-cat">
                           {item.category.split("-").slice(0, 2).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" · ")}
                         </p>
-                        <Link href={`/products/${item.productId}`} className="wl-card-name">
+                        <Link href={`/products/${item.slug || item.productId}`} className="wl-card-name">
                           {item.name}
                         </Link>
                         <div className="wl-card-prices">
@@ -155,7 +156,7 @@ export default function WishlistPage() {
 
         /* ── Header ── */
         .wl-header {
-          background: linear-gradient(135deg, var(--maroon-deep, #3d0a14) 0%, var(--maroon, #6b1e2e) 60%, #8b2a3d 100%);
+          background: linear-gradient(135deg, var(--navy-deep, #102857) 0%, var(--orange, #FF6102) 60%, #173673 100%);
           padding: 48px 0 52px;
           position: relative;
           overflow: hidden;
@@ -264,7 +265,7 @@ export default function WishlistPage() {
           font-family: Outfit, sans-serif;
           font-size: 28px;
           font-weight: 800;
-          color: var(--maroon-deep, #3d0a14);
+          color: var(--navy-deep, #102857);
         }
         .wl-empty-desc {
           margin: 0;
@@ -280,7 +281,7 @@ export default function WishlistPage() {
           gap: 10px;
           padding: 16px 32px;
           border-radius: 99px;
-          background: linear-gradient(135deg, var(--maroon, #6b1e2e), var(--maroon-deep, #3d0a14));
+          background: linear-gradient(135deg, var(--orange, #FF6102), var(--navy-deep, #102857));
           color: #fff;
           text-decoration: none;
           font-weight: 700;
@@ -385,7 +386,7 @@ export default function WishlistPage() {
           font-weight: 700;
           letter-spacing: 0.08em;
           text-transform: uppercase;
-          color: var(--maroon, #6b1e2e);
+          color: var(--orange, #FF6102);
           font-family: "Plus Jakarta Sans", sans-serif;
         }
         .wl-card-name {
@@ -403,7 +404,7 @@ export default function WishlistPage() {
           letter-spacing: 0.2px;
           transition: color 0.2s ease;
         }
-        .wl-card-name:hover { color: var(--maroon, #6b1e2e); }
+        .wl-card-name:hover { color: var(--orange, #FF6102); }
         .wl-card-prices {
           display: flex;
           align-items: center;
@@ -443,7 +444,7 @@ export default function WishlistPage() {
           transition: all 0.22s ease;
         }
         .wl-cart-btn:hover {
-          background: var(--maroon, #6b1e2e);
+          background: var(--orange, #FF6102);
           transform: translateY(-1px);
           box-shadow: 0 4px 16px rgba(107,30,46,0.35);
         }
@@ -460,8 +461,8 @@ export default function WishlistPage() {
           gap: 10px;
           padding: 15px 36px;
           border-radius: 99px;
-          border: 2px solid var(--maroon, #6b1e2e);
-          color: var(--maroon, #6b1e2e);
+          border: 2px solid var(--orange, #FF6102);
+          color: var(--orange, #FF6102);
           text-decoration: none;
           font-weight: 700;
           font-size: 15px;
@@ -469,7 +470,7 @@ export default function WishlistPage() {
           transition: all 0.25s ease;
         }
         .wl-continue-btn:hover {
-          background: var(--maroon, #6b1e2e);
+          background: var(--orange, #FF6102);
           color: #fff;
           transform: translateY(-2px);
           box-shadow: 0 8px 24px rgba(107,30,46,0.3);

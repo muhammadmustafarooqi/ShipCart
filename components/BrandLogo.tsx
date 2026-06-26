@@ -32,7 +32,7 @@ export function NavLogo({
     >
       <Image
         src={LOGO_URL}
-        alt="ShipCart Store"
+        alt="ShipCart"
         fill
         sizes={`${maxWidth}px`}
         style={{ objectFit: "contain", objectPosition: "left center" }}
@@ -63,8 +63,7 @@ const tones = {
   elevated: {
     background: "var(--white)",
     border: "1px solid rgba(107, 30, 46, 0.14)",
-    boxShadow:
-      "0 12px 32px rgba(42, 21, 24, 0.14), 0 4px 12px rgba(107, 30, 46, 0.1)",
+    boxShadow: "0 12px 32px rgba(42, 21, 24, 0.14), 0 4px 12px rgba(107, 30, 46, 0.1)",
   },
   footer: {
     background: "rgba(255,255,255,0.98)",
@@ -89,11 +88,7 @@ export function BrandLogoMark({
 }: BrandLogoMarkProps) {
   const t = tones[tone];
   const isNav = tone === "nav";
-  const r =
-    radius ??
-    (isNav
-      ? Math.max(16, Math.round(size * 0.26))
-      : Math.max(14, Math.round(size * 0.24)));
+  const r = radius ?? (isNav ? Math.max(16, Math.round(size * 0.26)) : Math.max(14, Math.round(size * 0.24)));
   const p = pad ?? (isNav ? 0 : Math.max(3, Math.round(size * 0.1)));
 
   return (
@@ -116,7 +111,7 @@ export function BrandLogoMark({
     >
       <Image
         src={LOGO_URL}
-        alt={decorative ? "" : "ShipCart Store logo"}
+        alt={decorative ? "" : "ShipCart logo"}
         width={Math.round(size * 2)}
         height={Math.round(size * 2)}
         sizes={`${size}px`}

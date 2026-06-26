@@ -56,14 +56,14 @@ export default function CartPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             {items.map((item) => (
               <div key={item.productId} className="cart-item">
-                <Link href={`/products/${item.productId}`}>
+                <Link href={`/products/${item.slug || item.productId}`}>
                   <div style={{ width: "100px", height: "100px", borderRadius: "12px", overflow: "hidden", background: "var(--bg-card)", border: "1px solid var(--border-default)", flexShrink: 0, padding: "8px" }}>
-                    <Image src={item.image || `https://placehold.co/100x100/ffffff/2563eb?text=P`} alt={item.name} width={100} height={100} style={{ width: "100%", height: "100%", objectFit: "contain" }} unoptimized />
+                    <Image src={item.image || `https://placehold.co/100x100/ffffff/2563eb?text=P`} alt={item.name} width={100} height={100} style={{ width: "100%", height: "100%", objectFit: "contain" }}  />
                   </div>
                 </Link>
                 <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "4px 0" }}>
                   <div>
-                    <Link href={`/products/${item.productId}`} style={{ textDecoration: "none" }}>
+                    <Link href={`/products/${item.slug || item.productId}`} style={{ textDecoration: "none" }}>
                       <div style={{ fontSize: "16px", fontWeight: 700, color: "var(--text-primary)", lineHeight: 1.4, marginBottom: "8px", fontFamily: "Outfit, sans-serif" }}>{item.name}</div>
                     </Link>
                     <div style={{ fontSize: "16px", fontWeight: 800, color: "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>Rs. {item.price.toLocaleString()}</div>

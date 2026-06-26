@@ -1,4 +1,14 @@
+import dns from "dns";
 import mongoose from "mongoose";
+
+// Node's DNS resolver can fail SRV lookups on some networks (e.g. router DNS
+// refusing querySrv). Public resolvers match what nslookup uses successfully.
+dns.setServers(
+  process.env.DNS_SERVERS?.split(",").map((s) => s.trim()) ?? [
+    "8.8.8.8",
+    "1.1.1.1",
+  ]
+);
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 

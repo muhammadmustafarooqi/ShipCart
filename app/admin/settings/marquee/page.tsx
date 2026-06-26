@@ -105,7 +105,7 @@ export default function AdminMarqueePage() {
   }
 
   return (
-    <div style={{ padding: "32px", maxWidth: "900px" }}>
+    <div className="admin-page-container" style={{ maxWidth: "900px" }}>
       <div style={{ marginBottom: "32px" }}>
         <h1 style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>Marquee Banner</h1>
         <p style={{ color: "#6b7280", marginTop: "4px" }}>Manage the scrolling trust banner items</p>

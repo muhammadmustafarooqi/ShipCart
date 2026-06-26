@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { MessageCircle, ChevronDown, Phone, MapPin, X } from "lucide-react";
+import { MessageCircle, ChevronDown, Phone, MapPin, X, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 
 interface Order {
@@ -16,6 +16,9 @@ interface Order {
     quantity: number;
     price: number;
     image: string;
+    isGift?: boolean;
+    bundleId?: string;
+    selectedBundleItems?: Array<{ name: string }>;
   }>;
   subtotal: number;
   shippingFee: number;
@@ -58,7 +61,6 @@ export default function AdminOrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   const fetchOrders = useCallback(async () => {
-    setLoading(true);
     try {
       const status = filter === "All" ? "" : filter;
       const res = await fetch(`/api/orders?status=${status}&limit=50`);
@@ -72,7 +74,13 @@ export default function AdminOrdersPage() {
   }, [filter]);
 
   useEffect(() => {
-    fetchOrders();
+    let isMounted = true;
+    Promise.resolve().then(() => {
+      if (isMounted) fetchOrders();
+    });
+    return () => {
+      isMounted = false;
+    };
   }, [fetchOrders]);
 
   const handleStatusUpdate = async (orderId: string, status: string) => {
@@ -95,19 +103,46 @@ export default function AdminOrdersPage() {
     }
   };
 
+  const handleDeleteOrder = async (orderId: string) => {
+    if (
+      !window.confirm(
+        `Are you sure you want to delete order #${orderId}? This action cannot be undone.`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to delete order");
+      }
+
+      toast.success("Order deleted successfully");
+      setSelectedOrder(null);
+      fetchOrders();
+    } catch (err) {
+      toast.error(err instanceof Error && err.message ? err.message : "Failed to delete order");
+    }
+  };
+
   const generateWhatsAppUrl = (order: Order) => {
     const whatsappNumber =
-      process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923001234567";
+      process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923713869780";
     const customerPhone = order.phone.replace(/^0/, "92");
     const siteUrl =
       process.env.NEXT_PUBLIC_SITE_URL ||
-      "https://ShipCart-gilt-ten.vercel.app/track-order";
-    const msg = `Hi ${order.customerName}! Your order #${order.orderId} from ShipCart Store is now *${order.status}*.\nTotal: Rs. ${order.total.toLocaleString()} (COD).\n\n📦 *Track your order live here:*\n${siteUrl}/track-order\n\nTo track your order, simply enter:\nOrder ID: *${order.orderId}*\nPhone: *${order.phone}*\n\nThank you for shopping with us!`;
+      "https://www.allnone.pk";
+    const msg = `Hi ${order.customerName}! Your order #${order.orderId} from ALLInONE Store is now *${order.status}*.\nTotal: Rs. ${order.total.toLocaleString()} (COD).\n\n📦 *Track your order live here:*\n${siteUrl}/track-order\n\nTo track your order, simply enter:\nOrder ID: *${order.orderId}*\nPhone: *${order.phone}*\n\nThank you for shopping with us!`;
     return `https://wa.me/${customerPhone}?text=${encodeURIComponent(msg)}`;
   };
 
   return (
-    <div style={{ padding: "32px" }} className="admin-orders-page">
+    <div className="admin-page-container admin-orders-page">
       <div
         style={{
           display: "flex",
@@ -140,7 +175,10 @@ export default function AdminOrdersPage() {
         {FILTERS.map((f) => (
           <button
             key={f}
-            onClick={() => setFilter(f)}
+            onClick={() => {
+              setFilter(f);
+              setLoading(true);
+            }}
             style={{
               padding: "8px 18px",
               borderRadius: "20px",
@@ -604,20 +642,29 @@ export default function AdminOrdersPage() {
                 style={{ display: "flex", flexDirection: "column", gap: "8px" }}
               >
                 {selectedOrder.items.map((item, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      fontSize: "13px",
-                    }}
-                  >
-                    <span style={{ color: "#374151" }}>
-                      {item.name} ×{item.quantity}
-                    </span>
-                    <span style={{ fontWeight: 600, color: "#ff6b00" }}>
-                      Rs. {(item.price * item.quantity).toLocaleString()}
-                    </span>
+                  <div key={i} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
+                      <span style={{ color: "#374151", display: "flex", alignItems: "center", gap: "6px" }}>
+                        {item.name} ×{item.quantity}
+                        {item.isGift && (
+                          <span style={{ background: "#fdf2f8", color: "#db2777", padding: "2px 6px", borderRadius: "4px", fontSize: "10px", fontWeight: 700 }}>
+                            🎁 Gift
+                          </span>
+                        )}
+                      </span>
+                      <span style={{ fontWeight: 600, color: "#ff6b00" }}>
+                        Rs. {(item.price * item.quantity).toLocaleString()}
+                      </span>
+                    </div>
+                    {item.bundleId && item.selectedBundleItems && item.selectedBundleItems.length > 0 && (
+                      <div style={{ marginLeft: "12px", borderLeft: "2px solid #e5e7eb", paddingLeft: "8px", display: "flex", flexDirection: "column", gap: "2px" }}>
+                        {item.selectedBundleItems.map((bi, idx) => (
+                          <div key={idx} style={{ fontSize: "12px", color: "#6b7280" }}>
+                            • {bi.name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -698,6 +745,30 @@ export default function AdminOrdersPage() {
               />{" "}
               WhatsApp Customer
             </a>
+
+            {/* Delete Order Button */}
+            <button
+              onClick={() => handleDeleteOrder(selectedOrder.orderId)}
+              style={{
+                width: "100%",
+                marginTop: "12px",
+                padding: "10px 16px",
+                background: "#ef4444",
+                color: "white",
+                border: "none",
+                borderRadius: "10px",
+                fontWeight: 600,
+                fontSize: "14px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px",
+                transition: "background 0.2s",
+              }}
+            >
+              <Trash2 size={16} /> Delete Order
+            </button>
 
             <div
               style={{

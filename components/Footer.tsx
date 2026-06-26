@@ -1,293 +1,258 @@
 "use client";
 
 import Link from "next/link";
-import { Mail, MapPin, Phone, CreditCard } from "lucide-react";
-import { BrandLogoMark } from "@/components/BrandLogo";
-import { useSettings } from "@/lib/useSettings";
-
-const DEFAULT_FOOTER = {
-  description:
-    "Pakistan's premier destination for ultra-premium tech, modern home appliances, and intelligent daily accessories.",
-  contactEmail: "support@ShipCartstore.pk",
-  contactPhone: "923001234567",
-  contactAddress: "Islamabad, Pakistan",
-  socialLinks: [
-    { platform: "facebook", url: "#" },
-    { platform: "instagram", url: "#" },
-    { platform: "whatsapp", url: "#" },
-  ],
-  footerLinks: [
-    {
-      title: "Explore",
-      links: [
-        { label: "Home", href: "/" },
-        { label: "Premium Collection", href: "/products" },
-        { label: "Shopping Cart", href: "/cart" },
-        { label: "My Wishlist", href: "/wishlist" },
-        { label: "Track Your Order", href: "/track-order" },
-        { label: "Admin Portal", href: "/admin/dashboard" },
-      ],
-    },
-    {
-      title: "Departments",
-      links: [
-        { label: "Smart Kitchen", href: "/products?category=kitchen-cooking" },
-        {
-          label: "Personal Care",
-          href: "/products?category=personal-care-beauty",
-        },
-        { label: "Home Essentials", href: "/products?category=home-cleaning" },
-        {
-          label: "Fitness & Health",
-          href: "/products?category=fitness-health",
-        },
-        {
-          label: "Tech Gadgets",
-          href: "/products?category=electronics-gadgets",
-        },
-      ],
-    },
-  ],
-  policies: [
-    { label: "Privacy Policy", href: "#" },
-    { label: "Terms of Service", href: "#" },
-    { label: "Return Policy", href: "#" },
-  ],
-  codMessage: "Secure payments at your doorstep. Free shipping over Rs. 3000.",
-};
+import { MapPin, Mail, Phone } from "lucide-react";
 
 export default function Footer() {
-  const { settings, loading } = useSettings();
-  const footer = settings?.footer || DEFAULT_FOOTER;
-  const whatsappNumber =
-    settings?.whatsappNumber ||
-    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ||
-    "923001234567";
-
   return (
-    <footer className="footer" style={{ padding: "80px 0 0" }}>
-      <div className="page-container" style={{ paddingBottom: "40px" }}>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
-            gap: "48px",
-          }}
-        >
-          {/* Brand */}
-          <div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "14px",
-                marginBottom: "20px",
-              }}
-            >
-              <BrandLogoMark size={52} tone="cream" decorative />
-              <div>
-                <div
-                  style={{
-                    fontWeight: 800,
-                    fontSize: "20px",
-                    color: "var(--maroon)",
-                    fontFamily: "Outfit, sans-serif",
-                    lineHeight: 1.1,
-                  }}
-                >
-                  ShipCart
-                </div>
-                <div
-                  style={{
-                    fontSize: "10px",
-                    color: "var(--gold)",
-                    letterSpacing: "2px",
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Premium Store
-                </div>
-              </div>
-            </div>
-            <p
-              style={{
-                fontSize: "14px",
-                lineHeight: 1.8,
-                color: "var(--gray)",
-                marginBottom: "24px",
-                paddingRight: "20px",
-              }}
-            >
-              {footer.description}
+    <footer className="site-footer">
+      <div className="page-container">
+        <div className="footer-top">
+          
+          <div className="footer-col brand-col">
+            <Link href="/" className="footer-logo">
+              Ship<span>Cart</span>.
+            </Link>
+            <p className="footer-desc">
+              Your premium destination for modern lifestyle essentials, electronics, and smart home gadgets across Pakistan.
             </p>
-            <div style={{ display: "flex", gap: "12px" }}>
-              {footer.socialLinks.map((social) => (
-                <a
-                  key={social.platform}
-                  href={social.url}
-                  className="footer-social"
-                  aria-label={social.platform}
-                >
-                  {social.platform === "facebook" && (
-                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
-                      <path
-                        fill="currentColor"
-                        d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
-                      />
-                    </svg>
-                  )}
-                  {social.platform === "instagram" && (
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      aria-hidden
-                    >
-                      <rect
-                        x="2"
-                        y="2"
-                        width="20"
-                        height="20"
-                        rx="5"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      />
-                      <circle
-                        cx="12"
-                        cy="12"
-                        r="4"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      />
-                      <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
-                    </svg>
-                  )}
-                  {social.platform === "whatsapp" && (
-                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden>
-                      <path
-                        fill="currentColor"
-                        d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"
-                      />
-                    </svg>
-                  )}
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Dynamic Footer Link Sections */}
-          {footer.footerLinks.map((section, idx) => (
-            <div key={idx}>
-              <div className="footer-title">{section.title}</div>
-              <ul
-                style={{
-                  listStyle: "none",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "12px",
-                }}
-              >
-                {section.links.map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href} className="footer-link">
-                      <span className="footer-link-arrow">&rarr;</span>{" "}
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-
-          {/* Contact */}
-          <div>
-            <div className="footer-title">Contact Support</div>
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "16px" }}
-            >
-              <a
-                href={`https://wa.me/${footer.contactPhone}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="footer-contact-row"
-              >
-                <span className="footer-contact-ico">
-                  <Phone
-                    size={18}
-                    strokeWidth={2}
-                    color="currentColor"
-                    aria-hidden
-                  />
-                </span>
-                WhatsApp Support
+            <div className="footer-socials">
+              <a href="#" aria-label="Facebook">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
               </a>
-              <div className="footer-contact-row" style={{ cursor: "default" }}>
-                <span className="footer-contact-ico">
-                  <Mail
-                    size={18}
-                    strokeWidth={2}
-                    color="currentColor"
-                    aria-hidden
-                  />
-                </span>
-                {footer.contactEmail}
-              </div>
-              <div className="footer-contact-row" style={{ cursor: "default" }}>
-                <span className="footer-contact-ico">
-                  <MapPin
-                    size={18}
-                    strokeWidth={2}
-                    color="currentColor"
-                    aria-hidden
-                  />
-                </span>
-                {footer.contactAddress}
-              </div>
-              <div className="footer-cod">
-                <div className="footer-cod-title">
-                  <CreditCard size={16} color="var(--gold)" aria-hidden />
-                  Cash on Delivery
-                </div>
-                <div className="footer-cod-desc">{footer.codMessage}</div>
-              </div>
+              <a href="#" aria-label="Twitter">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+              </a>
+              <a href="#" aria-label="Instagram">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+              </a>
+              <a href="#" aria-label="Youtube">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+              </a>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className="footer-bar">
-        <div
-          className="page-container"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: "16px",
-            width: "100%",
-          }}
-        >
-          <p className="footer-bar-copy">
-            © {new Date().getFullYear()}{" "}
-            <span className="footer-bar-brand-a">ShipCart</span>{" "}
-            <span className="footer-bar-brand-b">Premium Store</span>. All
-            rights reserved.
+          <div className="footer-col">
+            <h3 className="footer-title">Quick Links</h3>
+            <ul className="footer-links">
+              <li><Link href="/products">Shop All</Link></li>
+              <li><Link href="/products?category=electronics">Electronics</Link></li>
+              <li><Link href="/products?category=kitchen">Kitchen</Link></li>
+              <li><Link href="/track-order">Track Order</Link></li>
+              <li><Link href="/about">About Us</Link></li>
+            </ul>
+          </div>
+
+          <div className="footer-col">
+            <h3 className="footer-title">Customer Care</h3>
+            <ul className="footer-links">
+              <li><Link href="/contact">Contact Us</Link></li>
+              <li><Link href="/faq">FAQs</Link></li>
+              <li><Link href="/returns">Returns & Exchanges</Link></li>
+              <li><Link href="/shipping">Shipping Policy</Link></li>
+              <li><Link href="/privacy">Privacy Policy</Link></li>
+            </ul>
+          </div>
+
+          <div className="footer-col">
+            <h3 className="footer-title">Contact Us</h3>
+            <ul className="footer-contact-list">
+              <li>
+                <MapPin size={18} className="contact-icon" />
+                <span>123 Commerce Street, Lahore, Pakistan</span>
+              </li>
+              <li>
+                <Phone size={18} className="contact-icon" />
+                <span>+92 300 1234567</span>
+              </li>
+              <li>
+                <Mail size={18} className="contact-icon" />
+                <span>support@shipcart.pk</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div className="footer-bottom">
+          <p className="copyright">
+            &copy; {new Date().getFullYear()} ShipCart. All rights reserved.
           </p>
-          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-            {footer.policies.map((policy) => (
-              <a
-                key={policy.label}
-                href={policy.href}
-                className="footer-policy"
-              >
-                {policy.label}
-              </a>
-            ))}
+          <div className="payment-methods">
+            {/* Payment method icons placeholder */}
+            <span className="payment-pill">COD</span>
+            <span className="payment-pill">Visa</span>
+            <span className="payment-pill">MasterCard</span>
           </div>
         </div>
       </div>
+
+      <style>{`
+        .site-footer {
+          background: var(--navy);
+          color: var(--white);
+          padding: 80px 0 0 0;
+        }
+
+        .footer-top {
+          display: grid;
+          grid-template-columns: 2fr 1fr 1fr 1.5fr;
+          gap: 60px;
+          margin-bottom: 60px;
+        }
+
+        .footer-logo {
+          font-family: var(--font-outfit), sans-serif;
+          font-size: 2rem;
+          font-weight: 900;
+          color: var(--white);
+          text-decoration: none;
+          letter-spacing: -0.05em;
+          display: inline-block;
+          margin-bottom: 20px;
+        }
+
+        .footer-logo span {
+          color: var(--orange);
+        }
+
+        .footer-desc {
+          font-family: var(--font-jakarta), sans-serif;
+          font-size: 0.95rem;
+          color: rgba(255, 255, 255, 0.7);
+          line-height: 1.6;
+          margin: 0 0 24px;
+          max-width: 320px;
+        }
+
+        .footer-socials {
+          display: flex;
+          gap: 16px;
+        }
+
+        .footer-socials a {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.05);
+          color: var(--white);
+          transition: all 0.3s ease;
+        }
+
+        .footer-socials a:hover {
+          background: var(--orange);
+          color: var(--white);
+          transform: translateY(-2px);
+        }
+
+        .footer-title {
+          font-family: var(--font-outfit), sans-serif;
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: var(--white);
+          margin: 0 0 24px;
+          letter-spacing: 0.02em;
+        }
+
+        .footer-links {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .footer-links a {
+          font-family: var(--font-jakarta), sans-serif;
+          font-size: 0.95rem;
+          color: rgba(255, 255, 255, 0.7);
+          text-decoration: none;
+          transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+          color: var(--orange);
+        }
+
+        .footer-contact-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        .footer-contact-list li {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          font-family: var(--font-jakarta), sans-serif;
+          font-size: 0.95rem;
+          color: rgba(255, 255, 255, 0.7);
+          line-height: 1.5;
+        }
+
+        .contact-icon {
+          color: var(--orange);
+          flex-shrink: 0;
+          margin-top: 2px;
+        }
+
+        .footer-bottom {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 24px 0;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .copyright {
+          font-family: var(--font-jakarta), sans-serif;
+          font-size: 0.85rem;
+          color: rgba(255, 255, 255, 0.5);
+          margin: 0;
+        }
+
+        .payment-methods {
+          display: flex;
+          gap: 8px;
+        }
+
+        .payment-pill {
+          font-family: var(--font-jakarta), sans-serif;
+          font-size: 0.75rem;
+          font-weight: 700;
+          padding: 4px 10px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 4px;
+          color: rgba(255, 255, 255, 0.6);
+        }
+
+        @media (max-width: 1024px) {
+          .footer-top {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .footer-top {
+            grid-template-columns: 1fr;
+            gap: 40px;
+          }
+          .footer-bottom {
+            flex-direction: column;
+            gap: 16px;
+            text-align: center;
+          }
+        }
+      `}</style>
     </footer>
   );
 }

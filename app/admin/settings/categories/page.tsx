@@ -16,6 +16,9 @@ interface Category {
   isFeatured: boolean;
   order: number;
   isActive: boolean;
+  showName: boolean;
+  showIcon: boolean;
+  showExploreBtn: boolean;
 }
 
 const EMPTY_CATEGORY = {
@@ -28,6 +31,9 @@ const EMPTY_CATEGORY = {
   isFeatured: false,
   order: 0,
   isActive: true,
+  showName: true,
+  showIcon: true,
+  showExploreBtn: true,
 };
 
 const ICON_OPTIONS = [
@@ -86,6 +92,9 @@ export default function AdminCategoriesPage() {
       isFeatured: category.isFeatured,
       order: category.order,
       isActive: category.isActive,
+      showName: category.showName ?? true,
+      showIcon: category.showIcon ?? true,
+      showExploreBtn: category.showExploreBtn ?? true,
     });
     setShowForm(true);
   };
@@ -177,7 +186,7 @@ export default function AdminCategoriesPage() {
   };
 
   return (
-    <div style={{ padding: "32px" }}>
+    <div className="admin-page-container">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "28px", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <h1 style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>Categories</h1>
@@ -207,7 +216,7 @@ export default function AdminCategoriesPage() {
               <GripVertical size={20} style={{ cursor: "grab", color: "#cbd5e1" }} />
               
               <div style={{ width: "120px", height: "80px", borderRadius: "8px", overflow: "hidden", flexShrink: 0, position: "relative" }}>
-                <Image src={category.image} alt={category.name} fill style={{ objectFit: "cover", objectPosition: category.imagePosition }} unoptimized />
+                <Image src={category.image} alt={category.name} fill style={{ objectFit: "cover", objectPosition: category.imagePosition }}  />
               </div>
 
               <div style={{ flex: 1 }}>
@@ -304,7 +313,7 @@ export default function AdminCategoriesPage() {
                 </div>
                 {form.image && (
                   <div style={{ marginTop: "12px", borderRadius: "8px", overflow: "hidden", border: "1px solid #e5e7eb" }}>
-                    <Image src={form.image} alt="Preview" width={400} height={200} style={{ width: "100%", height: "auto", objectFit: "cover" }} unoptimized />
+                    <Image src={form.image} alt="Preview" width={400} height={200} style={{ width: "100%", height: "auto", objectFit: "cover" }}  />
                   </div>
                 )}
               </div>
@@ -324,7 +333,7 @@ export default function AdminCategoriesPage() {
                 <input type="number" value={form.order} onChange={(e) => setForm((f) => ({ ...f, order: Number(e.target.value) }))} />
               </div>
 
-              <div style={{ display: "flex", gap: "16px" }}>
+              <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", marginTop: "8px", background: "#f8fafc", padding: "16px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
                 <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: 500, fontSize: "14px" }}>
                   <input
                     type="checkbox"
@@ -332,7 +341,7 @@ export default function AdminCategoriesPage() {
                     onChange={(e) => setForm((f) => ({ ...f, isFeatured: e.target.checked }))}
                     style={{ width: "18px", height: "18px", accentColor: "#ff6b00" }}
                   />
-                  Featured Category
+                  Featured
                 </label>
                 <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: 500, fontSize: "14px" }}>
                   <input
@@ -342,6 +351,33 @@ export default function AdminCategoriesPage() {
                     style={{ width: "18px", height: "18px", accentColor: "#ff6b00" }}
                   />
                   Active
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: 500, fontSize: "14px" }}>
+                  <input
+                    type="checkbox"
+                    checked={form.showName}
+                    onChange={(e) => setForm((f) => ({ ...f, showName: e.target.checked }))}
+                    style={{ width: "18px", height: "18px", accentColor: "#ff6b00" }}
+                  />
+                  Show Name
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: 500, fontSize: "14px" }}>
+                  <input
+                    type="checkbox"
+                    checked={form.showIcon}
+                    onChange={(e) => setForm((f) => ({ ...f, showIcon: e.target.checked }))}
+                    style={{ width: "18px", height: "18px", accentColor: "#ff6b00" }}
+                  />
+                  Show Icon
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: 500, fontSize: "14px" }}>
+                  <input
+                    type="checkbox"
+                    checked={form.showExploreBtn}
+                    onChange={(e) => setForm((f) => ({ ...f, showExploreBtn: e.target.checked }))}
+                    style={{ width: "18px", height: "18px", accentColor: "#ff6b00" }}
+                  />
+                  Show "Explore" Button
                 </label>
               </div>
 

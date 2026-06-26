@@ -1,11 +1,14 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IOrderItem {
-  productId: string;
+  productId?: mongoose.Types.ObjectId;
+  bundleId?: mongoose.Types.ObjectId;
   name: string;
   price: number;
   quantity: number;
   image: string;
+  isGift?: boolean;
+  selectedBundleItems?: { productId: mongoose.Types.ObjectId; name: string }[];
 }
 
 export interface IOrder extends Document {
@@ -23,16 +26,26 @@ export interface IOrder extends Document {
   notes: string;
   trackingNumber?: string;
   courierName?: string;
+  couponCode?: string;
+  discount?: number;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const OrderItemSchema = new Schema<IOrderItem>({
-  productId: { type: String, required: true },
+  productId: { type: Schema.Types.ObjectId, ref: "Product" },
+  bundleId: { type: Schema.Types.ObjectId, ref: "Bundle" },
   name: { type: String, required: true },
   price: { type: Number, required: true },
   quantity: { type: Number, required: true, min: 1 },
   image: { type: String, default: "" },
+  isGift: { type: Boolean, default: false },
+  selectedBundleItems: [
+    {
+      productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+      name: { type: String },
+    },
+  ],
 });
 
 const OrderSchema = new Schema<IOrder>(
@@ -55,6 +68,8 @@ const OrderSchema = new Schema<IOrder>(
     notes: { type: String, default: "" },
     trackingNumber: { type: String, default: "" },
     courierName: { type: String, default: "" },
+    couponCode: { type: String, default: "" },
+    discount: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

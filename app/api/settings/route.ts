@@ -6,16 +6,15 @@ export async function GET() {
   try {
     await connectDB();
     let settings = await Settings.findOne().lean();
-
+    
     // If no settings exist, return defaults
     if (!settings) {
       const defaults = {
-        storeName: "ShipCart Store",
-        whatsappNumber: "923001234567",
+        storeName: "ALLInONE Store",
+        whatsappNumber: "923713869780",
         deliveryFee: 200,
         freeDeliveryAbove: 3000,
-        announcementBarText:
-          "Free Delivery on Orders Above PKR 3000 | COD Available Nationwide",
+        announcementBarText: "Free Delivery on Orders Above PKR 3000 | COD Available Nationwide",
         announcementBarActive: true,
         marqueeItems: [
           { icon: "Lock", text: "Secure & Safe Shopping" },
@@ -27,30 +26,29 @@ export async function GET() {
       };
       return NextResponse.json(defaults, {
         headers: {
-          "Cache-Control": "no-store, no-cache, must-revalidate",
-          Pragma: "no-cache",
-          Expires: "0",
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
         },
       });
     }
-
+    
     return NextResponse.json(settings, {
       headers: {
-        "Cache-Control": "no-store, no-cache, must-revalidate",
-        Pragma: "no-cache",
-        Expires: "0",
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
       },
     });
   } catch (error) {
     console.error("Error fetching settings:", error);
     // Return defaults on error instead of error response
     return NextResponse.json({
-      storeName: "ShipCart Store",
-      whatsappNumber: "923001234567",
+      storeName: "ALLInONE Store",
+      whatsappNumber: "923713869780",
       deliveryFee: 200,
       freeDeliveryAbove: 3000,
-      announcementBarText:
-        "Free Delivery on Orders Above PKR 3000 | COD Available Nationwide",
+      announcementBarText: "Free Delivery on Orders Above PKR 3000 | COD Available Nationwide",
       announcementBarActive: true,
       marqueeItems: [
         { icon: "Lock", text: "Secure & Safe Shopping" },
@@ -76,16 +74,13 @@ export async function POST(request: NextRequest) {
         new: true, // Return the updated document
         upsert: true, // Create if doesn't exist
         runValidators: true,
-      },
+      }
     );
 
     return NextResponse.json(settings, { status: 200 });
   } catch (error) {
     console.error("Error saving settings:", error);
-    return NextResponse.json(
-      { error: "Failed to save settings", details: String(error) },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Failed to save settings", details: String(error) }, { status: 500 });
   }
 }
 
@@ -102,9 +97,6 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json(settings, { status: 200 });
   } catch (error) {
     console.error("Error updating settings:", error);
-    return NextResponse.json(
-      { error: "Failed to update settings", details: String(error) },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Failed to update settings", details: String(error) }, { status: 500 });
   }
 }

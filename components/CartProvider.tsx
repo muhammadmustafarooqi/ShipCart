@@ -5,11 +5,15 @@ import toast from "react-hot-toast";
 
 export interface CartItem {
   productId: string;
+  bundleId?: string;
   name: string;
   price: number;
   quantity: number;
   image: string;
+  slug?: string;
+  selectedBundleItems?: { productId: string; name: string }[];
 }
+
 
 interface CartContextType {
   items: CartItem[];
@@ -37,18 +41,18 @@ export default function CartProvider({
   const [items, setItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
-    const stored = localStorage.getItem("ShipCart_cart");
+    const stored = localStorage.getItem("allinone_cart");
     if (stored) {
       try {
         setItems(JSON.parse(stored));
       } catch {
-        localStorage.removeItem("ShipCart_cart");
+        localStorage.removeItem("allinone_cart");
       }
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("ShipCart_cart", JSON.stringify(items));
+    localStorage.setItem("allinone_cart", JSON.stringify(items));
   }, [items]);
 
   const addItem = (item: CartItem) => {
@@ -58,7 +62,7 @@ export default function CartProvider({
         return prev.map((i) =>
           i.productId === item.productId
             ? { ...i, quantity: i.quantity + item.quantity }
-            : i,
+            : i
         );
       }
       return [...prev, item];
@@ -84,13 +88,13 @@ export default function CartProvider({
       return;
     }
     setItems((prev) =>
-      prev.map((i) => (i.productId === productId ? { ...i, quantity } : i)),
+      prev.map((i) => (i.productId === productId ? { ...i, quantity } : i))
     );
   };
 
   const clearCart = () => {
     setItems([]);
-    localStorage.removeItem("ShipCart_cart");
+    localStorage.removeItem("allinone_cart");
   };
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);

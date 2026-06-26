@@ -10,7 +10,7 @@ export function generateWhatsAppOrderURL(order: {
   shippingFee: number;
   paymentMethod: string;
 }): string {
-  const whatsappNumber = process.env.WHATSAPP_NUMBER || "923001234567";
+  const whatsappNumber = process.env.WHATSAPP_NUMBER || "923713869780";
 
   const itemsList = order.items
     .map((item) => `• ${item.name} x${item.quantity} = Rs. ${(item.price * item.quantity).toLocaleString()}`)
@@ -40,7 +40,7 @@ export function generateProductWhatsAppURL(product: {
   name: string;
   price: number;
 }): string {
-  const whatsappNumber = process.env.WHATSAPP_NUMBER || "923001234567";
+  const whatsappNumber = process.env.WHATSAPP_NUMBER || "923713869780";
   const message = `Hi! I'm interested in ordering:\n\n*${product.name}*\nPrice: Rs. ${product.price.toLocaleString()}\n\nPlease confirm availability.`;
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 }
@@ -89,6 +89,36 @@ export const PAKISTANI_CITIES = [
   "Nawabshah",
   "Sahiwal",
   "Mirpur Khas",
+  "Larkana",
+  "Sheikhupura",
+  "Rahim Yar Khan",
+  "Jhang",
+  "Dera Ghazi Khan",
+  "Gujrat",
+  "Wah Cantonment",
+  "Kasur",
+  "Okara",
+  "Chiniot",
+  "Kotri",
+  "Kamoke",
+  "Hafizabad",
+  "Sadiqabad",
+  "Burewala",
+  "Kohat",
+  "Khanewal",
+  "Dera Ismail Khan",
+  "Muzaffargarh",
+  "Muridke",
+  "Jhelum",
+  "Shikarpur",
+  "Jacobabad",
+  "Muzaffarabad",
+  "Mirpur (AJK)",
+  "Gilgit",
+  "Skardu",
+  "Khuzdar",
+  "Hub",
+  "Turbat",
   "Other",
 ];
 

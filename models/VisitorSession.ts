@@ -2,9 +2,9 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IVisitorSession extends Document {
   sessionId: string;
-  ip: string;
-  userAgent: string;
-  referrer: string;
+  ip?: string;
+  userAgent?: string;
+  referrer?: string;
   hasCart: boolean;
   hasCheckout: boolean;
   hasOrdered: boolean;
@@ -22,13 +22,11 @@ const VisitorSessionSchema = new Schema<IVisitorSession>(
     hasCart: { type: Boolean, default: false },
     hasCheckout: { type: Boolean, default: false },
     hasOrdered: { type: Boolean, default: false },
-    lastActive: { type: Date, default: Date.now }
+    lastActive: { type: Date, default: Date.now, index: true },
   },
   { timestamps: true }
 );
 
-// Indexes for analytical query efficiency
-VisitorSessionSchema.index({ lastActive: 1 });
 VisitorSessionSchema.index({ createdAt: 1 });
 
 const VisitorSession: Model<IVisitorSession> =

@@ -10,6 +10,9 @@ export interface IUser extends Document {
   spinResult?: string;
   hasSpun?: boolean;
   spunAt?: Date;
+  couponCode?: string;
+  couponExpiry?: Date;
+  couponStatus?: "active" | "used";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,9 +28,14 @@ const UserSchema = new Schema<IUser>(
     spinResult: { type: String, default: "" },
     hasSpun: { type: Boolean, default: false },
     spunAt: { type: Date },
+    couponCode: { type: String, default: "" },
+    couponExpiry: { type: Date },
+    couponStatus: { type: String, enum: ["active", "used"], default: "active" },
   },
   { timestamps: true }
 );
+
+UserSchema.index({ email: 1 });
 
 const User: Model<IUser> =
   mongoose.models.User || mongoose.model<IUser>("User", UserSchema);

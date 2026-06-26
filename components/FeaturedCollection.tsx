@@ -21,122 +21,94 @@ export type FeaturedProduct = {
 
 export default function FeaturedCollection({ products }: { products: FeaturedProduct[] }) {
   return (
-    <section className="fc-section" aria-labelledby="featured-collection-heading">
-      <div className="fc-bg" aria-hidden />
-      <div className="page-container fc-inner">
-        <header className="fc-header">
-          <div className="fc-header-copy">
+    <section className="editorial-fc-section" aria-labelledby="featured-collection-heading">
+      <div className="page-container editorial-fc-inner">
+        
+        {/* Left Side: Sticky Description */}
+        <div className="editorial-fc-sticky">
+          <div className="fc-sticky-content">
             <h2 id="featured-collection-heading" className="fc-title">
-              Featured Collection
+              Our Top Picks.
             </h2>
+            <div className="fc-title-underline" />
             <p className="fc-sub">
-              Our top-rated premium products, hand-picked for you.
+              A curated selection of our most loved, premium products. Hand-picked for quality and performance.
             </p>
             <Link href="/products?featured=true" className="fc-catalog-link">
-              View all
-              <ArrowUpRight size={17} strokeWidth={2.25} aria-hidden />
+              Shop the Collection
+              <ArrowUpRight size={18} strokeWidth={2.5} aria-hidden />
             </Link>
           </div>
-        </header>
+        </div>
 
-        {products.length > 0 ? (
-          <div className="fc-marquee-rule" aria-hidden />
-        ) : (
-          <div className="fc-empty" role="status">
-            <div className="fc-empty-icon" aria-hidden>
-              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25">
-                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                <path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12" />
-              </svg>
+        {/* Right Side: Horizontal Scrolling List */}
+        <div className="editorial-fc-scroll">
+          {products.length > 0 ? (
+            <div className="fc-scroll-track" role="list" aria-label="Featured products">
+              {products.slice(0, 8).map((p) => (
+                <div key={p._id} className="fc-card-slot" role="listitem">
+                  <ProductCard product={p} />
+                </div>
+              ))}
             </div>
-            <p className="fc-empty-title">Featured picks are on the way</p>
-            <p className="fc-empty-text">Seed the catalog or mark products as featured in admin.</p>
-          </div>
-        )}
+          ) : (
+            <div className="fc-empty" role="status">
+              <p className="fc-empty-title">Featured picks are on the way</p>
+              <p className="fc-empty-text">Check back soon for our curated selections.</p>
+            </div>
+          )}
+        </div>
+
       </div>
 
-      {products.length > 0 ? (
-        <div className="fc-grid-wrap">
-          <div className="fc-grid" role="list" aria-label="Featured products">
-            {products.slice(0, 8).map((p) => (
-              <div key={p._id} className="fc-card-slot" role="listitem">
-                <ProductCard product={p} />
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : null}
-
       <style>{`
-        .fc-section {
+        .editorial-fc-section {
+          padding: 120px 0;
+          background: var(--cream);
           position: relative;
-          padding: clamp(72px, 10vw, 104px) 0;
-          background: var(--white);
-          border-top: 1px solid var(--border-default);
-          border-bottom: 1px solid var(--border-default);
-          overflow: hidden;
         }
 
-        .fc-bg {
-          pointer-events: none;
-          position: absolute;
-          inset: 0;
-          background:
-            radial-gradient(ellipse 55% 40% at 100% 0%, rgba(201, 168, 76, 0.08), transparent 58%),
-            radial-gradient(ellipse 50% 42% at 0% 100%, rgba(107, 30, 46, 0.04), transparent 55%);
-        }
-
-        .fc-inner {
-          position: relative;
-          z-index: 1;
-        }
-
-        .fc-header {
+        .editorial-fc-inner {
           display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-          margin-bottom: clamp(20px, 3vw, 28px);
+          gap: 60px;
+          align-items: flex-start;
         }
 
-        .fc-header-copy {
-          max-width: 720px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
+        /* --- Left Side --- */
+        .editorial-fc-sticky {
+          flex: 0 0 340px;
+          position: sticky;
+          top: 140px;
         }
 
-        .fc-kicker {
-          margin-bottom: 0;
+        .fc-sticky-content {
+          padding-right: 20px;
         }
 
         .fc-title {
-          margin: 10px 0 0;
-          font-family: "Outfit", sans-serif;
-          font-size: clamp(1.9rem, 4.2vw, 2.75rem);
-          font-weight: 800;
-          letter-spacing: -0.04em;
+          font-family: var(--font-outfit), sans-serif;
+          font-size: clamp(2.5rem, 4vw, 3.5rem);
+          font-weight: 900;
+          color: var(--navy-deep);
           line-height: 1.1;
-          background: linear-gradient(
-            118deg,
-            var(--maroon-deep) 0%,
-            var(--maroon) 45%,
-            var(--maroon-soft) 100%
-          );
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
+          letter-spacing: -0.03em;
+          margin: 0 0 16px;
+        }
+
+        .fc-title-underline {
+          width: 80px;
+          height: 5px;
+          background: var(--orange);
+          border-radius: 4px;
+          margin-bottom: 24px;
         }
 
         .fc-sub {
-          margin-top: 12px;
-          font-size: clamp(15px, 1.55vw, 17px);
-          font-weight: 500;
-          line-height: 1.65;
-          max-width: 50ch;
-          margin-left: auto;
-          margin-right: auto;
-          color: var(--text-secondary);
+          font-family: var(--font-jakarta), sans-serif;
+          font-size: 1.15rem;
+          color: var(--slate);
+          line-height: 1.6;
+          margin: 0 0 32px;
         }
 
         .fc-catalog-link {
@@ -144,124 +116,91 @@ export default function FeaturedCollection({ products }: { products: FeaturedPro
           align-items: center;
           justify-content: center;
           gap: 8px;
-          margin-top: 22px;
-          padding: 11px 20px;
+          padding: 16px 32px;
           border-radius: 999px;
-          font-size: 14px;
+          font-family: var(--font-jakarta), sans-serif;
+          font-size: 1rem;
           font-weight: 700;
-          font-family: "Plus Jakarta Sans", sans-serif;
-          color: var(--maroon);
+          color: var(--white);
+          background: var(--orange);
           text-decoration: none;
-          background: var(--white);
-          border: 1px solid var(--cream-mid);
-          box-shadow: var(--shadow-sm);
-          transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-            box-shadow 0.3s ease,
-            border-color 0.25s ease,
-            background 0.25s ease;
-          white-space: nowrap;
+          box-shadow: 0 10px 25px -5px rgba(255, 97, 2, 0.4);
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .fc-catalog-link:hover {
-          transform: translateY(-2px);
-          border-color: rgba(201, 168, 76, 0.5);
-          box-shadow: var(--shadow-md);
-          background: linear-gradient(135deg, var(--white), var(--cream-dark));
+          transform: translateY(-3px);
+          box-shadow: 0 15px 35px -5px rgba(255, 97, 2, 0.5);
+          background: #ff7825;
         }
 
-        .fc-marquee-rule {
-          display: block;
-          height: 3px;
-          width: 64px;
-          border-radius: 99px;
-          background: linear-gradient(90deg, var(--gold), var(--maroon-soft));
-          margin: 0 auto 32px;
+        /* --- Right Side --- */
+        .editorial-fc-scroll {
+          flex: 1;
+          min-width: 0; /* allows flex item to shrink below content size if needed */
         }
 
-        .fc-grid-wrap {
-          position: relative;
-          z-index: 1;
-          width: 100%;
-          max-width: 1300px;
-          margin: 0 auto;
-          padding: 0 24px;
-        }
-
-        .fc-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
+        .fc-scroll-track {
+          display: flex;
           gap: 24px;
+          overflow-x: auto;
+          padding: 20px 20px 40px 0; /* padding bottom for shadow room */
+          scroll-snap-type: x mandatory;
+          scroll-behavior: smooth;
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        
+        .fc-scroll-track::-webkit-scrollbar {
+          display: none;
         }
 
         .fc-card-slot {
-          width: 100%;
-        }
-
-        @media (max-width: 1024px) {
-          .fc-grid {
-            grid-template-columns: repeat(3, 1fr);
-          }
-        }
-
-        @media (max-width: 768px) {
-          .fc-section {
-            overflow: hidden;
-          }
-          .fc-grid-wrap {
-            width: 100%;
-            max-width: 100%;
-            padding: 0 10px;
-            box-sizing: border-box;
-          }
-          .fc-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-          }
+          flex: 0 0 calc(50% - 12px); /* Show exactly 2 cards desktop */
+          min-width: 280px;
+          max-width: 320px;
+          scroll-snap-align: start;
         }
 
         .fc-empty {
           text-align: center;
-          padding: clamp(48px, 7vw, 72px) 24px;
+          padding: 60px;
+          background: var(--white);
           border-radius: var(--radius-lg);
-          background: var(--cream);
-          border: 1px dashed var(--border-hover);
-          color: var(--text-secondary);
-        }
-
-        .fc-empty-icon {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          width: 64px;
-          height: 64px;
-          margin-bottom: 16px;
-          border-radius: 16px;
-          color: var(--maroon-soft);
-          background: var(--color-brand-dim);
-          border: 1px solid var(--cream-mid);
+          border: 1px dashed var(--border-default);
         }
 
         .fc-empty-title {
-          font-family: "Outfit", sans-serif;
-          font-size: 1.1rem;
+          font-family: var(--font-outfit), sans-serif;
+          font-size: 1.25rem;
           font-weight: 800;
-          color: var(--text-primary);
-          letter-spacing: -0.02em;
+          color: var(--navy);
         }
 
         .fc-empty-text {
+          color: var(--slate);
           margin-top: 8px;
-          font-size: 14px;
-          font-weight: 500;
-          max-width: 360px;
-          margin-left: auto;
-          margin-right: auto;
-          line-height: 1.55;
         }
 
-        @media (prefers-reduced-motion: reduce) {
-          .fc-grid {
-            transition: none !important;
+        /* --- Responsive --- */
+        @media (max-width: 1024px) {
+          .editorial-fc-inner {
+            flex-direction: column;
+            gap: 40px;
+          }
+          .editorial-fc-sticky {
+            flex: none;
+            position: relative;
+            top: 0;
+            max-width: 600px;
+          }
+          .fc-scroll-track {
+            padding-left: 20px; /* full bleed on mobile edge */
+            margin-left: -20px;
+            margin-right: -20px;
+          }
+          .fc-card-slot {
+            flex: 0 0 280px;
           }
         }
       `}</style>

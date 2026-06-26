@@ -114,6 +114,7 @@ export default function ProductCard({ product }: { product: Product }) {
       price: product.price,
       quantity: 1,
       image: product.images?.[0] || "",
+      slug: product.slug,
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
@@ -268,7 +269,7 @@ export default function ProductCard({ product }: { product: Product }) {
   }, []);
 
   return (
-    <Link href={`/products/${product._id}`} className="pc-root">
+    <Link href={`/products/${product.slug}`} className="pc-root">
       <div className="pc-shell">
         <article
           className={`pc-card${isOutOfStock ? " pc-card--oos" : ""}${added ? " pc-card--added" : ""}`}
@@ -293,7 +294,7 @@ export default function ProductCard({ product }: { product: Product }) {
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className={layerClass}
-                    unoptimized
+                    
                   />
                 );
               })}
@@ -615,7 +616,7 @@ export default function ProductCard({ product }: { product: Product }) {
           letter-spacing: 0.14em;
           text-transform: uppercase;
           color: var(--white);
-          background: var(--maroon-deep);
+          background: var(--navy-deep);
           border-radius: 6px;
           box-shadow: var(--shadow-md);
           pointer-events: none;
@@ -678,9 +679,9 @@ export default function ProductCard({ product }: { product: Product }) {
           gap: 3px;
           padding: 5px 10px 5px 8px;
           border-radius: 99px;
-          background: linear-gradient(135deg, #e11d48 0%, #be123c 55%, #9f1239 100%);
+          background: linear-gradient(135deg, var(--orange) 0%, #cc4e02 100%);
           box-shadow:
-            0 3px 12px rgba(225,29,72,0.55),
+            0 3px 12px rgba(255, 97, 2, 0.55),
             inset 0 1px 0 rgba(255,255,255,0.18);
           overflow: hidden;
           pointer-events: none;
@@ -760,21 +761,21 @@ export default function ProductCard({ product }: { product: Product }) {
 
         .pc-wish:hover {
           background: #fff;
-          color: #dc2626;
+          color: var(--orange);
           transform: scale(1.15) !important;
-          box-shadow: 0 4px 16px rgba(220,38,38,0.3);
+          box-shadow: 0 4px 16px rgba(255, 97, 2, 0.3);
         }
 
         .pc-wish--on {
-          background: #dc2626 !important;
+          background: var(--orange) !important;
           color: #fff !important;
           opacity: 1 !important;
           transform: scale(1) !important;
-          box-shadow: 0 4px 16px rgba(220,38,38,0.45) !important;
+          box-shadow: 0 4px 16px rgba(255, 97, 2, 0.45) !important;
         }
 
         .pc-wish--on:hover {
-          background: #b91c1c !important;
+          background: #cc4e02 !important;
           transform: scale(1.12) !important;
         }
 
@@ -808,7 +809,7 @@ export default function ProductCard({ product }: { product: Product }) {
         }
 
         .pc-more-actions:hover {
-          background: #111;
+          background: var(--navy-deep);
           color: #fff;
           transform: scale(1.12) !important;
           box-shadow: 0 4px 14px rgba(0,0,0,0.25);
@@ -865,7 +866,7 @@ export default function ProductCard({ product }: { product: Product }) {
           font-family: "Plus Jakarta Sans", sans-serif;
           font-size: 15px;
           font-weight: 700;
-          color: #9f1239;
+          color: var(--orange);
         }
 
         .pc-actions {

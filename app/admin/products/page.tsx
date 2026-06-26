@@ -63,25 +63,33 @@ export default function AdminProductsPage() {
     const toastId = toast.loading("Uploading image(s)...");
 
     try {
+      const sigRes = await fetch("/api/upload/signature");
+      if (!sigRes.ok) throw new Error("Failed to get upload signature");
+      const { timestamp, signature, cloudName, apiKey, folder } = await sigRes.json();
+
       const uploadedUrls: string[] = [];
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const formData = new FormData();
         formData.append("file", file);
+        formData.append("api_key", apiKey);
+        formData.append("timestamp", timestamp.toString());
+        formData.append("signature", signature);
+        formData.append("folder", folder);
 
-        const res = await fetch("/api/upload", {
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
           method: "POST",
           body: formData,
         });
 
         if (!res.ok) {
           const errData = await res.json();
-          throw new Error(errData.error || "Failed to upload");
+          throw new Error(errData.error?.message || "Failed to upload");
         }
 
         const data = await res.json();
-        if (data.url) {
-          uploadedUrls.push(data.url);
+        if (data.secure_url) {
+          uploadedUrls.push(data.secure_url);
         }
       }
 
@@ -112,22 +120,30 @@ export default function AdminProductsPage() {
     const toastId = toast.loading("Uploading video...");
 
     try {
+      const sigRes = await fetch("/api/upload/signature");
+      if (!sigRes.ok) throw new Error("Failed to get upload signature");
+      const { timestamp, signature, cloudName, apiKey, folder } = await sigRes.json();
+
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("api_key", apiKey);
+      formData.append("timestamp", timestamp.toString());
+      formData.append("signature", signature);
+      formData.append("folder", folder);
 
-      const res = await fetch("/api/upload", {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
         method: "POST",
         body: formData,
       });
 
       if (!res.ok) {
         const errData = await res.json();
-        throw new Error(errData.error || "Failed to upload video");
+        throw new Error(errData.error?.message || "Failed to upload video");
       }
 
       const data = await res.json();
-      if (data.url) {
-        setForm((f) => ({ ...f, previewVideoUrl: data.url }));
+      if (data.secure_url) {
+        setForm((f) => ({ ...f, previewVideoUrl: data.secure_url }));
         toast.success("Video uploaded successfully!", { id: toastId });
       }
     } catch (err: any) {
@@ -268,7 +284,7 @@ export default function AdminProductsPage() {
   };
 
   return (
-    <div style={{ padding: "32px" }}>
+    <div className="admin-page-container">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "28px", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <h1 style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>Products</h1>
@@ -305,7 +321,7 @@ export default function AdminProductsPage() {
                   <td>
                     <div style={{ width: "52px", height: "52px", borderRadius: "8px", overflow: "hidden", background: "#f5f5f5" }}>
                       {product.images[0] ? (
-                        <Image src={product.images[0]} alt={product.name} width={52} height={52} style={{ width: "100%", height: "100%", objectFit: "cover" }} unoptimized />
+                        <Image src={product.images[0]} alt={product.name} width={52} height={52} style={{ width: "100%", height: "100%", objectFit: "cover" }}  />
                       ) : (
                         <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af" }}>
                           <Package size={22} strokeWidth={2} aria-hidden />
@@ -475,7 +491,7 @@ export default function AdminProductsPage() {
                     <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "12px" }}>
                       {form.images.map((img, i) => (
                         <div key={i} style={{ position: "relative", width: "76px", height: "76px", borderRadius: "8px", overflow: "hidden", border: "2px solid #e5e7eb", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
-                          <Image src={img} alt="" width={76} height={76} style={{ width: "100%", height: "100%", objectFit: "cover" }} unoptimized />
+                          <Image src={img} alt="" width={76} height={76} style={{ width: "100%", height: "100%", objectFit: "cover" }}  />
                           <button type="button" onClick={() => handleRemoveImage(img)} style={{ position: "absolute", top: "2px", right: "2px", background: "rgba(239, 68, 68, 0.9)", border: "none", borderRadius: "50%", width: "20px", height: "20px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s ease" }}
                                   onMouseEnter={(e) => (e.currentTarget.style.background = "#ef4444")}
                                   onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(239, 68, 68, 0.9)")}

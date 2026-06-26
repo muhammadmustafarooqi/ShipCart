@@ -52,10 +52,10 @@ export interface ISettings extends Document {
 
 const SettingsSchema = new Schema<ISettings>(
   {
-    storeName: { type: String, default: "ShipCart Store" },
+    storeName: { type: String, default: "ALLInONE Store" },
     whatsappNumber: {
       type: String,
-      default: process.env.WHATSAPP_NUMBER || "923001234567",
+      default: process.env.WHATSAPP_NUMBER || "923713869780",
     },
     deliveryFee: { type: Number, default: 200 },
     freeDeliveryAbove: { type: Number, default: 3000 },
@@ -84,18 +84,11 @@ const SettingsSchema = new Schema<ISettings>(
       type: {
         isActive: { type: Boolean, default: true },
         kickerText: { type: String, default: "Limited-time offer" },
-        kickerSubtext: {
-          type: String,
-          default: "Ends when slots fill — same-day replies on WhatsApp",
-        },
+        kickerSubtext: { type: String, default: "Ends when slots fill — same-day replies on WhatsApp" },
         titleLine1: { type: String, default: "FREE delivery + COD" },
         titleLine2: { type: String, default: "on carts" },
         highlightText: { type: String, default: "Rs. 1,500+" },
-        description: {
-          type: String,
-          default:
-            "Nationwide shipping, pay when it lands — no advance on standard orders. Stack cart value once and both perks unlock at checkout.",
-        },
+        description: { type: String, default: "Nationwide shipping, pay when it lands — no advance on standard orders. Stack cart value once and both perks unlock at checkout." },
         perk1Title: { type: String, default: "Free shipping" },
         perk1Text: { type: String, default: "Orders Rs. 1,500+ ship on us" },
         perk2Title: { type: String, default: "COD unlocked" },
@@ -103,19 +96,12 @@ const SettingsSchema = new Schema<ISettings>(
         buttonText: { type: String, default: "Shop the offer" },
         buttonLink: { type: String, default: "/products" },
         secondaryButtonText: { type: String, default: "Featured picks" },
-        secondaryButtonLink: {
-          type: String,
-          default: "/products?featured=true",
-        },
+        secondaryButtonLink: { type: String, default: "/products?featured=true" },
         statValue: { type: String, default: "Rs. 1,500" },
         statLabel: { type: String, default: "Minimum cart for free delivery" },
         stat2Value: { type: String, default: "COD" },
         stat2Label: { type: String, default: "No advance on standard orders" },
-        panelNote: {
-          type: String,
-          default:
-            "Same dispatch and support as the rest of the store — only checkout perks change so you keep full confidence.",
-        },
+        panelNote: { type: String, default: "Same dispatch and support as the rest of the store — only checkout perks change so you keep full confidence." },
       },
       default: {
         isActive: true,
@@ -124,8 +110,7 @@ const SettingsSchema = new Schema<ISettings>(
         titleLine1: "FREE delivery + COD",
         titleLine2: "on carts",
         highlightText: "Rs. 1,500+",
-        description:
-          "Nationwide shipping, pay when it lands — no advance on standard orders. Stack cart value once and both perks unlock at checkout.",
+        description: "Nationwide shipping, pay when it lands — no advance on standard orders. Stack cart value once and both perks unlock at checkout.",
         perk1Title: "Free shipping",
         perk1Text: "Orders Rs. 1,500+ ship on us",
         perk2Title: "COD unlocked",
@@ -138,8 +123,7 @@ const SettingsSchema = new Schema<ISettings>(
         statLabel: "Minimum cart for free delivery",
         stat2Value: "COD",
         stat2Label: "No advance on standard orders",
-        panelNote:
-          "Same dispatch and support as the rest of the store — only checkout perks change so you keep full confidence.",
+        panelNote: "Same dispatch and support as the rest of the store — only checkout perks change so you keep full confidence.",
       },
     },
     adminEmail: { type: String, default: "" },
@@ -155,30 +139,23 @@ const SettingsSchema = new Schema<ISettings>(
           { label: "Home", href: "/" },
           { label: "Shop All", href: "/products" },
           { label: "Kitchen", href: "/products?category=kitchen-cooking" },
-          {
-            label: "Personal Care",
-            href: "/products?category=personal-care-beauty",
-          },
-          {
-            label: "Electronics",
-            href: "/products?category=electronics-gadgets",
-          },
+          { label: "Personal Care", href: "/products?category=personal-care-beauty" },
+          { label: "Electronics", href: "/products?category=electronics-gadgets" },
         ],
       },
     },
     footer: {
       description: {
         type: String,
-        default:
-          "Pakistan's premier destination for ultra-premium tech, modern home appliances, and intelligent daily accessories.",
+        default: "Pakistan's premier destination for ultra-premium tech, modern home appliances, and intelligent daily accessories.",
       },
       contactEmail: {
         type: String,
-        default: "support@ShipCartstore.pk",
+        default: "support@allinonestore.pk",
       },
       contactPhone: {
         type: String,
-        default: "923001234567",
+        default: "923713869780",
       },
       contactAddress: {
         type: String,
@@ -222,26 +199,11 @@ const SettingsSchema = new Schema<ISettings>(
           {
             title: "Departments",
             links: [
-              {
-                label: "Smart Kitchen",
-                href: "/products?category=kitchen-cooking",
-              },
-              {
-                label: "Personal Care",
-                href: "/products?category=personal-care-beauty",
-              },
-              {
-                label: "Home Essentials",
-                href: "/products?category=home-cleaning",
-              },
-              {
-                label: "Fitness & Health",
-                href: "/products?category=fitness-health",
-              },
-              {
-                label: "Tech Gadgets",
-                href: "/products?category=electronics-gadgets",
-              },
+              { label: "Smart Kitchen", href: "/products?category=kitchen-cooking" },
+              { label: "Personal Care", href: "/products?category=personal-care-beauty" },
+              { label: "Home Essentials", href: "/products?category=home-cleaning" },
+              { label: "Fitness & Health", href: "/products?category=fitness-health" },
+              { label: "Tech Gadgets", href: "/products?category=electronics-gadgets" },
             ],
           },
         ],
@@ -261,12 +223,11 @@ const SettingsSchema = new Schema<ISettings>(
       },
       codMessage: {
         type: String,
-        default:
-          "Secure payments at your doorstep. Free shipping over Rs. 3000.",
+        default: "Secure payments at your doorstep. Free shipping over Rs. 3000.",
       },
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 const Settings: Model<ISettings> =

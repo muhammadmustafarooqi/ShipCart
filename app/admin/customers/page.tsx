@@ -38,7 +38,7 @@ export default function CustomersPage() {
   }
 
   return (
-    <div style={{ padding: "40px", maxWidth: "1400px", margin: "0 auto" }}>
+    <div className="admin-page-container" style={{ maxWidth: "1400px", margin: "0 auto" }}>
       <div style={{ marginBottom: "40px" }}>
         <h1 style={{ fontSize: "32px", fontWeight: 800, color: "#1f2937", marginBottom: "8px", fontFamily: "Outfit, sans-serif" }}>
           Customers
@@ -53,9 +53,9 @@ export default function CustomersPage() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
             <div>
               <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "4px", fontWeight: 500 }}>Total Customers</p>
-              <div style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>{stats.total}</div>
+              <div className="stat-card-value" style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>{stats.total}</div>
             </div>
-            <div style={{ width: "52px", height: "52px", borderRadius: "14px", background: "linear-gradient(135deg, #6366f1, #4f46e5)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px rgba(99,102,241,0.3)", color: "white" }}>
+            <div className="stat-card-icon" style={{ width: "52px", height: "52px", borderRadius: "14px", background: "linear-gradient(135deg, #6366f1, #4f46e5)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px rgba(99,102,241,0.3)", color: "white" }}>
               <Users size={24} />
             </div>
           </div>
@@ -66,9 +66,9 @@ export default function CustomersPage() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
             <div>
               <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "4px", fontWeight: 500 }}>Active Customers</p>
-              <div style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>{stats.active}</div>
+              <div className="stat-card-value" style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>{stats.active}</div>
             </div>
-            <div style={{ width: "52px", height: "52px", borderRadius: "14px", background: "linear-gradient(135deg, #10b981, #059669)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px rgba(16,185,129,0.3)", color: "white" }}>
+            <div className="stat-card-icon" style={{ width: "52px", height: "52px", borderRadius: "14px", background: "linear-gradient(135deg, #10b981, #059669)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px rgba(16,185,129,0.3)", color: "white" }}>
               <ShoppingBag size={24} />
             </div>
           </div>
@@ -79,9 +79,9 @@ export default function CustomersPage() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
             <div>
               <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "4px", fontWeight: 500 }}>Total Revenue</p>
-              <div style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>Rs. {stats.totalRevenue.toLocaleString()}</div>
+              <div className="stat-card-value" style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>Rs. {stats.totalRevenue.toLocaleString()}</div>
             </div>
-            <div style={{ width: "52px", height: "52px", borderRadius: "14px", background: "linear-gradient(135deg, #f59e0b, #d97706)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px rgba(245,158,11,0.3)", color: "white" }}>
+            <div className="stat-card-icon" style={{ width: "52px", height: "52px", borderRadius: "14px", background: "linear-gradient(135deg, #f59e0b, #d97706)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px rgba(245,158,11,0.3)", color: "white" }}>
               <Wallet size={24} aria-hidden />
             </div>
           </div>

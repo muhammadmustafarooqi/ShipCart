@@ -18,7 +18,7 @@ function formatWaDisplay(num: string) {
 }
 
 export default function WhatsAppCTA() {
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923001234567";
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923713869780";
   const message = "Hi! I'd like to know more about your products and latest offers.";
   const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
@@ -53,7 +53,7 @@ export default function WhatsAppCTA() {
 
               <div className="wa-side">
                 <p className="wa-pill">
-                  <Clock size={14} strokeWidth={2.2} color="var(--gold)" aria-hidden />
+                  <Clock size={14} strokeWidth={2.2} color="var(--orange)" aria-hidden />
                   Typical reply under 10 min
                 </p>
                 <a href={url} target="_blank" rel="noopener noreferrer" className="wa-btn">
@@ -146,8 +146,8 @@ export default function WhatsAppCTA() {
           background: linear-gradient(
             155deg,
             #2a0f18 0%,
-            var(--maroon-deep) 35%,
-            var(--maroon) 92%
+            var(--navy-deep) 35%,
+            var(--orange) 92%
           );
         }
 
@@ -192,7 +192,7 @@ export default function WhatsAppCTA() {
           width: 9px;
           height: 9px;
           border-radius: 50%;
-          background: var(--gold);
+          background: var(--orange);
           box-shadow: 0 0 0 0 rgba(201, 168, 76, 0.45);
           animation: wa-breathe 2.4s ease-in-out infinite;
         }
@@ -223,7 +223,7 @@ export default function WhatsAppCTA() {
           font-size: clamp(1.1rem, 2.4vw, 1.45rem);
           font-weight: 700;
           letter-spacing: -0.02em;
-          background: linear-gradient(110deg, #fff6d8 0%, var(--gold) 45%, #e8d48a 100%);
+          background: linear-gradient(110deg, #fff6d8 0%, var(--orange) 45%, #e8d48a 100%);
           -webkit-background-clip: text;
           background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -231,7 +231,7 @@ export default function WhatsAppCTA() {
 
         @supports not (background-clip: text) {
           .wa-title-accent {
-            color: var(--gold);
+            color: var(--orange);
             -webkit-text-fill-color: unset;
             background: none;
           }
@@ -304,7 +304,7 @@ export default function WhatsAppCTA() {
           align-items: center;
           justify-content: center;
           background: rgba(201, 168, 76, 0.22);
-          color: var(--gold);
+          color: var(--orange);
         }
 
         .wa-btn-copy {
@@ -331,7 +331,7 @@ export default function WhatsAppCTA() {
         .wa-btn-arrow {
           flex-shrink: 0;
           opacity: 0.95;
-          color: var(--gold);
+          color: var(--orange);
           transition: transform 0.35s cubic-bezier(0.33, 1, 0.32, 1);
         }
 
@@ -374,7 +374,7 @@ export default function WhatsAppCTA() {
           gap: 0;
           background: linear-gradient(
             180deg,
-            var(--maroon-deep) 0%,
+            var(--navy-deep) 0%,
             #2a0f18 42%,
             #1a080c 100%
           );
@@ -409,7 +409,7 @@ export default function WhatsAppCTA() {
           display: flex;
           align-items: center;
           justify-content: center;
-          color: var(--gold);
+          color: var(--orange);
           background: rgba(107, 30, 46, 0.35);
           border: 1px solid rgba(201, 168, 76, 0.38);
           box-shadow: 0 4px 14px rgba(42, 15, 24, 0.35);

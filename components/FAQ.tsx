@@ -1,214 +1,224 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ChevronDown, HelpCircle } from "lucide-react";
+import { useState } from "react";
+import { Plus, Minus } from "lucide-react";
+import Link from "next/link";
 
-const MOBILE_FAQ_MAX = 5;
-const MOBILE_MQ = "(max-width: 768px)";
-
-interface FAQ {
-  _id: string;
-  question: string;
-  answer: string;
-  isActive: boolean;
-  order: number;
-}
+const FAQS = [
+  {
+    question: "What is your return policy?",
+    answer: "We offer a 7-day hassle-free return policy for all unused products in their original packaging. Simply contact our support team to initiate a return.",
+  },
+  {
+    question: "Do you offer Cash on Delivery?",
+    answer: "Yes, we offer Cash on Delivery (COD) across Pakistan. You can inspect your package before handing over the payment to our delivery partners.",
+  },
+  {
+    question: "How long does shipping take?",
+    answer: "Standard shipping typically takes 2-4 business days for major cities, and up to 5-7 days for remote areas.",
+  },
+  {
+    question: "Are your products covered by warranty?",
+    answer: "All electronics and appliances come with a minimum 6-month brand warranty. Specific warranty details are listed on the individual product pages.",
+  },
+];
 
 export default function FAQ() {
-  const [faqs, setFaqs] = useState<FAQ[]>([]);
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [isMobileLayout, setIsMobileLayout] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  useEffect(() => {
-    const fetchFAQs = async () => {
-      try {
-        const res = await fetch("/api/faqs");
-        if (res.ok) {
-          const data = await res.json();
-          if (data.length > 0) {
-            setFaqs(data);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching FAQs:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFAQs();
-  }, []);
-
-  useEffect(() => {
-    const mq = window.matchMedia(MOBILE_MQ);
-    const update = () => setIsMobileLayout(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  const displayedFaqs = isMobileLayout ? faqs.slice(0, MOBILE_FAQ_MAX) : faqs;
-
-  useEffect(() => {
-    if (isMobileLayout && openIndex !== null && openIndex >= MOBILE_FAQ_MAX) {
-      setOpenIndex(null);
-    }
-  }, [isMobileLayout, openIndex]);
-
-  const toggleFAQ = (index: number) => {
+  const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  if (loading || faqs.length === 0) return null;
-
   return (
-    <section style={{
-      padding: "80px 0",
-      background: "var(--cream)",
-      position: "relative"
-    }}>
-      <div className="page-container">
-        <div style={{ textAlign: "center", marginBottom: "56px" }}>
-          <div className="section-tag" style={{ justifyContent: "center" }}>
-            <HelpCircle size={14} color="var(--color-icon)" /> From cart to doorstep
-          </div>
-          <h2 className="section-title">Everything You Need to Know</h2>
-          <p
-            style={{
-              color: "var(--text-secondary)",
-              fontSize: "clamp(15px, 2.8vw, 17px)",
-              maxWidth: "640px",
-              margin: "16px auto 0",
-              fontWeight: 500,
-              lineHeight: 1.65,
-              padding: "0 8px",
-            }}
-          >
-            <span
-              style={{
-                display: "block",
-                color: "var(--text-primary)",
-                fontWeight: 600,
-                fontSize: "clamp(16px, 2.9vw, 18px)",
-                lineHeight: 1.45,
-                marginBottom: "12px",
-                fontFamily: "var(--font-outfit), Outfit, sans-serif",
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Shopping should feel effortless—never a guessing game.
-            </span>
+    <section className="faq-section">
+      <div className="page-container faq-inner">
+        
+        <div className="faq-header">
+          <h2 className="faq-title">Got Questions?</h2>
+          <div className="faq-underline" />
+          <p className="faq-subtitle">
+            Find answers to our most commonly asked questions below. If you still need help, our team is available 24/7.
           </p>
+          <Link href="/contact" className="faq-contact-btn">
+            Contact Support
+          </Link>
         </div>
 
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2, 1fr)",
-          gap: "20px",
-          maxWidth: "1200px",
-          margin: "0 auto"
-        }} className="faq-grid">
-          {displayedFaqs.map((faq, index) => {
-            const isOpen = openIndex === index;
-
-            return (
-              <div
-                key={faq._id}
+        <div className="faq-list">
+          {FAQS.map((faq, index) => (
+            <div 
+              key={index} 
+              className={`faq-item ${openIndex === index ? "open" : ""}`}
+            >
+              <button 
+                className="faq-question-btn" 
+                onClick={() => toggle(index)}
+                aria-expanded={openIndex === index}
+              >
+                <span className="faq-question-text">{faq.question}</span>
+                <div className="faq-icon-wrapper">
+                  {openIndex === index ? <Minus size={20} /> : <Plus size={20} />}
+                </div>
+              </button>
+              <div 
+                className="faq-answer-wrapper"
                 style={{
-                  background: "var(--white)",
-                  border: "2px solid",
-                  borderColor: isOpen ? "var(--maroon)" : "var(--cream-mid)",
-                  borderRadius: "16px",
-                  overflow: "hidden",
-                  transition: "all 0.3s ease",
-                  boxShadow: isOpen ? "var(--shadow-lg)" : "var(--shadow-sm)",
-                  height: "fit-content"
+                  gridTemplateRows: openIndex === index ? "1fr" : "0fr"
                 }}
               >
-                <button
-                  onClick={() => toggleFAQ(index)}
-                  style={{
-                    width: "100%",
-                    padding: "24px",
-                    background: isOpen ? "var(--cream)" : "transparent",
-                    border: "none",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "flex-start",
-                    justifyContent: "space-between",
-                    gap: "16px",
-                    textAlign: "left",
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  <h3
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: 700,
-                      color: isOpen ? "var(--maroon)" : "var(--text-primary)",
-                      fontFamily: "Outfit, sans-serif",
-                      lineHeight: 1.5,
-                      transition: "color 0.2s ease",
-                      flex: 1
-                    }}
-                  >
-                    {faq.question}
-                  </h3>
-                  <div
-                    style={{
-                      width: "32px",
-                      height: "32px",
-                      borderRadius: "50%",
-                      background: isOpen ? "var(--maroon)" : "var(--cream-dark)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                      transition: "all 0.3s ease",
-                      transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                    }}
-                  >
-                    <ChevronDown size={18} color={isOpen ? "var(--white)" : "var(--gray)"} strokeWidth={2.5} />
-                  </div>
-                </button>
-
-                <div
-                  style={{
-                    maxHeight: isOpen ? "400px" : "0",
-                    overflow: "hidden",
-                    transition: "max-height 0.4s ease, padding 0.4s ease",
-                    padding: isOpen ? "0 24px 24px 24px" : "0 24px",
-                  }}
-                >
-                  <div
-                    style={{
-                      paddingTop: "12px",
-                      borderTop: isOpen ? "1px solid var(--cream-mid)" : "none",
-                    }}
-                  >
-                    <p
-                      style={{
-                        color: "var(--text-secondary)",
-                        fontSize: "15px",
-                        lineHeight: 1.7,
-                        fontWeight: 500,
-                      }}
-                    >
-                      {faq.answer}
-                    </p>
-                  </div>
+                <div className="faq-answer-inner">
+                  <p>{faq.answer}</p>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
 
       <style>{`
-        @media (max-width: 768px) {
-          .faq-grid {
-            grid-template-columns: 1fr !important;
+        .faq-section {
+          padding: 120px 0;
+          background: var(--cream);
+          border-top: 1px solid var(--border-default);
+        }
+
+        .faq-inner {
+          display: flex;
+          gap: 60px;
+          align-items: flex-start;
+        }
+
+        .faq-header {
+          flex: 0 0 350px;
+          position: sticky;
+          top: 120px;
+        }
+
+        .faq-title {
+          font-family: var(--font-outfit), sans-serif;
+          font-size: clamp(2.5rem, 4vw, 3.5rem);
+          font-weight: 900;
+          color: var(--navy-deep);
+          margin: 0 0 16px;
+          line-height: 1.1;
+          letter-spacing: -0.03em;
+        }
+
+        .faq-underline {
+          width: 80px;
+          height: 4px;
+          background: var(--orange);
+          border-radius: 4px;
+          margin-bottom: 24px;
+        }
+
+        .faq-subtitle {
+          font-family: var(--font-jakarta), sans-serif;
+          font-size: 1.1rem;
+          color: var(--slate);
+          line-height: 1.6;
+          margin: 0 0 32px;
+        }
+
+        .faq-contact-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 14px 28px;
+          background: transparent;
+          color: var(--navy);
+          font-family: var(--font-jakarta), sans-serif;
+          font-weight: 700;
+          text-decoration: none;
+          border: 2px solid var(--navy);
+          border-radius: 999px;
+          transition: all 0.3s ease;
+        }
+
+        .faq-contact-btn:hover {
+          background: var(--navy);
+          color: var(--white);
+        }
+
+        .faq-list {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .faq-item {
+          border-bottom: 1px solid var(--border-default);
+        }
+
+        .faq-question-btn {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 32px 0;
+          background: none;
+          border: none;
+          cursor: pointer;
+          text-align: left;
+          gap: 20px;
+        }
+
+        .faq-question-text {
+          font-family: var(--font-outfit), sans-serif;
+          font-size: clamp(1.25rem, 2vw, 1.5rem);
+          font-weight: 700;
+          color: var(--navy);
+          transition: color 0.3s ease;
+        }
+
+        .faq-item:hover .faq-question-text {
+          color: var(--orange);
+        }
+
+        .faq-icon-wrapper {
+          color: var(--orange);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          transition: transform 0.3s ease;
+        }
+
+        .faq-item.open .faq-icon-wrapper {
+          transform: rotate(180deg);
+        }
+
+        .faq-answer-wrapper {
+          display: grid;
+          transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .faq-answer-inner {
+          overflow: hidden;
+        }
+
+        .faq-answer-inner p {
+          font-family: var(--font-jakarta), sans-serif;
+          font-size: 1.1rem;
+          color: var(--slate);
+          line-height: 1.6;
+          margin: 0 0 32px 0;
+          padding-right: 40px;
+        }
+
+        @media (max-width: 900px) {
+          .faq-inner {
+            flex-direction: column;
+            gap: 40px;
+          }
+          .faq-header {
+            flex: none;
+            position: relative;
+            top: 0;
+          }
+          .faq-question-btn {
+            padding: 24px 0;
           }
         }
       `}</style>

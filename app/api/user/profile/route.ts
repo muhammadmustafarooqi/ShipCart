@@ -4,6 +4,7 @@ import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
@@ -27,6 +28,9 @@ export async function GET() {
         phone: user.phone,
         city: user.city,
         address: user.address,
+        couponCode: user.couponCode,
+        couponExpiry: user.couponExpiry,
+        couponStatus: user.couponStatus,
       },
     });
   } catch (error) {

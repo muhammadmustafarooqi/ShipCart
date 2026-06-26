@@ -2,15 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import {
-  Search,
-  ShoppingCart,
-  Menu,
-  X,
-  ArrowRight,
-  User,
-  Heart,
-} from "lucide-react";
+import { Search, ShoppingCart, Menu, X, ArrowRight, User, Heart } from "lucide-react";
 import { NavLogo } from "@/components/BrandLogo";
 import { useCart } from "./CartProvider";
 import { useWishlist } from "./WishlistProvider";
@@ -37,9 +29,22 @@ export default function Navbar() {
 
   const navLinks = settings?.navbar?.links || DEFAULT_LINKS;
 
+  const [categories, setCategories] = useState<any[]>([]);
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
+    
+    // Fetch dynamic categories for mobile menu
+    fetch("/api/categories")
+      .then(res => res.json())
+      .then(data => {
+        if (data.categories) {
+          setCategories(data.categories);
+        }
+      })
+      .catch(console.error);
+      
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -62,61 +67,43 @@ export default function Navbar() {
       >
         <div className="nav-shell-accent" aria-hidden />
         <div className="page-container">
+
           {/* ── MOBILE HEADER: left actions | centered logo | right actions ── */}
           <div className="mobile-header">
+
             <div className="mobile-header-left">
+
               <button
-                onClick={() => {
-                  setMenuOpen(!menuOpen);
-                  setSearchOpen(false);
-                }}
+                onClick={() => { setMenuOpen(!menuOpen); setSearchOpen(false); }}
                 className="icon-btn"
                 aria-label="Menu"
               >
                 {menuOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
 
-              <Link
-                href="/wishlist"
-                className="icon-btn"
-                aria-label={`Wishlist (${wishlistCount})`}
-                style={{
-                  position: "relative",
-                  textDecoration: "none",
-                  color: "var(--maroon)",
-                }}
-              >
-                <Heart
-                  size={20}
-                  fill={wishlistCount > 0 ? "currentColor" : "none"}
-                />
+              <Link href="/wishlist" className="icon-btn" aria-label={`Wishlist (${wishlistCount})`} style={{ position: "relative", textDecoration: "none", color: "var(--navy)" }}>
+                <Heart size={20} fill={wishlistCount > 0 ? "currentColor" : "none"} />
                 {wishlistCount > 0 && (
-                  <span
-                    className="cart-badge"
-                    style={{
-                      background: "linear-gradient(135deg, #dc2626, #b91c1c)",
-                    }}
-                  >
+                  <span className="cart-badge" style={{ background: "linear-gradient(135deg, var(--orange), var(--orange-deep))" }}>
                     {wishlistCount > 9 ? "9+" : wishlistCount}
                   </span>
                 )}
               </Link>
+
+
             </div>
 
             <Link
               href="/"
               className="logo-center nav-logo-link"
-              aria-label="ShipCart Store, home"
-              style={{
-                textDecoration: "none",
-                display: "flex",
-                alignItems: "center",
-              }}
+              aria-label="ShipCart, home"
+              style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
             >
               <NavLogo height={48} maxWidth={130} className="nav-logo-mobile" />
             </Link>
 
             <div className="mobile-header-right">
+
               <Link href="/cart" className="cart-btn" aria-label="Cart">
                 <ShoppingCart size={20} color="var(--white)" />
                 {totalItems > 0 && (
@@ -127,10 +114,7 @@ export default function Navbar() {
               </Link>
 
               <button
-                onClick={() => {
-                  setSearchOpen(!searchOpen);
-                  setMenuOpen(false);
-                }}
+                onClick={() => { setSearchOpen(!searchOpen); setMenuOpen(false); }}
                 className="icon-btn"
                 aria-label="Search"
               >
@@ -144,7 +128,7 @@ export default function Navbar() {
             {/* Logo only — no wordmark */}
             <Link
               href="/"
-              aria-label="ShipCart Store, home"
+              aria-label="ShipCart, home"
               className="nav-logo-link"
             >
               <NavLogo height={64} maxWidth={220} />
@@ -153,11 +137,7 @@ export default function Navbar() {
             {/* Nav links — pill rail */}
             <div className="nav-pill-rail">
               {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="desktop-nav-link"
-                >
+                <Link key={link.href} href={link.href} className="desktop-nav-link">
                   {link.label}
                 </Link>
               ))}
@@ -166,7 +146,7 @@ export default function Navbar() {
             {/* Right Actions */}
             <div className="nav-actions-desktop">
               <form onSubmit={handleSearchSubmit} className="nav-search-form">
-                <Search size={16} color="var(--maroon-soft)" strokeWidth={2} />
+                <Search size={16} color="var(--navy-soft)" strokeWidth={2} />
                 <input
                   type="text"
                   placeholder="Search products…"
@@ -176,31 +156,14 @@ export default function Navbar() {
                 />
               </form>
 
-              <Link
-                href="/auth/login"
-                className="icon-btn-bordered"
-                aria-label="Account"
-              >
-                <User size={20} color="var(--maroon)" />
+              <Link href="/auth/login" className="icon-btn-bordered" aria-label="Account">
+                <User size={20} color="var(--navy)" />
               </Link>
 
-              <Link
-                href="/wishlist"
-                className="icon-btn-bordered"
-                aria-label={`Wishlist (${wishlistCount})`}
-                style={{ position: "relative", color: "var(--maroon)" }}
-              >
-                <Heart
-                  size={20}
-                  fill={wishlistCount > 0 ? "currentColor" : "none"}
-                />
+              <Link href="/wishlist" className="icon-btn-bordered" aria-label={`Wishlist (${wishlistCount})`} style={{ position: "relative", color: "var(--navy)" }}>
+                <Heart size={20} fill={wishlistCount > 0 ? "currentColor" : "none"} />
                 {wishlistCount > 0 && (
-                  <span
-                    className="cart-badge"
-                    style={{
-                      background: "linear-gradient(135deg, #dc2626, #b91c1c)",
-                    }}
-                  >
+                  <span className="cart-badge" style={{ background: "linear-gradient(135deg, var(--orange), var(--orange-deep))" }}>
                     {wishlistCount > 9 ? "9+" : wishlistCount}
                   </span>
                 )}
@@ -220,11 +183,8 @@ export default function Navbar() {
 
         {/* ── MOBILE SEARCH BAR (slides down) ── */}
         <div className={`mobile-search-bar ${searchOpen ? "open" : ""}`}>
-          <form
-            onSubmit={handleSearchSubmit}
-            className="nav-search-form nav-search-form--mobile"
-          >
-            <Search size={17} color="var(--maroon-soft)" strokeWidth={2} />
+          <form onSubmit={handleSearchSubmit} className="nav-search-form nav-search-form--mobile">
+            <Search size={17} color="var(--navy-soft)" strokeWidth={2} />
             <input
               type="text"
               placeholder="Search products…"
@@ -234,17 +194,8 @@ export default function Navbar() {
               className="nav-search-input nav-search-input--mobile"
             />
             {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery("")}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  color: "var(--text-secondary)",
-                  display: "flex",
-                }}
-              >
+              <button type="button" onClick={() => setSearchQuery("")}
+                style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-secondary)", display: "flex" }}>
                 <X size={16} />
               </button>
             )}
@@ -269,41 +220,54 @@ export default function Navbar() {
       >
         <div style={{ padding: "28px 20px" }}>
           {/* Category Label */}
-          <div
-            style={{
-              fontSize: "11px",
-              color: "var(--text-secondary)",
-              fontWeight: 700,
-              letterSpacing: "1.5px",
-              textTransform: "uppercase",
-              paddingLeft: "4px",
-              marginBottom: "14px",
-            }}
-          >
+          <div style={{
+            fontSize: "11px", color: "var(--text-secondary)", fontWeight: 700,
+            letterSpacing: "1.5px", textTransform: "uppercase",
+            paddingLeft: "4px", marginBottom: "14px"
+          }}>
             Navigate
           </div>
 
-          {/* Links */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "10px",
-              marginBottom: "36px",
-            }}
-          >
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className="drawer-link"
-              >
-                {link.label}
-                <ArrowRight size={16} />
-              </Link>
-            ))}
+          {/* Main Links */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "36px" }}>
+            <Link href="/" onClick={() => setMenuOpen(false)} className="drawer-link">
+              Home <ArrowRight size={16} />
+            </Link>
+            <Link href="/products" onClick={() => setMenuOpen(false)} className="drawer-link">
+              Shop All <ArrowRight size={16} />
+            </Link>
+            <Link href="/track-order" onClick={() => setMenuOpen(false)} className="drawer-link">
+              Track Order <ArrowRight size={16} />
+            </Link>
           </div>
+
+          {/* Dynamic Categories Label */}
+          {categories.length > 0 && (
+            <>
+              <div style={{
+                fontSize: "11px", color: "var(--text-secondary)", fontWeight: 700,
+                letterSpacing: "1.5px", textTransform: "uppercase",
+                paddingLeft: "4px", marginBottom: "14px"
+              }}>
+                Categories
+              </div>
+
+              {/* Dynamic Categories Links */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "36px" }}>
+                {categories.map((cat) => (
+                  <Link
+                    key={cat._id}
+                    href={`/products?category=${cat.slug}`}
+                    onClick={() => setMenuOpen(false)}
+                    className="drawer-link"
+                  >
+                    {cat.name}
+                    <ArrowRight size={16} />
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -317,7 +281,7 @@ export default function Navbar() {
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(42, 21, 24, 0.45)",
+            background: "rgba(16, 40, 87, 0.45)",
             zIndex: 98,
             backdropFilter: "blur(2px)",
           }}
@@ -325,60 +289,49 @@ export default function Navbar() {
       )}
 
       <style>{`
-        /* ── Shell: floating bar + accent ── */
+        /* ── Shell: floating pill bar ── */
         .nav-mobile-drawer {
-          top: calc(72px + var(--announcement-h, 0px));
+          top: 0; /* Changed for overlay */
           width: 100% !important;
           max-width: none !important;
           border-right: none !important;
+          z-index: 1000 !important;
         }
         .nav-menu-overlay {
-          top: calc(72px + var(--announcement-h, 0px));
+          top: 0;
+          z-index: 999 !important;
         }
 
         .nav-shell {
           position: sticky;
           top: var(--announcement-h, 0px);
+          margin: 0;
+          width: 100%;
+          max-width: none;
+          border-radius: 0;
           z-index: 100;
           isolation: isolate;
-          background: linear-gradient(180deg, rgba(255, 253, 249, 0.99) 0%, rgba(250, 243, 232, 0.94) 100%);
-          backdrop-filter: blur(16px) saturate(1.2);
-          -webkit-backdrop-filter: blur(16px) saturate(1.2);
-          border-bottom: 1px solid rgba(232, 216, 188, 0.65);
-          box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 8px 32px rgba(42, 21, 24, 0.06);
-          transition: box-shadow 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(24px) saturate(1.8);
+          -webkit-backdrop-filter: blur(24px) saturate(1.8);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+          box-shadow: 0 4px 20px rgba(16, 40, 87, 0.05);
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .nav-shell[data-scrolled="true"] {
-          background: rgba(255, 253, 249, 0.97);
-          border-bottom-color: var(--cream-mid);
-          box-shadow:
-            0 1px 0 rgba(255, 255, 255, 0.5) inset,
-            0 12px 40px rgba(42, 21, 24, 0.1);
+          background: rgba(249, 249, 246, 0.95);
+          border-bottom-color: rgba(229, 229, 229, 0.8);
+          box-shadow: 0 10px 30px rgba(16, 40, 87, 0.08);
+          top: var(--announcement-h, 0px);
         }
         .nav-shell-accent {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 3px;
-          background: linear-gradient(
-            90deg,
-            var(--maroon-deep) 0%,
-            var(--maroon) 22%,
-            var(--gold) 50%,
-            var(--maroon) 78%,
-            var(--maroon-deep) 100%
-          );
-          opacity: 0.95;
-          pointer-events: none;
+          display: none;
         }
 
         /* ── Layout helpers ── */
         .page-container {
           width: 100%;
-          max-width: 1400px;
-          margin: 0 auto;
-          padding: 0 16px;
+          padding: 0 24px;
           box-sizing: border-box;
         }
 
@@ -389,7 +342,7 @@ export default function Navbar() {
           grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
           align-items: center;
           column-gap: 8px;
-          height: 72px;
+          height: 64px;
           width: 100%;
           min-width: 0;
         }
@@ -423,7 +376,7 @@ export default function Navbar() {
             align-items: center;
             justify-content: space-between;
             gap: 16px;
-            height: 88px;
+            height: 76px;
             min-width: 0;
           }
           .page-container { padding: 0 32px; }
@@ -504,8 +457,8 @@ export default function Navbar() {
           min-width: 0;
           margin-left: auto;
           margin-right: auto;
-          background: rgba(107, 30, 46, 0.06);
-          border: 1px solid rgba(107, 30, 46, 0.1);
+          background: rgba(16, 40, 87, 0.06);
+          border: 1px solid rgba(16, 40, 87, 0.1);
           border-radius: 999px;
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
           overflow-x: auto;
@@ -518,7 +471,7 @@ export default function Navbar() {
           height: 4px;
         }
         .nav-pill-rail::-webkit-scrollbar-thumb {
-          background: rgba(107, 30, 46, 0.25);
+          background: rgba(16, 40, 87, 0.25);
           border-radius: 99px;
         }
         .nav-actions-desktop {
@@ -542,10 +495,10 @@ export default function Navbar() {
           transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
         .nav-search-form:focus-within {
-          border-color: rgba(107, 30, 46, 0.35);
+          border-color: rgba(16, 40, 87, 0.35);
           box-shadow:
-            inset 0 2px 4px rgba(42, 21, 24, 0.04),
-            0 0 0 3px rgba(201, 168, 76, 0.25);
+            inset 0 2px 4px rgba(16, 40, 87, 0.04),
+            0 0 0 3px rgba(255, 97, 2, 0.25);
         }
         .nav-search-form--mobile {
           width: 100%;
@@ -571,13 +524,13 @@ export default function Navbar() {
 
         /* ── Icon button ── */
         .icon-btn {
-          background: rgba(107, 30, 46, 0.07);
+          background: rgba(16, 40, 87, 0.07);
           border: 1px solid transparent;
           width: 44px;
           height: 44px;
           border-radius: 50%;
           cursor: pointer;
-          color: var(--maroon);
+          color: var(--navy);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -585,8 +538,8 @@ export default function Navbar() {
           flex-shrink: 0;
         }
         .icon-btn:hover {
-          background: rgba(107, 30, 46, 0.12);
-          border-color: rgba(107, 30, 46, 0.12);
+          background: rgba(16, 40, 87, 0.12);
+          border-color: rgba(16, 40, 87, 0.12);
           transform: scale(1.04);
         }
 
@@ -603,20 +556,20 @@ export default function Navbar() {
           text-decoration: none;
           transition: all 0.22s ease;
           flex-shrink: 0;
-          box-shadow: 0 2px 8px rgba(42, 21, 24, 0.06);
+          box-shadow: 0 2px 8px rgba(16, 40, 87, 0.06);
         }
         .icon-btn-bordered:hover {
-          border-color: var(--maroon-soft);
+          border-color: var(--navy);
           background: var(--cream-dark);
           transform: translateY(-2px);
-          box-shadow: 0 6px 16px rgba(107, 30, 46, 0.12);
+          box-shadow: 0 6px 16px rgba(16, 40, 87, 0.12);
         }
 
         /* ── Cart button ── */
         .cart-btn {
           position: relative;
-          background: linear-gradient(145deg, var(--maroon) 0%, var(--maroon-deep) 100%);
-          border: 1px solid rgba(201, 168, 76, 0.35);
+          background: linear-gradient(145deg, var(--orange) 0%, var(--orange-deep) 100%);
+          border: 1px solid rgba(255, 97, 2, 0.35);
           width: 46px;
           height: 46px;
           border-radius: 50%;
@@ -627,14 +580,14 @@ export default function Navbar() {
           flex-shrink: 0;
           transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
           box-shadow:
-            0 4px 14px rgba(107, 30, 46, 0.35),
+            0 4px 14px rgba(255, 97, 2, 0.35),
             inset 0 1px 0 rgba(255, 255, 255, 0.12);
         }
         .cart-btn:hover {
           filter: brightness(1.06);
           transform: translateY(-2px) scale(1.02);
           box-shadow:
-            0 8px 22px rgba(107, 30, 46, 0.4),
+            0 8px 22px rgba(255, 97, 2, 0.4),
             inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }
 
@@ -643,8 +596,8 @@ export default function Navbar() {
           position: absolute;
           top: -4px;
           right: -4px;
-          background: linear-gradient(135deg, var(--gold), #d4b45c);
-          color: var(--text);
+          background: linear-gradient(135deg, var(--white), var(--cream));
+          color: var(--navy);
           border-radius: 50%;
           width: 21px;
           height: 21px;
@@ -653,9 +606,9 @@ export default function Navbar() {
           display: flex;
           align-items: center;
           justify-content: center;
-          border: 2px solid var(--white);
+          border: 2px solid var(--navy);
           font-family: Outfit, sans-serif;
-          box-shadow: 0 2px 8px rgba(201, 168, 76, 0.45);
+          box-shadow: 0 2px 8px rgba(16, 40, 87, 0.45);
         }
 
         /* ── Desktop nav link (inside pill rail) ── */
@@ -670,9 +623,9 @@ export default function Navbar() {
           white-space: nowrap;
         }
         .desktop-nav-link:hover {
-          color: var(--maroon);
+          color: var(--navy);
           background: rgba(255, 253, 249, 0.95);
-          box-shadow: 0 1px 3px rgba(42, 21, 24, 0.08);
+          box-shadow: 0 1px 3px rgba(16, 40, 87, 0.08);
         }
 
         @media (min-width: 1025px) and (max-width: 1320px) {
@@ -721,9 +674,9 @@ export default function Navbar() {
           transition: all 0.22s ease;
         }
         .drawer-link:hover {
-          background: var(--maroon);
+          background: var(--navy);
           color: var(--white);
-          border-color: var(--maroon);
+          border-color: var(--navy);
           transform: translateX(4px);
         }
         .drawer-link:hover svg { color: var(--white); }

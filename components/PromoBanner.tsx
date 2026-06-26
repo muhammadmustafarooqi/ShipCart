@@ -200,8 +200,8 @@ export default function PromoBanner() {
           font-weight: 800;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          color: var(--maroon-deep);
-          background: linear-gradient(135deg, #fff6d8 0%, var(--gold) 55%, #e8c85c 100%);
+          color: var(--navy-deep);
+          background: linear-gradient(135deg, #fff6d8 0%, var(--orange) 55%, #e8c85c 100%);
           border: 1px solid rgba(107, 30, 46, 0.2);
           box-shadow:
             0 4px 14px rgba(201, 168, 76, 0.45),
@@ -217,10 +217,10 @@ export default function PromoBanner() {
           border-radius: var(--radius-xl) var(--radius-xl) 0 0;
           background: linear-gradient(
             90deg,
-            var(--maroon-deep) 0%,
-            var(--maroon) 28%,
-            var(--gold) 52%,
-            var(--maroon-soft) 100%
+            var(--navy-deep) 0%,
+            var(--orange) 28%,
+            var(--orange) 52%,
+            var(--navy-soft) 100%
           );
           opacity: 1;
         }
@@ -253,14 +253,14 @@ export default function PromoBanner() {
           font-weight: 800;
           letter-spacing: 0.16em;
           text-transform: uppercase;
-          color: var(--maroon);
+          color: var(--orange);
           background: linear-gradient(135deg, rgba(107, 30, 46, 0.1), rgba(201, 168, 76, 0.14));
           border: 1px solid rgba(107, 30, 46, 0.22);
           box-shadow: 0 2px 10px rgba(107, 30, 46, 0.08);
         }
 
         .pb-kicker-ico {
-          color: var(--gold);
+          color: var(--orange);
           flex-shrink: 0;
         }
 
@@ -285,7 +285,7 @@ export default function PromoBanner() {
 
         .pb-title-line1 {
           font-size: clamp(1.95rem, 4.5vw, 2.85rem);
-          background: linear-gradient(118deg, var(--maroon-deep) 0%, var(--maroon) 42%, var(--maroon-soft) 100%);
+          background: linear-gradient(118deg, var(--navy-deep) 0%, var(--navy) 42%, var(--navy-soft) 100%);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
@@ -304,7 +304,7 @@ export default function PromoBanner() {
           margin-left: 4px;
           border-radius: 999px;
           font-weight: 800;
-          color: var(--maroon-deep);
+          color: var(--navy-deep);
           background: linear-gradient(135deg, rgba(201, 168, 76, 0.35), rgba(201, 168, 76, 0.12));
           border: 1px solid rgba(201, 168, 76, 0.45);
           box-shadow: 0 2px 12px rgba(201, 168, 76, 0.25);
@@ -358,7 +358,7 @@ export default function PromoBanner() {
           height: 44px;
           border-radius: 14px;
           background: linear-gradient(145deg, rgba(201, 168, 76, 0.28), rgba(107, 30, 46, 0.12));
-          color: var(--maroon);
+          color: var(--orange);
           border: 1px solid rgba(201, 168, 76, 0.35);
         }
 
@@ -374,7 +374,7 @@ export default function PromoBanner() {
         .pb-perk-text strong {
           font-size: 14px;
           font-weight: 800;
-          color: var(--maroon);
+          color: var(--orange);
         }
 
         .pb-actions {
@@ -402,7 +402,7 @@ export default function PromoBanner() {
           font-size: 14px;
           font-weight: 700;
           text-decoration: none;
-          color: var(--maroon);
+          color: var(--orange);
           background: var(--white);
           border: 2px solid rgba(107, 30, 46, 0.2);
           box-shadow: var(--shadow-sm);
@@ -456,7 +456,7 @@ export default function PromoBanner() {
           font-weight: 800;
           letter-spacing: 0.2em;
           text-transform: uppercase;
-          color: var(--gold);
+          color: var(--orange);
         }
 
         .pb-stat {
@@ -479,12 +479,12 @@ export default function PromoBanner() {
           letter-spacing: -0.035em;
           line-height: 1.05;
           margin-bottom: 6px;
-          color: var(--maroon);
+          color: var(--orange);
         }
 
         .pb-stat-alt .pb-stat-value {
           font-size: clamp(2.1rem, 3.6vw, 2.65rem);
-          background: linear-gradient(118deg, var(--maroon-deep), var(--gold));
+          background: linear-gradient(118deg, var(--navy-deep), var(--orange));
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
@@ -671,7 +671,7 @@ export default function PromoBanner() {
             font-weight: 800;
             letter-spacing: 0.15em;
             margin-bottom: 4px;
-            color: var(--gold);
+            color: var(--orange);
           }
 
           .pb-stat-value {

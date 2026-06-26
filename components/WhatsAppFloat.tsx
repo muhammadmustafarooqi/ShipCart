@@ -1,9 +1,13 @@
 "use client";
 
 import { fbq } from "@/lib/fpq";
+import { usePathname } from "next/navigation";
 
 export default function WhatsAppFloat() {
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923001234567";
+  const pathname = usePathname();
+  if (pathname?.startsWith("/admin")) return null;
+
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923713869780";
   const message = "Hi! I'd like to know more about your products.";
   const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
@@ -43,7 +47,7 @@ export default function WhatsAppFloat() {
         .whatsapp-tooltip {
           position: absolute; right: 60px; top: 50%; transform: translateY(-50%);
           background: var(--white); border: 1px solid var(--cream-mid);
-          color: var(--maroon); font-size: 11px; font-weight: 600;
+          color: var(--orange); font-size: 11px; font-weight: 600;
           padding: 4px 10px; border-radius: 6px; white-space: nowrap;
           opacity: 0; transition: opacity 200ms ease; pointer-events: none;
         }

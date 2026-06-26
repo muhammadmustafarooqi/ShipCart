@@ -68,52 +68,41 @@ export default function AnnouncementBar() {
           left: 0,
           right: 0,
           zIndex: 250,
-          padding: "10px clamp(12px, 4vw, 20px)",
-          background: "var(--color-brand)",
-          color: "white",
-          fontSize: "clamp(11px, 2.6vw, 13px)",
-          fontWeight: 600,
-          textAlign: "center",
-          fontFamily: "Plus Jakarta Sans, sans-serif",
-          letterSpacing: "0.5px",
-          lineHeight: 1.45,
-          wordBreak: "break-word",
-          boxShadow: "0 6px 20px rgba(42, 21, 24, 0.18)",
+          background: "var(--navy)",
+          color: "var(--white)",
+          boxShadow: "0 4px 20px rgba(16, 40, 87, 0.15)",
+          overflow: "hidden",
+          whiteSpace: "nowrap",
+          display: "flex",
+          alignItems: "center",
+          height: "36px",
         }}
       >
-        <span className="animate-pulse" style={{ display: "inline-flex", marginRight: "8px", verticalAlign: "middle" }}>
-          <Sparkles size={15} strokeWidth={2.25} aria-hidden />
-        </span>
-        <span style={{ verticalAlign: "middle" }}>
-          {settings.announcementBarText} &nbsp;&nbsp;{" "}
-        </span>
-        {/* <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", verticalAlign: "middle" }}>
-          <Banknote size={15} strokeWidth={2.25} aria-hidden />
-          <span>Cash on Delivery</span>
-        </span> */}
-        {/* <button
-          type="button"
-          onClick={() => setVisible(false)}
-          aria-label="Dismiss announcement"
+        <div 
           style={{
-            position: "absolute",
-            right: "12px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            background: "none",
-            border: "none",
-            color: "white",
-            cursor: "pointer",
-            opacity: 0.75,
-            transition: "opacity 150ms ease",
-            display: "flex",
-            alignItems: "center",
+            display: "inline-block",
+            animation: "marquee 25s linear infinite",
+            fontSize: "12px",
+            fontWeight: 700,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            fontFamily: "var(--font-outfit), sans-serif",
           }}
-          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
-          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.75")}
         >
-          <X size={16} />
-        </button> */}
+          {Array(8).fill(null).map((_, i) => (
+            <span key={i} style={{ margin: "0 24px", display: "inline-flex", alignItems: "center", gap: "8px" }}>
+              <Sparkles size={14} color="var(--orange)" strokeWidth={2.5} aria-hidden />
+              <span>{settings.announcementBarText}</span>
+              <span style={{ color: "var(--orange)" }}>•</span>
+            </span>
+          ))}
+        </div>
+        <style>{`
+          @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+        `}</style>
       </div>
       <div aria-hidden style={{ height: spacerHeight, flexShrink: 0 }} />
     </>

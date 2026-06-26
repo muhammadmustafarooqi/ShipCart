@@ -103,7 +103,7 @@ export default function AdminOfferBannerPage() {
   }
 
   return (
-    <div style={{ padding: "32px", maxWidth: "1000px" }}>
+    <div className="admin-page-container" style={{ maxWidth: "1000px" }}>
       <div style={{ marginBottom: "32px" }}>
         <h1 style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>Offer Banner</h1>
         <p style={{ color: "#6b7280", marginTop: "4px" }}>Manage the promotional offer banner on homepage</p>

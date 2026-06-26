@@ -10,7 +10,7 @@ import ProductCard from "@/components/ProductCard";
 import { useCart } from "@/components/CartProvider";
 import { useSettings } from "@/lib/useSettings";
 import { fbq } from "@/lib/fpq";
-import { ShoppingCart, Minus, Plus, Package, Zap, ShieldCheck, Frown, Truck, RefreshCcw } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Package, Zap, ShieldCheck, Frown, Truck, RefreshCcw, Play, Pause, ZoomIn, ZoomOut, RotateCcw, Check } from "lucide-react";
 import ProductDetailTabs from "@/components/ProductDetailTabs";
 
 interface Product {
@@ -22,9 +22,15 @@ interface Product {
 
 type MediaMode = "video" | "photos";
 
-export default function ProductClient({ initialProduct, initialRelated }: { initialProduct: Product; initialRelated: Product[] }) {
+interface Pack {
+  quantity: number;
+  price: number;
+  label?: string;
+}
+
+export default function ProductClient({ initialProduct, initialRelated, initialPacks = [] }: { initialProduct: Product; initialRelated: Product[]; initialPacks?: Pack[] }) {
   const router = useRouter();
-  const { addItem } = useCart();
+  const { addItem, items } = useCart();
   const { settings, loading: settingsLoading } = useSettings();
   const cartBtnRef = useRef<HTMLButtonElement>(null);
 
@@ -36,11 +42,19 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
   const [mediaMode, setMediaMode] = useState<MediaMode>("photos");
   const [photoIndex, setPhotoIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [selectedPackIndex, setSelectedPackIndex] = useState<number | null>(null);
   const [imgFade, setImgFade] = useState(true);
   const [selectedColor, setSelectedColor] = useState<string>(initialProduct?.colors?.[0] || "");
   const [isHovered, setIsHovered] = useState(false);
   const [autoRotate, setAutoRotate] = useState(true);
   const detailVideoRef = useRef<HTMLVideoElement>(null);
+  const viewerRef = useRef<HTMLDivElement>(null);
+
+  // Zoom and Pan states
+  const [zoom, setZoom] = useState(1);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   const handleReviewStatsChange = useCallback(
     (stats: { rating: number; reviewCount: number }) => {
@@ -74,24 +88,105 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
     setTimeout(() => setImgFade(true), 200);
   };
 
+  // Auto-rotation (Standard interval)
   useEffect(() => {
-    if (imageCount <= 1 || !autoRotate || mediaMode !== "photos" || isHovered) {
+    if (imageCount <= 1 || !autoRotate || mediaMode !== "photos" || isHovered || zoom > 1) {
       return;
     }
 
     const interval = setInterval(advancePhoto, 4000);
     return () => clearInterval(interval);
-  }, [imageCount, isHovered, autoRotate, mediaMode]);
+  }, [imageCount, isHovered, autoRotate, mediaMode, zoom]);
 
+  // Auto-rotation (Accelerated hover interval)
   useEffect(() => {
-    if (imageCount <= 1 || !isHovered || mediaMode !== "photos") {
+    if (imageCount <= 1 || !isHovered || mediaMode !== "photos" || !autoRotate || zoom > 1) {
       return;
     }
 
     advancePhoto();
     const interval = setInterval(advancePhoto, 1200);
     return () => clearInterval(interval);
-  }, [imageCount, isHovered, mediaMode]);
+  }, [imageCount, isHovered, mediaMode, autoRotate, zoom]);
+
+  // Reset zoom and panning when image details change (photoIndex, mediaMode, selectedColor)
+  useEffect(() => {
+    setZoom(1);
+    setPanOffset({ x: 0, y: 0 });
+    setIsDragging(false);
+  }, [photoIndex, mediaMode, selectedColor]);
+
+  const handleZoomIn = () => {
+    setZoom((prev) => Math.min(prev + 0.5, 3));
+  };
+
+  const handleZoomOut = () => {
+    setZoom((prev) => {
+      const next = Math.max(prev - 0.5, 1);
+      if (next === 1) {
+        setPanOffset({ x: 0, y: 0 });
+      }
+      return next;
+    });
+  };
+
+  const handleResetZoom = () => {
+    setZoom(1);
+    setPanOffset({ x: 0, y: 0 });
+  };
+
+  const getConstrainedPan = (x: number, y: number, currentZoom: number) => {
+    if (!viewerRef.current || currentZoom <= 1) {
+      return { x: 0, y: 0 };
+    }
+    const rect = viewerRef.current.getBoundingClientRect();
+    const maxX = (rect.width * (currentZoom - 1)) / 2;
+    const maxY = (rect.height * (currentZoom - 1)) / 2;
+    return {
+      x: Math.max(-maxX, Math.min(maxX, x)),
+      y: Math.max(-maxY, Math.min(maxY, y)),
+    };
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (zoom <= 1) return;
+    e.preventDefault();
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging || zoom <= 1) return;
+    e.preventDefault();
+    const newX = e.clientX - dragStart.x;
+    const newY = e.clientY - dragStart.y;
+    const constrained = getConstrainedPan(newX, newY, zoom);
+    setPanOffset(constrained);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (zoom <= 1) return;
+    const touch = e.touches[0];
+    setIsDragging(true);
+    setDragStart({ x: touch.clientX - panOffset.x, y: touch.clientY - panOffset.y });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!isDragging || zoom <= 1) return;
+    const touch = e.touches[0];
+    const newX = touch.clientX - dragStart.x;
+    const newY = touch.clientY - dragStart.y;
+    const constrained = getConstrainedPan(newX, newY, zoom);
+    setPanOffset(constrained);
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
 
   useEffect(() => {
     if (product) {
@@ -105,14 +200,36 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
   }, [product]);
 
   const handleAddToCart = () => {
-    if (!product) return;
-    fbq("track", "AddToCart", {
+    if (!product || isAlreadyInCart) return;
+    const eventID = `atc_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    const customData = {
       content_ids: [product._id],
       content_name: product.name,
       value: product.price,
       currency: "PKR"
-    });
-    addItem({ productId: product._id, name: product.name, price: product.price, quantity, image: allImages[0] });
+    };
+    
+    fbq("track", "AddToCart", customData, { eventID });
+    fetch("/api/capi", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ eventName: "AddToCart", eventID, customData, sourceUrl: window.location.href })
+    }).catch(console.error);
+
+    let cartProductId = product._id;
+    let finalQuantity = quantity;
+    let finalPrice = product.price;
+    let nameSuffix = "";
+    
+    if (selectedPackIndex !== null && initialPacks[selectedPackIndex]) {
+      const pack = initialPacks[selectedPackIndex];
+      cartProductId = `pack-${product._id}-${pack.quantity}`;
+      finalQuantity = 1;
+      finalPrice = pack.price;
+      nameSuffix = ` - ${pack.quantity} Pack`;
+    }
+
+    addItem({ productId: cartProductId, name: product.name + nameSuffix, price: finalPrice, quantity: finalQuantity, image: allImages[0], slug: product.slug });
     if (cartBtnRef.current) {
       cartBtnRef.current.style.background = "var(--color-success)";
       cartBtnRef.current.style.borderColor = "var(--color-success)";
@@ -129,17 +246,39 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
 
   const handleDirectCheckout = () => {
     if (!product) return;
-    fbq("track", "AddToCart", {
+    const eventID = `atc_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    const customData = {
       content_ids: [product._id],
       content_name: product.name,
       value: product.price,
       currency: "PKR"
-    });
-    addItem({ productId: product._id, name: product.name, price: product.price, quantity, image: allImages[0] });
+    };
+    
+    fbq("track", "AddToCart", customData, { eventID });
+    fetch("/api/capi", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ eventName: "AddToCart", eventID, customData, sourceUrl: window.location.href })
+    }).catch(console.error);
+
+    let cartProductId = product._id;
+    let finalQuantity = quantity;
+    let finalPrice = product.price;
+    let nameSuffix = "";
+    
+    if (selectedPackIndex !== null && initialPacks[selectedPackIndex]) {
+      const pack = initialPacks[selectedPackIndex];
+      cartProductId = `pack-${product._id}-${pack.quantity}`;
+      finalQuantity = 1;
+      finalPrice = pack.price;
+      nameSuffix = ` - ${pack.quantity} Pack`;
+    }
+
+    addItem({ productId: cartProductId, name: product.name + nameSuffix, price: finalPrice, quantity: finalQuantity, image: allImages[0], slug: product.slug });
     router.push('/checkout');
   };
 
-  const s = { background: "var(--bg-primary)", minHeight: "100vh" };
+  const s = { background: "var(--bg-primary)", minHeight: "100vh", width: "100%", maxWidth: "100%", overflowX: "hidden" as const };
 
   if (loading) return (
     <div style={s}><Navbar />
@@ -163,7 +302,7 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
   const discount = product.comparePrice && product.comparePrice > product.price
     ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100) : 0;
 
-  const waNum = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923001234567";
+  const waNum = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923713869780";
   const waMsg = `Hi! I want to order:\n*${product.name}*\nPrice: Rs. ${product.price.toLocaleString()}\n\nPlease confirm availability.`;
   const waUrl = `https://wa.me/${waNum}?text=${encodeURIComponent(waMsg)}`;
 
@@ -216,13 +355,16 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
   const showMediaToggle = hasVideo || allImages.length > 1;
   const currentPhoto = allImages[photoIndex] ?? allImages[0];
 
+  const currentCartProductId = product ? (selectedPackIndex !== null && initialPacks[selectedPackIndex] ? `pack-${product._id}-${initialPacks[selectedPackIndex].quantity}` : product._id) : "";
+  const isAlreadyInCart = items.some(item => item.productId === currentCartProductId);
+
   return (
     <div style={s}>
       <Navbar />
 
-      <div className="page-container pd-page">
+      <div className="pd-page">
         {/* Breadcrumb */}
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px", fontSize: "13px", color: "var(--text-secondary)", fontWeight: 500, overflowX: "auto", whiteSpace: "nowrap", paddingBottom: "4px" }}>
+        <div className="pd-breadcrumb">
           <Link href="/" style={{ color: "var(--text-secondary)", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-primary)")} onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-secondary)")}>Home</Link>
           <span>/</span>
           <Link href="/products" style={{ color: "var(--text-secondary)", textDecoration: "none", transition: "color 0.2s" }} onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-primary)")} onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--text-secondary)")}>Collection</Link>
@@ -231,7 +373,7 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
         </div>
 
         {/* Main Grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "60px", marginBottom: "64px" }} className="product-detail-grid">
+        <div className="product-detail-grid">
 
           {/* Gallery */}
           <div
@@ -240,7 +382,31 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
             onMouseLeave={() => setIsHovered(false)}
           >
             {/* Main viewer */}
-            <div className="pd-main-viewer">
+            <div
+              ref={viewerRef}
+              className="pd-main-viewer"
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              onClick={() => {
+                if (mediaMode === "photos") {
+                  if (zoom === 1) {
+                    setZoom(2);
+                  } else {
+                    handleResetZoom();
+                  }
+                }
+              }}
+              style={{
+                position: "relative",
+                overflow: "hidden",
+                cursor: mediaMode === "photos" ? (zoom > 1 ? (isDragging ? "grabbing" : "grab") : "zoom-in") : "default",
+              }}
+            >
               {mediaMode === "video" && hasVideo ? (
                 <video
                   ref={detailVideoRef}
@@ -257,22 +423,96 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
                   }}
                 />
               ) : (
-                <Image
-                  src={currentPhoto}
-                  alt={product.name}
-                  fill
-                  sizes="(max-width: 900px) 100vw, 50vw"
-                  className="pd-main-media"
+                <div
                   style={{
-                    opacity: imgFade ? 1 : 0,
-                    transition: "opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)",
+                    position: "relative",
+                    width: "100%",
+                    height: "100%",
+                    transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoom})`,
+                    transformOrigin: "center center",
+                    transition: isDragging ? "none" : "transform 200ms ease-out",
                   }}
-                  unoptimized
-                />
+                >
+                  <Image
+                    src={currentPhoto}
+                    alt={product.name}
+                    fill
+                    sizes="(max-width: 900px) 100vw, 50vw"
+                    className="pd-main-media"
+                    style={{
+                      opacity: imgFade ? 1 : 0,
+                      transition: "opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)",
+                    }}
+                    
+                  />
+                </div>
               )}
+
               {discount > 0 && (
                 <div style={{ position: "absolute", top: "20px", left: "20px", background: "var(--text-primary)", borderRadius: "6px", padding: "6px 12px", fontSize: "12px", color: "white", fontWeight: 700, fontFamily: "Outfit, sans-serif", zIndex: 2 }}>
                   −{discount}%
+                </div>
+              )}
+
+              {/* Play / Pause Toggle Button */}
+              {mediaMode === "photos" && imageCount > 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setAutoRotate((prev) => !prev);
+                  }}
+                  className="pd-play-pause-btn"
+                  aria-label={autoRotate ? "Pause auto-rotation" : "Play auto-rotation"}
+                  title={autoRotate ? "Pause auto-rotation" : "Play auto-rotation"}
+                >
+                  {autoRotate ? <Pause size={18} /> : <Play size={18} />}
+                </button>
+              )}
+
+              {/* Zoom Buttons overlay */}
+              {mediaMode === "photos" && (
+                <div className="pd-zoom-controls">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleZoomIn();
+                    }}
+                    className="pd-zoom-btn"
+                    disabled={zoom >= 3}
+                    aria-label="Zoom In"
+                    title="Zoom In"
+                  >
+                    <ZoomIn size={18} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleZoomOut();
+                    }}
+                    className="pd-zoom-btn"
+                    disabled={zoom <= 1}
+                    aria-label="Zoom Out"
+                    title="Zoom Out"
+                  >
+                    <ZoomOut size={18} />
+                  </button>
+                  {zoom > 1 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleResetZoom();
+                      }}
+                      className="pd-zoom-btn pd-zoom-reset"
+                      aria-label="Reset Zoom"
+                      title="Reset Zoom"
+                    >
+                      <RotateCcw size={16} />
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -397,25 +637,110 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
               </div>
             )}
 
-            {/* Qty */}
-            <div style={{ marginBottom: "32px" }}>
-              <label style={{ display: "block", fontWeight: 700, fontSize: "12px", color: "var(--text-secondary)", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "1px", fontFamily: "Outfit, sans-serif" }}>Quantity</label>
-              <div style={{ display: "inline-flex", alignItems: "center" }}>
-                <div className="qty-control" style={{ background: "var(--bg-card)" }}>
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))}><Minus size={16} color="var(--color-icon)" /></button>
-                  <span style={{ minWidth: "48px", fontSize: "16px" }}>{quantity}</span>
-                  <button onClick={() => setQuantity(Math.min(product.stock || 99, quantity + 1))}><Plus size={16} color="var(--color-icon)" /></button>
+            {/* Offers / Packs */}
+            {initialPacks && initialPacks.length > 0 ? (
+              <div style={{ marginBottom: "32px" }}>
+                <label style={{ display: "block", fontWeight: 800, fontSize: "14px", color: "var(--text-secondary)", marginBottom: "16px", textTransform: "uppercase", letterSpacing: "1px", fontFamily: "Outfit, sans-serif" }}>Choose an offer:</label>
+                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <label
+                    style={{
+                      display: "flex", alignItems: "center", justifyContent: "space-between",
+                      padding: "20px", borderRadius: "12px",
+                      border: selectedPackIndex === null ? "2px solid #1f1212" : "1px solid #e5e7eb",
+                      cursor: "pointer", background: "white",
+                      boxShadow: selectedPackIndex === null ? "0 4px 12px rgba(0,0,0,0.05)" : "none",
+                      transition: "all 0.2s ease"
+                    }}
+                    onClick={() => setSelectedPackIndex(null)}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                      <div style={{ width: "22px", height: "22px", borderRadius: "50%", border: selectedPackIndex === null ? "6px solid #1f1212" : "2px solid #e5e7eb", background: "white", transition: "border 0.2s ease" }} />
+                      <div style={{ fontWeight: 800, fontSize: "16px", color: "#1f1212", fontFamily: "Outfit, sans-serif" }}>1 PACK</div>
+                    </div>
+                    <div style={{ fontWeight: 800, fontSize: "16px", color: "#1f1212", fontFamily: "Outfit, sans-serif" }}>Rs. {product.price.toLocaleString()}</div>
+                  </label>
+
+                  {initialPacks.map((pack, index) => {
+                    const isSelected = selectedPackIndex === index;
+
+                    return (
+                      <label
+                        key={index}
+                        style={{
+                          position: "relative", display: "flex", alignItems: "center", justifyContent: "space-between",
+                          padding: "20px", borderRadius: "12px",
+                          border: isSelected ? "2px solid #1f1212" : "1px solid #e5e7eb",
+                          cursor: "pointer", background: "white",
+                          boxShadow: isSelected ? "0 4px 12px rgba(0,0,0,0.05)" : "none",
+                          transition: "all 0.2s ease",
+                          marginTop: pack.label ? "8px" : "0"
+                        }}
+                        onClick={() => setSelectedPackIndex(index)}
+                      >
+                        {pack.label && (
+                          <div style={{
+                            position: "absolute", top: "-14px", right: "24px",
+                            background: "#1f1212", color: "white",
+                            padding: "6px 14px", borderRadius: "6px",
+                            fontSize: "12px", fontWeight: 700,
+                            fontFamily: "Outfit, sans-serif",
+                            letterSpacing: "0.5px",
+                            boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
+                          }}>
+                            {pack.label}
+                          </div>
+                        )}
+                        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                          <div style={{ width: "22px", height: "22px", borderRadius: "50%", border: isSelected ? "6px solid #1f1212" : "2px solid #e5e7eb", background: "white", transition: "border 0.2s ease" }} />
+                          <div>
+                            <div style={{ fontWeight: 800, fontSize: "16px", color: "#1f1212", fontFamily: "Outfit, sans-serif" }}>{pack.quantity} PACK</div>
+                          </div>
+                        </div>
+                        <div style={{ textAlign: "right" }}>
+                          <div style={{ fontWeight: 800, fontSize: "16px", color: "#1f1212", fontFamily: "Outfit, sans-serif" }}>Rs. {pack.price.toLocaleString()}</div>
+                        </div>
+                      </label>
+                    );
+                  })}
                 </div>
-                {product.stock !== undefined && product.stock <= 5 && (
-                  <span style={{ marginLeft: "16px", fontSize: "14px", color: "var(--color-warning)", fontWeight: 700, fontFamily: "Outfit, sans-serif" }}><Zap size={16} color="var(--color-icon)" style={{ display: "inline", verticalAlign: "text-bottom" }} /> Only {product.stock} units left!</span>
-                )}
               </div>
-            </div>
+            ) : (
+              <div style={{ marginBottom: "32px" }}>
+                <label style={{ display: "block", fontWeight: 700, fontSize: "12px", color: "var(--text-secondary)", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "1px", fontFamily: "Outfit, sans-serif" }}>Quantity</label>
+                <div className="pd-qty-row">
+                  <div className="qty-control" style={{ background: "var(--bg-card)" }}>
+                    <button onClick={() => setQuantity(Math.max(1, quantity - 1))}><Minus size={16} color="var(--color-icon)" /></button>
+                    <span style={{ minWidth: "48px", fontSize: "16px" }}>{quantity}</span>
+                    <button onClick={() => setQuantity(Math.min(product.stock || 99, quantity + 1))}><Plus size={16} color="var(--color-icon)" /></button>
+                  </div>
+                  {product.stock !== undefined && product.stock <= 5 && (
+                    <span style={{ fontSize: "14px", color: "var(--color-warning)", fontWeight: 700, fontFamily: "Outfit, sans-serif" }}><Zap size={16} color="var(--color-icon)" style={{ display: "inline", verticalAlign: "text-bottom" }} /> Only {product.stock} units left!</span>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Action Buttons */}
             <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "24px" }}>
-              <button ref={cartBtnRef} onClick={handleAddToCart} className="btn-primary" style={{ width: "100%", justifyContent: "center", padding: "18px", fontSize: "16px" }}>
-                <ShoppingCart size={18} color="white" /> Add to Cart
+              <button 
+                ref={cartBtnRef} 
+                onClick={handleAddToCart} 
+                disabled={isAlreadyInCart}
+                className="btn-primary" 
+                style={{ 
+                  width: "100%", 
+                  justifyContent: "center", 
+                  padding: "18px", 
+                  fontSize: "16px",
+                  opacity: isAlreadyInCart ? 0.7 : 1,
+                  cursor: isAlreadyInCart ? "not-allowed" : "pointer"
+                }}
+              >
+                {isAlreadyInCart ? (
+                  <><Check size={18} color="white" style={{ marginRight: "8px" }} /> Added to Cart</>
+                ) : (
+                  <><ShoppingCart size={18} color="white" style={{ marginRight: "8px" }} /> Add to Cart</>
+                )}
               </button>
               <button onClick={handleDirectCheckout} className="btn-primary" style={{ width: "100%", justifyContent: "center", padding: "18px", fontSize: "16px" }}>
                 <Zap size={18} color="white" style={{ marginRight: "6px" }} /> Buy Now
@@ -426,7 +751,7 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
             <div className="pd-delivery-panel">
               <div className="pd-delivery-col">
                 <div className="pd-delivery-icon" aria-hidden>
-                  <Truck size={28} color="var(--maroon)" strokeWidth={1.75} />
+                  <Truck size={28} color="var(--orange)" strokeWidth={1.75} />
                 </div>
                 <h3 className="pd-delivery-heading">Estimate Delivery Times</h3>
                 <p className="pd-delivery-line">1-2 days karachi</p>
@@ -435,7 +760,7 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
               <div className="pd-delivery-divider" aria-hidden />
               <div className="pd-delivery-col">
                 <div className="pd-delivery-icon" aria-hidden>
-                  <RefreshCcw size={28} color="var(--maroon)" strokeWidth={1.75} />
+                  <RefreshCcw size={28} color="var(--orange)" strokeWidth={1.75} />
                 </div>
                 <h3 className="pd-delivery-heading">Return And Exchange Within</h3>
                 <p className="pd-delivery-line">
@@ -488,7 +813,72 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
       <Footer />
       <style>{`
         .pd-page {
+          width: 100%;
+          max-width: 1300px;
+          margin: 0 auto;
+          box-sizing: border-box;
           padding: 40px 24px;
+          overflow-x: hidden;
+        }
+
+        .pd-breadcrumb {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 20px;
+          font-size: 13px;
+          color: var(--text-secondary);
+          font-weight: 500;
+          overflow-x: auto;
+          white-space: nowrap;
+          padding-bottom: 4px;
+          max-width: 100%;
+          min-width: 0;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .pd-breadcrumb span:last-child {
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .product-detail-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 20px;
+          margin-bottom: 32px;
+          min-width: 0;
+          width: 100%;
+        }
+
+        .pd-qty-row {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 12px;
+          max-width: 100%;
+        }
+
+        .pd-product-info {
+          min-width: 0;
+          max-width: 100%;
+          overflow-wrap: anywhere;
+          word-break: break-word;
+        }
+
+        .pd-product-info h1 {
+          overflow-wrap: anywhere;
+          word-break: break-word;
+        }
+
+        .pd-gallery-col {
+          min-width: 0;
+          max-width: 100%;
+          overflow: hidden;
+        }
+
+        .pd-product-info .btn-primary {
+          max-width: 100%;
           box-sizing: border-box;
         }
 
@@ -503,6 +893,83 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
           justify-content: center;
           position: relative;
           box-shadow: var(--shadow-sm);
+          user-select: none;
+        }
+
+        .pd-play-pause-btn {
+          position: absolute;
+          bottom: 16px;
+          left: 16px;
+          z-index: 10;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: rgba(15, 23, 42, 0.6);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          border: 1px solid rgba(255, 255, 255, 0.25);
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+        }
+
+        .pd-play-pause-btn:hover {
+          background: rgba(15, 23, 42, 0.85);
+          border-color: rgba(255, 255, 255, 0.45);
+          transform: scale(1.05);
+        }
+
+        .pd-zoom-controls {
+          position: absolute;
+          top: 16px;
+          right: 16px;
+          z-index: 10;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .pd-zoom-btn {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: rgba(15, 23, 42, 0.6);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          border: 1px solid rgba(255, 255, 255, 0.25);
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+        }
+
+        .pd-zoom-btn:hover:not(:disabled) {
+          background: rgba(15, 23, 42, 0.85);
+          border-color: rgba(255, 255, 255, 0.45);
+          transform: scale(1.05);
+        }
+
+        .pd-zoom-btn:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+          box-shadow: none;
+        }
+
+        .pd-zoom-reset {
+          background: rgba(185, 28, 28, 0.7);
+          border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .pd-zoom-reset:hover {
+          background: rgba(185, 28, 28, 0.9);
+          border-color: rgba(255, 255, 255, 0.4);
         }
 
         .pd-main-media,
@@ -515,20 +982,24 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
           border-radius: 0;
         }
 
+        @media (min-width: 901px) {
+          .product-detail-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 64px;
+          }
+        }
+
         @media (max-width: 900px) {
           .pd-page {
-            padding: 20px 16px 32px;
-          }
-
-          .product-detail-grid {
-            grid-template-columns: 1fr !important;
-            gap: 20px !important;
-            margin-bottom: 40px !important;
+            padding: 16px 16px 28px;
+            max-width: 100%;
           }
 
           .pd-main-viewer {
             width: 100%;
-            border-radius: 0 !important;
+            max-width: 100%;
+            border-radius: var(--radius-md) !important;
             aspect-ratio: 1;
             background: var(--gradient-card-img);
           }
@@ -542,16 +1013,42 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
           }
 
           .pd-media-toggle-wrap {
-            padding: 0 16px;
+            padding: 0;
           }
 
           .pd-product-info {
-            padding: 0 16px;
+            padding: 0;
+            width: 100%;
           }
 
           .pd-page-section {
-            margin-left: 16px;
-            margin-right: 16px;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            margin-left: 0;
+            margin-right: 0;
+          }
+
+          .pd-delivery-panel {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+          }
+
+          .pd-trust-badges {
+            width: 100%;
+            min-width: 0;
+            grid-template-columns: 1fr;
+          }
+
+          .pd-delivery-panel {
+            grid-template-columns: 1fr;
+          }
+
+          .pd-delivery-divider {
+            width: auto;
+            height: 1px;
+            margin: 0 12px;
           }
         }
 
@@ -564,23 +1061,23 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
 
         .pd-media-toggle {
           position: relative;
-          width: fit-content;
-          max-width: 100%;
+          width: 100%;
+          max-width: 320px;
           display: grid;
           grid-template-columns: 1fr 1fr;
           align-items: center;
-          min-width: 180px;
           padding: 4px;
           border-radius: 999px;
-          background: var(--maroon-deep);
+          background: var(--navy-deep);
           border: 1px solid rgba(201, 168, 76, 0.35);
           box-shadow: 0 4px 14px rgba(86, 18, 40, 0.35);
           pointer-events: none;
+          box-sizing: border-box;
         }
 
         .pd-media-toggle--solo {
           grid-template-columns: 1fr;
-          min-width: 128px;
+          max-width: 200px;
         }
 
         .pd-media-toggle-slider {
@@ -698,7 +1195,7 @@ export default function ProductClient({ initialProduct, initialRelated }: { init
 
         .pd-trust-badges {
           display: grid;
-          grid-template-columns: repeat(2, 1fr);
+          grid-template-columns: repeat(2, minmax(0, 1fr));
           gap: 16px;
         }
 

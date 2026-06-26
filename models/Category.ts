@@ -10,6 +10,9 @@ export interface ICategory extends Document {
   isFeatured: boolean;
   order: number;
   isActive: boolean;
+  showName: boolean;
+  showIcon: boolean;
+  showExploreBtn: boolean;
   createdAt: Date;
 }
 
@@ -24,11 +27,16 @@ const CategorySchema = new Schema<ICategory>(
     isFeatured: { type: Boolean, default: false },
     order: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
+    showName: { type: Boolean, default: true },
+    showIcon: { type: Boolean, default: true },
+    showExploreBtn: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
 
-const Category: Model<ICategory> =
-  mongoose.models.Category || mongoose.model<ICategory>("Category", CategorySchema);
+if (mongoose.models.Category) {
+  delete mongoose.models.Category;
+}
+const Category: Model<ICategory> = mongoose.model<ICategory>("Category", CategorySchema);
 
 export default Category;

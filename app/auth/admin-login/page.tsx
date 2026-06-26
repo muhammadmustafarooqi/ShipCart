@@ -20,11 +20,7 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
+      const res = await signIn("credentials", { email, password, redirect: false });
       if (res?.error) {
         toast.error("Invalid credentials");
       } else {
@@ -68,9 +64,7 @@ export default function AdminLogin() {
               Secure Portal
             </div>
             <h1 className="admin-title">Admin Login</h1>
-            <p className="admin-subtitle">
-              Sign in to manage your ShipCart Store
-            </p>
+            <p className="admin-subtitle">Sign in to manage your ALLInONE Store</p>
           </div>
 
           {/* Form */}
@@ -86,7 +80,7 @@ export default function AdminLogin() {
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={() => setFocusedEmail(true)}
                   onBlur={() => setFocusedEmail(false)}
-                  placeholder="admin@ShipCartstore.pk"
+                  placeholder="admin@allinonestore.pk"
                   required
                   className="admin-input"
                   autoComplete="email"
@@ -122,11 +116,7 @@ export default function AdminLogin() {
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="admin-submit-btn"
-            >
+            <button type="submit" disabled={loading} className="admin-submit-btn">
               {loading ? (
                 <>
                   <span className="admin-btn-spinner" />
@@ -147,9 +137,7 @@ export default function AdminLogin() {
               <ShieldCheck size={14} />
               <span>256-bit encrypted secure connection</span>
             </div>
-            <Link href="/" className="admin-back-link">
-              ← Back to Store
-            </Link>
+            <Link href="/" className="admin-back-link">← Back to Store</Link>
           </div>
         </div>
       </div>

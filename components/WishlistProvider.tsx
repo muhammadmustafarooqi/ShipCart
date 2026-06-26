@@ -31,26 +31,22 @@ export function useWishlist() {
   return ctx;
 }
 
-export default function WishlistProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function WishlistProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<WishlistItem[]>([]);
 
   useEffect(() => {
-    const stored = localStorage.getItem("ShipCart_wishlist");
+    const stored = localStorage.getItem("allinone_wishlist");
     if (stored) {
       try {
         setItems(JSON.parse(stored));
       } catch {
-        localStorage.removeItem("ShipCart_wishlist");
+        localStorage.removeItem("allinone_wishlist");
       }
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("ShipCart_wishlist", JSON.stringify(items));
+    localStorage.setItem("allinone_wishlist", JSON.stringify(items));
   }, [items]);
 
   const addItem = (item: WishlistItem) => {
@@ -80,22 +76,14 @@ export default function WishlistProvider({
 
   const clearWishlist = () => {
     setItems([]);
-    localStorage.removeItem("ShipCart_wishlist");
+    localStorage.removeItem("allinone_wishlist");
   };
 
   const totalItems = items.length;
 
   return (
     <WishlistContext.Provider
-      value={{
-        items,
-        addItem,
-        removeItem,
-        toggleItem,
-        isWishlisted,
-        totalItems,
-        clearWishlist,
-      }}
+      value={{ items, addItem, removeItem, toggleItem, isWishlisted, totalItems, clearWishlist }}
     >
       {children}
     </WishlistContext.Provider>

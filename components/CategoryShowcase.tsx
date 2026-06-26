@@ -1,21 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { ChefHat, Sparkles, Home, Dumbbell, Zap, Baby, Shirt, Watch, Laptop, Book, ArrowUpRight, LucideIcon } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import { useEffect, useState } from "react";
-
-const iconMap: Record<string, LucideIcon> = {
-  ChefHat,
-  Sparkles,
-  Home,
-  Dumbbell,
-  Zap,
-  Baby,
-  Shirt,
-  Watch,
-  Laptop,
-  Book,
-};
+import { useRouter } from "next/navigation";
 
 const unsplash = (id: string, w: number) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=82`;
@@ -24,103 +12,53 @@ type Cat = {
   _id?: string;
   name: string;
   slug: string;
-  icon: string;
   image: string;
   imagePosition: string;
-  tagline?: string;
-  isFeatured?: boolean;
 };
 
 const DEFAULT_CATEGORIES: Cat[] = [
   {
     name: "Kitchen & Cooking",
     slug: "kitchen-cooking",
-    icon: "ChefHat",
-    image: unsplash("photo-1556911220-e15b29be8c8f", 1200),
+    image: unsplash("photo-1556911220-e15b29be8c8f", 800),
     imagePosition: "center 60%",
-    tagline: "Cookware, prep tools & smart kitchen picks",
-    isFeatured: true,
   },
   {
-    name: "Personal Care & Beauty",
+    name: "Personal Care",
     slug: "personal-care-beauty",
-    icon: "Sparkles",
-    image: unsplash("photo-1596462502278-27bfdc403348", 700),
+    image: unsplash("photo-1596462502278-27bfdc403348", 800),
     imagePosition: "center 42%",
   },
   {
-    name: "Home & Cleaning",
+    name: "Home & Clean",
     slug: "home-cleaning",
-    icon: "Home",
-    image: unsplash("photo-1581578731548-c64695cc6952", 700),
+    image: unsplash("photo-1581578731548-c64695cc6952", 800),
     imagePosition: "center 55%",
   },
   {
-    name: "Fitness & Health",
+    name: "Fitness",
     slug: "fitness-health",
-    icon: "Dumbbell",
-    image: unsplash("photo-1517836357463-d25dfeac3438", 700),
+    image: unsplash("photo-1517836357463-d25dfeac3438", 800),
     imagePosition: "center 45%",
   },
   {
-    name: "Electronics & Gadgets",
+    name: "Electronics",
     slug: "electronics-gadgets",
-    icon: "Zap",
-    image: unsplash("photo-1498049794561-7780e7231661", 700),
+    image: unsplash("photo-1498049794561-7780e7231661", 800),
     imagePosition: "center 50%",
-  },
-  {
-    name: "Baby & Kids",
-    slug: "baby-kids",
-    icon: "Baby",
-    image: unsplash("photo-1515488042361-ee00e0ddd4e4", 900),
-    imagePosition: "center 48%",
   },
 ];
 
-function CategoryCard({ cat, featured }: { cat: Cat; featured?: boolean }) {
-  const IconComponent = iconMap[cat.icon] || ChefHat;
-  const iconSize = featured ? 34 : 22;
-  const ctaSize = featured ? 17 : 14;
-
-  return (
-    <Link
-      href={`/products?category=${cat.slug}`}
-      className={`category-showcase-link ${featured ? "is-featured" : "is-compact"}`}
-    >
-      <article className={`category-showcase-card ${featured ? "category-showcase-card-featured" : ""}`}>
-        <div
-          className="category-showcase-bg"
-          style={{
-            backgroundImage: `url(${cat.image})`,
-            backgroundPosition: cat.imagePosition,
-          }}
-        />
-        <div className="category-showcase-scrim" aria-hidden />
-        <div className="category-showcase-frame" aria-hidden />
-        <div className="category-showcase-inner">
-          <div className="category-showcase-icon">
-            <IconComponent size={iconSize} strokeWidth={featured ? 2 : 2.2} aria-hidden />
-          </div>
-          <div className="category-showcase-copy">
-            <h3 className="category-showcase-title">{cat.name}</h3>
-            {featured && cat.tagline ? (
-              <p className="category-showcase-tagline">{cat.tagline}</p>
-            ) : null}
-            <span className="category-showcase-cta">
-              Explore
-              <ArrowUpRight size={ctaSize} strokeWidth={2.5} aria-hidden />
-            </span>
-          </div>
-        </div>
-      </article>
-    </Link>
-  );
-}
-
 export default function CategoryShowcase() {
+  const router = useRouter();
   const [categories, setCategories] = useState<Cat[]>(DEFAULT_CATEGORIES);
   const [loading, setLoading] = useState(true);
+
+  // Desktop active state
+  const [activeCategory, setActiveCategory] = useState<number>(0);
+
+  // Mobile overlay state
+  const [mobileOverlayIndex, setMobileOverlayIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -135,7 +73,7 @@ export default function CategoryShowcase() {
         if (res.ok) {
           const data = await res.json();
           if (data.categories && data.categories.length > 0) {
-            setCategories(data.categories);
+            setCategories(data.categories.slice(0, 6));
           }
         }
       } catch (error) {
@@ -148,425 +86,473 @@ export default function CategoryShowcase() {
     fetchCategories();
   }, []);
 
-  const featured = categories.find(c => c.isFeatured) || categories[0];
-  const rail = categories.filter(c => c._id !== featured._id || !c.isFeatured).slice(0, 5);
-
   if (loading) return null;
 
+  const handleMobileTextClick = (idx: number) => {
+    if (window.innerWidth <= 1024) {
+      setMobileOverlayIndex(idx);
+    }
+  };
+
+  const handleDoubleClick = (slug: string) => {
+    router.push(`/products?category=${slug}`);
+  };
+
+  const handleArrowClick = (e: React.MouseEvent, slug: string) => {
+    e.stopPropagation();
+    router.push(`/products?category=${slug}`);
+  };
+
   return (
-    <section
-      className="category-showcase-section"
-      style={{
-        padding: "88px 0 96px",
-        background: "linear-gradient(180deg, var(--cream) 0%, var(--cream-dark) 45%, var(--cream) 100%)",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <div
-        aria-hidden
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(ellipse 70% 50% at 50% -10%, rgba(107, 30, 46, 0.08), transparent 55%)",
-          pointerEvents: "none",
-        }}
-      />
+    <section className="category-section">
+      <div className="page-container" style={{ position: 'relative' }}>
+        
+        <h2 className="section-heading">Curated<br />Collections.</h2>
 
-      <div className="category-showcase-wrap" style={{ position: "relative", zIndex: 1 }}>
-        <div style={{ textAlign: "center", marginBottom: "52px" }}>
-          <h2 className="section-title">Shop by Category</h2>
-          <p
-            style={{
-              color: "var(--text-secondary)",
-              fontSize: "16px",
-              maxWidth: "520px",
-              margin: "12px auto 0",
-              fontWeight: 500,
-              lineHeight: 1.55,
-            }}
-          >
-            Curated collections to elevate your daily routine.
-          </p>
-        </div>
+        <div className="category-split">
 
-        <div className="category-showcase-bento">
-          <div className="category-showcase-hero-slot">
-            <CategoryCard cat={featured} featured />
+          <div className="category-list">
+            <div className="list-container">
+              {categories.map((cat, idx) => (
+                <div
+                  key={cat._id || cat.slug || idx}
+                  className="list-item"
+                  onMouseEnter={() => {
+                    if (window.innerWidth > 1024) setActiveCategory(idx);
+                  }}
+                >
+                  <div
+                    className="list-text-area"
+                    onClick={() => handleMobileTextClick(idx)}
+                    onDoubleClick={() => handleDoubleClick(cat.slug)}
+                  >
+                    <span className="list-number">{(idx + 1).toString().padStart(2, '0')}</span>
+                    <h3 className="list-name">{cat.name}</h3>
+                  </div>
+                  <div
+                    className="list-arrow"
+                    onClick={(e) => handleArrowClick(e, cat.slug)}
+                  >
+                    <ArrowRight size={32} strokeWidth={1.5} />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="category-showcase-rail">{rail.map((cat) => (
-            <CategoryCard key={cat._id || cat.slug} cat={cat} />
-          ))}</div>
+
+          <div className={`category-preview ${mobileOverlayIndex !== null ? 'mobile-visible' : ''}`}>
+
+            {/* Close button for mobile overlay */}
+            <button
+              className="mobile-close-btn"
+              onClick={() => setMobileOverlayIndex(null)}
+            >
+              <X size={24} />
+            </button>
+
+            <div className="preview-sticky">
+              {categories.map((cat, idx) => {
+                // Determine active index based on viewport
+                const isActive = typeof window !== 'undefined' && window.innerWidth <= 1024
+                  ? mobileOverlayIndex === idx
+                  : activeCategory === idx;
+
+                return (
+                  <div
+                    key={cat.slug}
+                    className={`preview-image-wrapper ${isActive ? 'active' : ''}`}
+                  >
+                    <div
+                      className="preview-image"
+                      style={{
+                        backgroundImage: `url(${cat.image})`,
+                        backgroundPosition: cat.imagePosition || "center",
+                      }}
+                    />
+                    <div className="preview-overlay">
+                      <div className="preview-content-box">
+                        <div className="preview-text">Explore {cat.name}</div>
+                        <button
+                          className="mobile-view-btn"
+                          onClick={() => router.push(`/products?category=${cat.slug}`)}
+                        >
+                          View Products
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
         </div>
+
       </div>
 
       <style>{`
-        .category-showcase-wrap {
-          width: 100%;
-          max-width: min(1520px, 100%);
-          margin-left: auto;
-          margin-right: auto;
-          padding-left: clamp(16px, 4vw, 48px);
-          padding-right: clamp(16px, 4vw, 48px);
-          box-sizing: border-box;
+        .category-section {
+          padding: 120px 0;
+          background: var(--cream);
+          border-top: 1px solid var(--border-default);
+          position: relative;
         }
 
-        .category-showcase-bento {
-          display: grid;
-          grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr);
-          gap: 22px;
-          width: 100%;
-          max-width: none;
-          margin: 0 auto;
+        .category-split {
+          display: flex;
+          gap: 80px;
           align-items: stretch;
-        }
-
-        .category-showcase-hero-slot {
-          display: flex;
-          min-height: 0;
-        }
-
-        .category-showcase-hero-slot .category-showcase-link {
-          flex: 1;
-          display: flex;
-        }
-
-        .category-showcase-hero-slot .category-showcase-card {
-          flex: 1;
-          min-height: 460px;
-        }
-
-        .category-showcase-hero-slot .category-showcase-inner {
-          min-height: 460px;
-          padding: 28px 28px 26px;
-        }
-
-        .category-showcase-rail {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          grid-auto-rows: minmax(0, 1fr);
-          gap: 16px;
-          min-height: 460px;
-        }
-
-        .category-showcase-rail > .category-showcase-link:last-child {
-          grid-column: 1 / -1;
-        }
-
-        .category-showcase-link {
-          text-decoration: none;
-          color: inherit;
-          border-radius: var(--radius-lg);
-          outline-offset: 4px;
-        }
-
-        .category-showcase-card {
           position: relative;
-          border-radius: var(--radius-lg);
-          overflow: hidden;
-          border: 1px solid rgba(107, 30, 46, 0.18);
-          box-shadow: var(--shadow-md);
-          background: var(--maroon-deep);
-          transition: box-shadow 0.35s ease, transform 0.35s ease, border-color 0.35s ease;
-          height: 100%;
+          height: 600px;
         }
 
-        .is-compact .category-showcase-card {
-          min-height: 0;
-        }
-
-        .is-compact .category-showcase-inner {
-          min-height: 132px;
-          padding: 14px 16px 14px;
-          justify-content: space-between;
-        }
-
-        .category-showcase-rail > .category-showcase-link:last-child .category-showcase-inner {
-          min-height: 112px;
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-between;
-          gap: 16px;
-        }
-
-        .category-showcase-rail > .category-showcase-link:last-child .category-showcase-copy {
-          text-align: right;
+        .category-list {
           flex: 1;
-        }
-
-        .category-showcase-rail > .category-showcase-link:last-child .category-showcase-title {
-          margin-bottom: 6px;
-        }
-
-        .category-showcase-rail > .category-showcase-link:last-child .category-showcase-icon {
-          flex-shrink: 0;
-        }
-
-        .category-showcase-bg {
-          position: absolute;
-          inset: 0;
-          background-size: cover;
-          background-repeat: no-repeat;
-          transform: scale(1.02);
-          transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .category-showcase-scrim {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            165deg,
-            rgba(42, 21, 24, 0.25) 0%,
-            rgba(74, 16, 32, 0.55) 45%,
-            rgba(42, 21, 24, 0.88) 100%
-          );
-          transition: opacity 0.35s ease;
-        }
-
-        .category-showcase-card-featured .category-showcase-scrim {
-          background: linear-gradient(
-            125deg,
-            rgba(42, 21, 24, 0.2) 0%,
-            rgba(74, 16, 32, 0.35) 38%,
-            rgba(42, 21, 24, 0.82) 72%,
-            rgba(26, 10, 18, 0.92) 100%
-          );
-        }
-
-        .category-showcase-frame {
-          position: absolute;
-          inset: 10px;
-          border-radius: calc(var(--radius-lg) - 10px);
-          border: 1px solid rgba(255, 253, 249, 0.12);
-          pointer-events: none;
-          opacity: 0.85;
-        }
-
-        .is-compact .category-showcase-frame {
-          inset: 8px;
-          border-radius: calc(var(--radius-lg) - 8px);
-        }
-
-        .category-showcase-inner {
-          position: relative;
-          z-index: 2;
-          height: 100%;
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
-          align-items: flex-start;
+          height: 100%;
         }
 
-        .category-showcase-icon {
-          width: 52px;
-          height: 52px;
-          border-radius: 14px;
+        .section-heading {
+          font-family: var(--font-jakarta), sans-serif;
+          font-size: clamp(2.5rem, 4vw, 3.5rem);
+          font-weight: 900;
+          color: var(--navy);
+          line-height: 1.1;
+          letter-spacing: -0.04em;
+          margin: 0 0 40px 0;
+        }
+
+        .list-container {
           display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--white);
-          background: rgba(255, 253, 249, 0.14);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 253, 249, 0.22);
-          box-shadow: 0 8px 24px rgba(42, 21, 24, 0.2);
-          transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease, color 0.3s ease;
-        }
-
-        .is-compact .category-showcase-icon {
-          width: 42px;
-          height: 42px;
-          border-radius: 12px;
-        }
-
-        .is-featured .category-showcase-icon {
-          width: 62px;
-          height: 62px;
-          border-radius: 16px;
-        }
-
-        .category-showcase-copy {
+          flex-direction: column;
+          flex: 1;
           width: 100%;
         }
 
-        .category-showcase-title {
-          font-family: Outfit, sans-serif;
-          font-size: clamp(0.95rem, 1.6vw, 1.05rem);
-          font-weight: 800;
-          letter-spacing: -0.03em;
-          line-height: 1.22;
-          color: var(--white);
-          margin: 0 0 8px;
-          text-shadow: 0 2px 16px rgba(42, 21, 24, 0.45);
-          max-width: 16rem;
-        }
-
-        .is-featured .category-showcase-title {
-          font-size: clamp(1.45rem, 3.2vw, 2.05rem);
-          max-width: 12ch;
-          margin-bottom: 10px;
-        }
-
-        .category-showcase-tagline {
-          margin: 0 0 14px;
-          font-size: clamp(0.88rem, 1.4vw, 0.98rem);
-          font-weight: 500;
-          color: rgba(255, 253, 249, 0.82);
-          line-height: 1.45;
-          max-width: 22rem;
-        }
-
-        .category-showcase-cta {
-          display: inline-flex;
+        .list-item {
+          display: flex;
+          flex: 1;
           align-items: center;
-          gap: 6px;
-          font-size: 12px;
+          border-top: 1px solid var(--border-default);
+          color: var(--navy);
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+          width: 100%;
+        }
+
+        .list-item:last-child {
+          border-bottom: 1px solid var(--border-default);
+        }
+
+        .list-text-area {
+          display: flex;
+          align-items: center;
+          flex: 1;
+          cursor: pointer;
+          user-select: none;
+        }
+
+        .list-number {
+          font-family: var(--font-jakarta), sans-serif;
+          font-size: 1rem;
           font-weight: 700;
-          font-family: "Plus Jakarta Sans", sans-serif;
-          letter-spacing: 0.05em;
+          color: var(--slate);
+          margin-right: 40px;
+          opacity: 0.6;
+          transition: opacity 0.3s ease;
+        }
+
+        .list-name {
+          font-family: var(--font-jakarta), sans-serif;
+          font-size: clamp(1.5rem, 2.5vw, 2rem);
+          font-weight: 800;
+          margin: 0;
+          letter-spacing: -0.02em;
+          flex: 1;
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+        }
+
+        .list-arrow {
+          color: var(--orange);
+          opacity: 0;
+          transform: translateX(-10px);
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          cursor: pointer;
+          padding: 8px;
+        }
+
+        .list-item:hover {
+          border-top-color: var(--navy);
+        }
+        
+        .list-item:hover + .list-item {
+          border-top-color: var(--navy);
+        }
+
+        .list-item:hover .list-number {
+          opacity: 1;
+          color: var(--orange);
+        }
+
+        .list-item:hover .list-name {
+          transform: translateX(10px);
+          color: var(--navy-deep);
+        }
+
+        .list-item:hover .list-arrow {
+          opacity: 1;
+          transform: translateX(0);
+        }
+
+        .category-preview {
+          flex: 1;
+          position: relative;
+          height: 100%;
+        }
+
+        .mobile-close-btn {
+          display: none;
+        }
+
+        .preview-sticky {
+          position: sticky;
+          top: 120px;
+          height: 480px;
+          border-radius: 16px;
+          overflow: hidden;
+          background: var(--navy);
+        }
+
+        .preview-image-wrapper {
+          position: absolute;
+          inset: 0;
+          opacity: 0;
+          transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+          z-index: 1;
+          pointer-events: none;
+        }
+
+        .preview-image-wrapper.active {
+          opacity: 1;
+          z-index: 2;
+          pointer-events: auto;
+        }
+
+        .preview-image {
+          width: 100%;
+          height: 100%;
+          background-size: cover;
+          transform: scale(1.1);
+          transition: transform 6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .preview-image-wrapper.active .preview-image {
+          transform: scale(1);
+        }
+
+        .preview-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to top, rgba(16,40,87,0.8) 0%, transparent 50%);
+          display: flex;
+          align-items: flex-end;
+          padding: 40px;
+        }
+        
+        .preview-content-box {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        .preview-text {
+          font-family: var(--font-jakarta), sans-serif;
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: var(--white);
           text-transform: uppercase;
-          color: var(--gold);
-          opacity: 0.95;
-          transition: gap 0.25s ease, color 0.25s ease;
+          letter-spacing: 0.05em;
+          transform: translateY(20px);
+          opacity: 0;
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
         }
 
-        .is-featured .category-showcase-cta {
-          font-size: 13px;
+        .preview-image-wrapper.active .preview-text {
+          transform: translateY(0);
+          opacity: 1;
         }
 
-        .category-showcase-link:hover .category-showcase-card,
-        .category-showcase-link:focus-visible .category-showcase-card {
-          transform: translateY(-5px);
-          box-shadow: var(--shadow-xl);
-          border-color: rgba(201, 168, 76, 0.45);
+        .mobile-view-btn {
+          display: none;
         }
 
-        .category-showcase-link:hover .category-showcase-bg,
-        .category-showcase-link:focus-visible .category-showcase-bg {
-          transform: scale(1.08);
-        }
-
-        .category-showcase-link:hover .category-showcase-scrim,
-        .category-showcase-link:focus-visible .category-showcase-scrim {
-          opacity: 0.92;
-          background: linear-gradient(
-            165deg,
-            rgba(42, 21, 24, 0.35) 0%,
-            rgba(74, 16, 32, 0.62) 42%,
-            rgba(42, 21, 24, 0.9) 100%
-          );
-        }
-
-        .category-showcase-link:hover .category-showcase-card-featured .category-showcase-scrim,
-        .category-showcase-link:focus-visible .category-showcase-card-featured .category-showcase-scrim {
-          background: linear-gradient(
-            125deg,
-            rgba(42, 21, 24, 0.32) 0%,
-            rgba(74, 16, 32, 0.48) 40%,
-            rgba(42, 21, 24, 0.88) 78%,
-            rgba(26, 10, 18, 0.94) 100%
-          );
-        }
-
-        .category-showcase-link:hover .category-showcase-icon,
-        .category-showcase-link:focus-visible .category-showcase-icon {
-          background: rgba(201, 168, 76, 0.22);
-          border-color: rgba(201, 168, 76, 0.55);
-          color: var(--gold);
-          transform: scale(1.05);
-        }
-
-        .category-showcase-link:hover .category-showcase-cta,
-        .category-showcase-link:focus-visible .category-showcase-cta {
-          gap: 10px;
-          color: #e4cf7a;
-        }
-
-        @media (max-width: 960px) {
-          .category-showcase-bento {
-            grid-template-columns: 1fr;
-            gap: 18px;
+        @media (max-width: 1024px) {
+          .category-section {
+            padding: 80px 0;
           }
-
-          .category-showcase-hero-slot .category-showcase-card,
-          .category-showcase-hero-slot .category-showcase-inner {
-            min-height: 300px;
-          }
-
-          .category-showcase-rail {
-            min-height: 0;
-            grid-template-columns: repeat(2, 1fr);
-          }
-
-          .category-showcase-rail > .category-showcase-link:last-child {
-            grid-column: 1 / -1;
-          }
-
-          .category-showcase-rail > .category-showcase-link:last-child .category-showcase-inner {
+          
+          /* Keep the list active but optimize layout */
+          .category-split {
             flex-direction: column;
-            align-items: flex-start;
-            text-align: left;
+            gap: 0;
+            width: 100%;
+            height: auto;
           }
-
-          .category-showcase-rail > .category-showcase-link:last-child .category-showcase-copy {
-            text-align: left;
+          .category-list {
+            width: 100%;
+            height: auto;
           }
-        }
-
-        @media (max-width: 520px) {
-          .category-showcase-rail {
-            grid-template-columns: 1fr;
+          .list-item {
+            padding: 32px 0;
+            width: 100%;
+            flex: none;
           }
-
-          .category-showcase-rail > .category-showcase-link:last-child {
-            grid-column: 1;
+          .list-arrow {
+            opacity: 1;
+            transform: translateX(0);
+            background: rgba(255, 97, 2, 0.1);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
-
-          .is-compact .category-showcase-inner {
-            min-height: 148px;
-          }
-
-          .is-featured .category-showcase-title {
-            max-width: none;
-          }
-
-          .category-showcase-hero-slot .category-showcase-card,
-          .category-showcase-hero-slot .category-showcase-inner {
-            min-height: 132px;
-          }
-
-          .category-showcase-hero-slot .category-showcase-inner {
-            padding: 14px 16px 14px;
-          }
-
-          .category-showcase-hero-slot .is-featured .category-showcase-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-          }
-
-          .category-showcase-hero-slot .is-featured .category-showcase-title {
-            font-size: 0.95rem;
-            margin-bottom: 8px;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .category-showcase-card,
-          .category-showcase-bg,
-          .category-showcase-scrim,
-          .category-showcase-icon,
-          .category-showcase-cta {
-            transition: none !important;
-          }
-          .category-showcase-link:hover .category-showcase-card,
-          .category-showcase-link:focus-visible .category-showcase-card {
+          
+          /* Hide hover translation on mobile */
+          .list-item:hover .list-name {
             transform: none;
           }
-          .category-showcase-link:hover .category-showcase-bg,
-          .category-showcase-link:focus-visible .category-showcase-bg {
-            transform: scale(1.02);
+          .list-item:hover .list-number {
+            color: var(--slate);
+          }
+          
+          /* Mobile Card Overlay Logic */
+          .category-preview {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(16, 40, 87, 0.7);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+          }
+
+          .category-preview.mobile-visible {
+            opacity: 1;
+            pointer-events: auto;
+          }
+
+          .preview-sticky {
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 85%;
+            max-width: 400px;
+            aspect-ratio: 3/4;
+            height: auto;
+            border-radius: 24px;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.4);
+            overflow: hidden;
+            transform: scale(0.95) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            margin: 0 auto;
+          }
+          
+          .category-preview.mobile-visible .preview-sticky {
+            transform: scale(1) translateY(0);
+          }
+
+          .preview-image-wrapper {
+            position: absolute;
+            inset: 0;
+          }
+
+          .mobile-close-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            z-index: 1010;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: background 0.3s ease;
+          }
+
+          .mobile-view-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            background: var(--orange);
+            color: var(--white);
+            font-family: var(--font-jakarta), sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 100px;
+            margin-top: 12px;
+            cursor: pointer;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+            width: 100%;
+          }
+
+          .preview-image-wrapper.active .mobile-view-btn {
+            transform: translateY(0);
+            opacity: 1;
+          }
+          
+          .preview-overlay {
+            padding: 32px 24px;
+            background: linear-gradient(to top, rgba(16,40,87,0.95) 0%, rgba(16,40,87,0.6) 40%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+          }
+          
+          .preview-content-box {
+            width: 100%;
+          }
+          
+          .preview-text {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .category-section {
+            padding: 60px 0;
+          }
+          .section-heading {
+            font-size: 2.5rem;
+            margin-bottom: 24px;
+          }
+          .list-item {
+            padding: 24px 0;
+          }
+          .list-number {
+            margin-right: 16px;
+            font-size: 0.9rem;
+          }
+          .list-name {
+            font-size: 1.5rem;
           }
         }
       `}</style>

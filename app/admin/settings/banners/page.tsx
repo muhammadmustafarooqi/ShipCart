@@ -148,7 +148,7 @@ export default function AdminBannersPage() {
   };
 
   return (
-    <div style={{ padding: "32px" }}>
+    <div className="admin-page-container">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "28px", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <h1 style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>Hero Banners</h1>
@@ -178,7 +178,7 @@ export default function AdminBannersPage() {
               <GripVertical size={20} style={{ cursor: "grab", color: "#cbd5e1" }} />
               
               <div style={{ width: "160px", height: "80px", borderRadius: "8px", overflow: "hidden", flexShrink: 0, position: "relative" }}>
-                <Image src={banner.image} alt={banner.title} fill style={{ objectFit: "cover" }} unoptimized />
+                <Image src={banner.image} alt={banner.title} fill sizes="160px" style={{ objectFit: "cover" }}  />
               </div>
 
               <div style={{ flex: 1 }}>
@@ -207,7 +207,7 @@ export default function AdminBannersPage() {
       {/* Add Form Modal */}
       {showForm && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
-          <div style={{ background: "white", borderRadius: "20px", padding: "32px", width: "100%", maxWidth: "600px", position: "relative" }}>
+          <div style={{ background: "white", borderRadius: "20px", padding: "32px", width: "100%", maxWidth: "600px", maxHeight: "90vh", overflowY: "auto", position: "relative" }}>
             <button onClick={() => setShowForm(false)} style={{ position: "absolute", top: "16px", right: "16px", background: "#f3f4f6", border: "none", borderRadius: "50%", width: "32px", height: "32px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <X size={16} />
             </button>
@@ -243,7 +243,7 @@ export default function AdminBannersPage() {
                 </div>
                 {form.image && (
                   <div style={{ marginTop: "12px", borderRadius: "8px", overflow: "hidden", border: "1px solid #e5e7eb" }}>
-                    <Image src={form.image} alt="Preview" width={400} height={200} style={{ width: "100%", height: "auto", objectFit: "cover" }} unoptimized />
+                    <Image src={form.image} alt="Preview" width={400} height={200} style={{ width: "100%", height: "auto", objectFit: "cover" }}  />
                   </div>
                 )}
               </div>

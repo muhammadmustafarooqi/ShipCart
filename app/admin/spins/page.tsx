@@ -74,7 +74,7 @@ export default function SpinsAdminPage() {
   }
 
   return (
-    <div style={{ padding: "40px", maxWidth: "1400px", margin: "0 auto" }}>
+    <div className="admin-page-container" style={{ maxWidth: "1400px", margin: "0 auto" }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "40px" }}>
         <div>
@@ -112,9 +112,9 @@ export default function SpinsAdminPage() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
             <div>
               <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "4px", fontWeight: 500 }}>Total Spins</p>
-              <div style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>{totalSpins}</div>
+              <div className="stat-card-value" style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>{totalSpins}</div>
             </div>
-            <div style={{ width: "52px", height: "52px", borderRadius: "14px", background: "linear-gradient(135deg, #ff6b00, #dd4b00)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px rgba(255,107,0,0.25)", color: "white" }}>
+            <div className="stat-card-icon" style={{ width: "52px", height: "52px", borderRadius: "14px", background: "linear-gradient(135deg, #ff6b00, #dd4b00)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px rgba(255,107,0,0.25)", color: "white" }}>
               <Sparkles size={24} />
             </div>
           </div>
@@ -125,11 +125,11 @@ export default function SpinsAdminPage() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
             <div>
               <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "4px", fontWeight: 500 }}>Most Common Prize</p>
-              <div style={{ fontSize: "20px", fontWeight: 800, color: "#1f2937", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "200px" }} title={topPrize}>
+              <div className="stat-card-value" style={{ fontSize: "20px", fontWeight: 800, color: "#1f2937", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "200px" }} title={topPrize}>
                 {topPrize}
               </div>
             </div>
-            <div style={{ width: "52px", height: "52px", borderRadius: "14px", background: "linear-gradient(135deg, #10b981, #059669)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px rgba(16,185,129,0.25)", color: "white" }}>
+            <div className="stat-card-icon" style={{ width: "52px", height: "52px", borderRadius: "14px", background: "linear-gradient(135deg, #10b981, #059669)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 20px rgba(16,185,129,0.25)", color: "white" }}>
               <Trophy size={24} />
             </div>
           </div>
@@ -138,7 +138,7 @@ export default function SpinsAdminPage() {
       </div>
 
       {/* Main Content Area */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "32px", alignItems: "start" }}>
+      <div className="spins-admin-layout" style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "32px", alignItems: "start" }}>
         {/* Table list */}
         <div style={{ background: "white", borderRadius: "20px", padding: "32px", border: "1px solid #f0f0f0", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
@@ -182,7 +182,7 @@ export default function SpinsAdminPage() {
                     <tr key={spin._id}>
                       <td>
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                          <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "linear-gradient(135deg, #6b1e2e, #c9a84c)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 700, fontSize: "13px" }}>
+                          <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "linear-gradient(135deg, #102857, #FF6102)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 700, fontSize: "13px" }}>
                             {(spin.name || "U").charAt(0).toUpperCase()}
                           </div>
                           <div>
@@ -205,8 +205,8 @@ export default function SpinsAdminPage() {
                       </td>
                       <td>
                         <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(107, 30, 46, 0.08)", padding: "5px 12px", borderRadius: "20px", border: "1px solid rgba(107, 30, 46, 0.15)" }}>
-                          <Gift size={12} style={{ color: "#6b1e2e" }} />
-                          <span style={{ fontSize: "12px", fontWeight: 700, color: "#6b1e2e" }}>{spin.spinResult}</span>
+                          <Gift size={12} style={{ color: "#102857" }} />
+                          <span style={{ fontSize: "12px", fontWeight: 700, color: "#102857" }}>{spin.spinResult}</span>
                         </div>
                       </td>
                       <td>
@@ -248,7 +248,7 @@ export default function SpinsAdminPage() {
                     <span style={{ color: "#1f2937" }}>{count} ({percentage.toFixed(0)}%)</span>
                   </div>
                   <div style={{ width: "100%", height: "8px", background: "#f3f4f6", borderRadius: "4px", overflow: "hidden" }}>
-                    <div style={{ height: "100%", width: `${percentage}%`, background: "linear-gradient(90deg, #6b1e2e, #c9a84c)", borderRadius: "4px" }} />
+                    <div style={{ height: "100%", width: `${percentage}%`, background: "linear-gradient(90deg, #102857, #FF6102)", borderRadius: "4px" }} />
                   </div>
                 </div>
               );

@@ -1,5 +1,5 @@
 /** Browser tab / bookmark icon only — vector mark for a crisp favicon. */
-export const FAVICON_URL = "/logo.svg";
+export const FAVICON_URL = "/ShipCart.png";
 
 /**
  * Brand image shown in the UI (navbar, footer, auth, admin).

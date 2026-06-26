@@ -19,7 +19,7 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
             top: "20px",
             left: "20px",
             zIndex: 100,
-            background: "linear-gradient(135deg, #1a1a2e, #16213e)",
+            background: "linear-gradient(135deg, #102857, #0a1b3d)",
             border: "none",
             borderRadius: "12px",
             width: "48px",

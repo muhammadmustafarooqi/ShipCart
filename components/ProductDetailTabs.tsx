@@ -203,7 +203,7 @@ export default function ProductDetailTabs({
   const hasReviews = stats.reviewCount > 0;
 
   return (
-    <section className="pd-page-section pd-detail-tabs">
+    <section className="pd-detail-tabs">
       <div className="pd-detail-tabs__top">
         <div className="pd-detail-tabs__intro">
           <span className="section-tag">
@@ -214,16 +214,20 @@ export default function ProductDetailTabs({
         </div>
 
         <div
-          className={`pd-detail-tabs__switch pd-detail-tabs__switch--${activeTab}`}
+          className="pd-detail-tabs__switch"
           role="tablist"
           aria-label="Product information"
         >
-          <span className="pd-detail-tabs__switch-slider" aria-hidden />
+          <span
+            className="pd-detail-tabs__switch-slider"
+            data-active={activeTab}
+            aria-hidden
+          />
           <button
             type="button"
             role="tab"
             aria-selected={activeTab === "details"}
-            className={`pd-detail-tabs__switch-btn${activeTab === "details" ? " pd-detail-tabs__switch-btn--on" : ""}`}
+            className={`pd-detail-tabs__switch-btn pd-detail-tabs__switch-btn--details${activeTab === "details" ? " pd-detail-tabs__switch-btn--on" : ""}`}
             onClick={() => setActiveTab("details")}
           >
             <FileText size={16} strokeWidth={2} />
@@ -233,7 +237,7 @@ export default function ProductDetailTabs({
             type="button"
             role="tab"
             aria-selected={activeTab === "reviews"}
-            className={`pd-detail-tabs__switch-btn${activeTab === "reviews" ? " pd-detail-tabs__switch-btn--on" : ""}`}
+            className={`pd-detail-tabs__switch-btn pd-detail-tabs__switch-btn--reviews${activeTab === "reviews" ? " pd-detail-tabs__switch-btn--on" : ""}`}
             onClick={() => setActiveTab("reviews")}
           >
             <MessageSquareQuote size={16} strokeWidth={2} />
@@ -406,7 +410,7 @@ export default function ProductDetailTabs({
                           fill
                           sizes="160px"
                           className="pd-photo-preview__img"
-                          unoptimized
+                          
                         />
                       </div>
                       <div className="pd-photo-preview__actions">
@@ -483,7 +487,7 @@ export default function ProductDetailTabs({
                                 fill
                                 sizes="(max-width: 520px) 100vw, 280px"
                                 className="pd-review-item__photo-img"
-                                unoptimized
+                                
                               />
                             </div>
                             <span>View full photo</span>
@@ -501,6 +505,10 @@ export default function ProductDetailTabs({
 
       <style>{`
         .pd-detail-tabs {
+          width: 100%;
+          max-width: 100%;
+          min-width: 0;
+          box-sizing: border-box;
           margin-bottom: 64px;
           background: var(--bg-card);
           border: 1px solid var(--border-default);
@@ -518,6 +526,12 @@ export default function ProductDetailTabs({
           padding: 28px 36px 24px;
           border-bottom: 1px solid var(--border-default);
           background: linear-gradient(180deg, var(--cream-dark) 0%, var(--bg-card) 100%);
+          min-width: 0;
+        }
+
+        .pd-detail-tabs__intro {
+          min-width: 0;
+          flex: 1 1 auto;
         }
 
         .pd-detail-tabs__intro .section-tag {
@@ -536,52 +550,67 @@ export default function ProductDetailTabs({
           position: relative;
           display: grid;
           grid-template-columns: 1fr 1fr;
-          align-items: center;
-          min-width: 260px;
-          padding: 5px;
+          align-items: stretch;
+          flex: 1 1 220px;
+          width: 100%;
+          max-width: 360px;
+          padding: 4px;
           border-radius: 999px;
-          background: var(--maroon-deep);
-          border: 1px solid rgba(201, 168, 76, 0.35);
-          box-shadow: 0 6px 20px rgba(86, 18, 40, 0.28);
+          background: var(--navy-deep);
+          border: 1px solid rgba(255, 97, 2, 0.35);
+          box-shadow: 0 6px 20px rgba(16, 40, 87, 0.28);
           margin-bottom: 0;
+          box-sizing: border-box;
         }
 
         .pd-detail-tabs__switch-slider {
           position: absolute;
-          top: 5px;
-          bottom: 5px;
-          left: 5px;
-          width: calc((100% - 10px) / 2);
+          top: 4px;
+          bottom: 4px;
+          left: 4px;
+          width: calc(50% - 4px);
           border-radius: 999px;
           background: var(--white);
           box-shadow: 0 2px 8px rgba(42, 21, 24, 0.12);
-          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           pointer-events: none;
           z-index: 0;
         }
 
-        .pd-detail-tabs__switch--reviews .pd-detail-tabs__switch-slider {
-          transform: translateX(100%);
+        .pd-detail-tabs__switch-slider[data-active="reviews"] {
+          left: calc(50%);
         }
 
         .pd-detail-tabs__switch-btn {
+          grid-row: 1;
           position: relative;
           z-index: 1;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          gap: 7px;
+          gap: 6px;
           border: none;
           background: transparent;
-          padding: 11px 18px;
+          padding: 10px 12px;
           border-radius: 999px;
           font-family: "Plus Jakarta Sans", sans-serif;
-          font-size: 13px;
+          font-size: clamp(11px, 3.2vw, 13px);
           font-weight: 700;
           color: var(--white);
           cursor: pointer;
           transition: color 0.22s ease;
           white-space: nowrap;
+          min-width: 0;
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
+        }
+
+        .pd-detail-tabs__switch-btn--details {
+          grid-column: 1;
+        }
+
+        .pd-detail-tabs__switch-btn--reviews {
+          grid-column: 2;
         }
 
         .pd-detail-tabs__switch-btn--on {
@@ -615,7 +644,16 @@ export default function ProductDetailTabs({
           font-size: 15px;
           font-weight: 500;
           line-height: 1.85;
-          max-width: 920px;
+          max-width: 100%;
+          overflow-wrap: anywhere;
+          word-break: break-word;
+        }
+
+        .pd-detail-tabs__prose img,
+        .pd-detail-tabs__prose table,
+        .pd-detail-tabs__prose pre {
+          max-width: 100%;
+          height: auto;
         }
 
         .pd-detail-tabs__prose p {
@@ -704,7 +742,7 @@ export default function ProductDetailTabs({
           font-family: Outfit, sans-serif;
           font-size: 3rem;
           font-weight: 900;
-          color: var(--maroon);
+          color: var(--orange);
           letter-spacing: -0.04em;
         }
 
@@ -718,7 +756,7 @@ export default function ProductDetailTabs({
           font-family: Outfit, sans-serif;
           font-size: 2rem;
           font-weight: 800;
-          color: var(--maroon);
+          color: var(--orange);
           letter-spacing: -0.02em;
         }
 
@@ -748,7 +786,7 @@ export default function ProductDetailTabs({
         }
 
         .pd-rating-summary__headline strong {
-          color: var(--maroon);
+          color: var(--orange);
           font-weight: 900;
         }
 
@@ -794,7 +832,7 @@ export default function ProductDetailTabs({
         .pd-rating-bar__fill {
           height: 100%;
           border-radius: 999px;
-          background: linear-gradient(90deg, var(--gold), var(--maroon-soft));
+          background: linear-gradient(90deg, var(--orange), var(--navy-soft));
           min-width: 0;
           transition: width 0.4s ease;
         }
@@ -809,7 +847,7 @@ export default function ProductDetailTabs({
         .pd-stars {
           display: inline-flex;
           gap: 4px;
-          color: var(--gold);
+          color: var(--orange);
         }
 
         .pd-stars__off {
@@ -919,7 +957,7 @@ export default function ProductDetailTabs({
         }
 
         .pd-photo-upload:hover {
-          border-color: var(--maroon-soft);
+          border-color: var(--navy-soft);
           background: var(--color-brand-dim);
         }
 
@@ -970,7 +1008,7 @@ export default function ProductDetailTabs({
         .pd-photo-preview__change {
           font-size: 13px;
           font-weight: 700;
-          color: var(--maroon);
+          color: var(--orange);
           cursor: pointer;
           font-family: Outfit, sans-serif;
         }
@@ -1006,7 +1044,7 @@ export default function ProductDetailTabs({
         .pd-field input:focus,
         .pd-field textarea:focus {
           outline: none;
-          border-color: var(--maroon-soft);
+          border-color: var(--navy-soft);
           box-shadow: 0 0 0 3px var(--color-brand-dim);
         }
 
@@ -1040,7 +1078,7 @@ export default function ProductDetailTabs({
 
         .pd-star-picker__star:hover,
         .pd-star-picker__star--on {
-          color: var(--gold);
+          color: var(--orange);
         }
 
         .pd-star-picker__star:hover {
@@ -1051,7 +1089,7 @@ export default function ProductDetailTabs({
           margin: 0;
           font-size: 13px;
           font-weight: 700;
-          color: var(--maroon);
+          color: var(--orange);
           font-family: Outfit, sans-serif;
         }
 
@@ -1210,7 +1248,7 @@ export default function ProductDetailTabs({
         .pd-review-item__photo-link > span {
           font-size: 12px;
           font-weight: 700;
-          color: var(--maroon);
+          color: var(--orange);
           font-family: Outfit, sans-serif;
         }
 
@@ -1238,53 +1276,127 @@ export default function ProductDetailTabs({
         }
 
         @media (max-width: 900px) {
+          .pd-detail-tabs {
+            margin-bottom: 40px;
+            border-radius: var(--radius-lg);
+          }
+
           .pd-detail-tabs__top {
-            padding: 22px 20px 20px;
+            padding: 18px 16px 16px;
             flex-direction: column;
             align-items: stretch;
+            gap: 14px;
           }
 
           .pd-detail-tabs__switch {
+            flex: none;
+            max-width: 100%;
             width: 100%;
-            min-width: 0;
+          }
+
+          .pd-detail-tabs__switch-slider {
+            display: none;
+          }
+
+          .pd-detail-tabs__switch-btn--on {
+            background: var(--white);
+            box-shadow: 0 2px 8px rgba(42, 21, 24, 0.12);
           }
 
           .pd-detail-tabs__body {
-            padding: 24px 20px 32px;
+            padding: 18px 16px 24px;
           }
 
           .pd-rating-summary {
             grid-template-columns: 1fr;
-            gap: 20px;
-            padding: 20px;
+            gap: 16px;
+            padding: 18px 16px;
           }
 
           .pd-rating-summary__left {
             padding-right: 0;
-            padding-bottom: 16px;
+            padding-bottom: 14px;
             border-right: none;
             border-bottom: 1px solid var(--border-default);
+            min-width: 0;
+          }
+
+          .pd-rating-summary__center {
+            text-align: center;
+            align-items: center;
+          }
+
+          .pd-rating-summary__sub {
+            max-width: none;
           }
 
           .pd-rating-summary__bars {
             padding-left: 0;
             border-left: none;
-            padding-top: 16px;
+            padding-top: 14px;
             border-top: 1px solid var(--border-default);
             min-width: 0;
+            width: 100%;
+          }
+
+          .pd-review-form {
+            padding: 20px 16px;
+          }
+
+          .pd-review-form__submit {
+            align-self: stretch;
+            width: 100%;
+            justify-content: center;
+          }
+
+          .pd-star-picker {
+            justify-content: center;
+            flex-wrap: wrap;
           }
         }
 
         @media (max-width: 520px) {
+          .pd-detail-tabs__switch {
+            padding: 3px;
+          }
+
           .pd-detail-tabs__switch-btn {
-            font-size: 12px;
-            padding: 10px 12px;
-            gap: 5px;
+            padding: 9px 6px;
+            gap: 4px;
+            font-size: 11px;
+          }
+
+          .pd-detail-tabs__switch-btn svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+          }
+
+          .pd-detail-tabs__count {
+            font-size: 9px;
+            padding: 2px 5px;
+          }
+
+          .pd-rating-summary__number {
+            font-size: 2.5rem;
+          }
+
+          .pd-rating-summary__new {
+            font-size: 1.65rem;
+          }
+
+          .pd-rating-summary__headline {
+            font-size: 15px;
+          }
+
+          .pd-rating-summary__sub {
+            font-size: 13px;
           }
 
           .pd-review-item {
             grid-template-columns: 1fr;
             gap: 12px;
+            padding: 16px;
           }
 
           .pd-review-item__avatar {

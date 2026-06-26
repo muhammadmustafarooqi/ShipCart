@@ -5,7 +5,7 @@ import FAQ from "@/models/FAQ";
 export async function GET() {
   try {
     await dbConnect();
-    const faqs = await FAQ.find({ isActive: true }).sort({ order: 1, createdAt: -1 });
+    const faqs = await FAQ.find({ isActive: true }).sort({ order: 1, createdAt: -1 }).lean();
     return NextResponse.json(faqs);
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch FAQs" }, { status: 500 });

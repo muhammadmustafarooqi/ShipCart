@@ -14,7 +14,14 @@ interface Order {
   phone: string;
   city: string;
   address: string;
-  items: Array<{ name: string; quantity: number; price: number }>;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+    isGift?: boolean;
+    bundleId?: string;
+    selectedBundleItems?: Array<{ name: string }>;
+  }>;
   subtotal: number;
   shippingFee: number;
   total: number;
@@ -24,7 +31,7 @@ interface Order {
 
 const playSuccessSound = () => {
   try {
-    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    const AudioContext = window.AudioContext || (window as Window & { webkitAudioContext?: typeof window.AudioContext }).webkitAudioContext;
     if (!AudioContext) return;
     const ctx = new AudioContext();
 
@@ -77,14 +84,14 @@ function OrderSuccessContent() {
           fbq("track", "Purchase", {
             value: d.order.total,
             currency: "PKR"
-          });
+          }, { eventID: d.order.orderId });
         })
         .catch(console.error)
         .finally(() => setLoading(false));
     }
   }, [orderId]);
 
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923001234567";
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923713869780";
 
   const generateWhatsAppMessage = () => {
     if (!order) return "#";
@@ -129,7 +136,7 @@ ${itemsList}
 
           <h1 style={{ fontSize: "clamp(2rem, 3vw, 2.5rem)", fontWeight: 900, color: "var(--text-primary)", marginBottom: "12px", fontFamily: "Outfit, sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", flexWrap: "wrap" }}>
             <span>Order Confirmed!</span>
-            <PartyPopper size={36} color="var(--maroon)" strokeWidth={2} aria-hidden />
+            <PartyPopper size={36} color="var(--orange)" strokeWidth={2} aria-hidden />
           </h1>
           <p style={{ color: "var(--text-secondary)", fontSize: "16px", marginBottom: "32px", fontWeight: 500 }}>
             Thank you for your purchase. We are processing your order.
@@ -193,9 +200,27 @@ ${itemsList}
                     <div style={{ fontSize: "13px", color: "var(--text-secondary)", marginBottom: "8px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>{order.items.length} Item(s)</div>
                     <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                       {order.items.map((item, i) => (
-                        <div key={i} style={{ fontSize: "14px", color: "var(--text-primary)", fontWeight: 500, display: "flex", justifyContent: "space-between" }}>
-                          <span>{item.quantity}x {item.name}</span>
-                          <span style={{ fontWeight: 700 }}>Rs. {(item.price * item.quantity).toLocaleString()}</span>
+                        <div key={i} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                          <div style={{ fontSize: "14px", color: "var(--text-primary)", fontWeight: 500, display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                              {item.quantity}x {item.name}
+                              {item.isGift && (
+                                <span style={{ background: "var(--bg-card)", color: "var(--orange)", padding: "2px 6px", borderRadius: "4px", fontSize: "11px", border: "1px solid var(--border-default)", fontWeight: 700 }}>
+                                  🎁 Gift
+                                </span>
+                              )}
+                            </span>
+                            <span style={{ fontWeight: 700 }}>Rs. {(item.price * item.quantity).toLocaleString()}</span>
+                          </div>
+                          {item.bundleId && item.selectedBundleItems && item.selectedBundleItems.length > 0 && (
+                            <div style={{ marginLeft: "12px", borderLeft: "2px solid var(--border-default)", paddingLeft: "8px", display: "flex", flexDirection: "column", gap: "2px" }}>
+                              {item.selectedBundleItems.map((bi, idx) => (
+                                <div key={idx} style={{ fontSize: "12px", color: "var(--text-secondary)" }}>
+                                  • {bi.name}
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -210,8 +235,8 @@ ${itemsList}
                 </div>
                 <div style={{ textAlign: "right" }}>
                   <div style={{ fontSize: "14px", color: "var(--text-secondary)", fontWeight: 600, marginBottom: "4px" }}>Payment</div>
-                  <div style={{ fontWeight: 800, color: "var(--maroon)", display: "flex", alignItems: "center", gap: "8px", justifyContent: "flex-end" }}>
-                    <Banknote size={22} color="var(--gold)" strokeWidth={2.25} aria-hidden />
+                  <div style={{ fontWeight: 800, color: "var(--orange)", display: "flex", alignItems: "center", gap: "8px", justifyContent: "flex-end" }}>
+                    <Banknote size={22} color="var(--orange)" strokeWidth={2.25} aria-hidden />
                     COD
                   </div>
                 </div>
@@ -240,7 +265,7 @@ ${itemsList}
               ].map(({ step, text, Icon }) => (
                 <div key={step} style={{ display: "flex", gap: "16px", alignItems: "center", background: "var(--bg-primary)", padding: "16px", borderRadius: "12px" }}>
                   <div style={{ width: "44px", height: "44px", borderRadius: "12px", background: "var(--white)", border: "1px solid var(--cream-mid)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "var(--shadow-sm)" }}>
-                    <Icon size={22} color="var(--maroon)" strokeWidth={2.25} aria-hidden style={{ flexShrink: 0 }} />
+                    <Icon size={22} color="var(--orange)" strokeWidth={2.25} aria-hidden style={{ flexShrink: 0 }} />
                   </div>
                   <span style={{ fontSize: "15px", color: "var(--text-primary)", fontWeight: 500 }}>{text}</span>
                 </div>

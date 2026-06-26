@@ -33,6 +33,8 @@ const navItems = [
   { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
   { label: "Customers", href: "/admin/customers", icon: Users },
   { label: "Spin Results", href: "/admin/spins", icon: Sparkles },
+  { label: "Coupons", href: "/admin/coupons", icon: Tag },
+  { label: "Bundles", href: "/admin/bundles", icon: Package },
 ];
 
 const settingsItems = [
@@ -83,7 +85,7 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; on
           <BrandLogoMark size={48} tone="elevated" decorative />
           <div>
             <div style={{ fontWeight: 800, fontSize: "16px", color: "white" }}>
-              ALLIn<span style={{ color: "#ff6b00" }}>ONE</span>
+              ALLIn<span style={{ color: "#FF6102" }}>ONE</span>
             </div>
             <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)", letterSpacing: "1px" }}>
               ADMIN PANEL
@@ -104,7 +106,7 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; on
               className={`nav-item ${isActive ? "active" : ""}`}
               onClick={onClose}
             >
-              <Icon size={18} strokeWidth={2} style={{ color: isActive ? "#ff6b00" : "rgba(255,255,255,0.7)" }} />
+              <Icon size={18} strokeWidth={2} style={{ color: isActive ? "#FF6102" : "rgba(255,255,255,0.7)" }} />
               <span>{item.label}</span>
               {isActive && (
                 <div style={{
@@ -112,7 +114,7 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; on
                   width: "6px",
                   height: "6px",
                   borderRadius: "50%",
-                  background: "#ff6b00",
+                  background: "#FF6102",
                 }} />
               )}
             </Link>
@@ -132,7 +134,7 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; on
               textAlign: "left",
             }}
           >
-            <Settings size={18} strokeWidth={2} style={{ color: pathname.startsWith("/admin/settings") ? "#ff6b00" : "rgba(255,255,255,0.7)" }} />
+            <Settings size={18} strokeWidth={2} style={{ color: pathname.startsWith("/admin/settings") ? "#FF6102" : "rgba(255,255,255,0.7)" }} />
             <span style={{ flex: 1, textAlign: "left", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>Settings</span>
             <ChevronDown 
               size={16} 
@@ -163,7 +165,7 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; on
                     fontSize: "13px",
                   }}
                 >
-                  <Icon size={16} strokeWidth={2} style={{ color: isActive ? "#ff6b00" : "rgba(255,255,255,0.6)" }} />
+                  <Icon size={16} strokeWidth={2} style={{ color: isActive ? "#FF6102" : "rgba(255,255,255,0.6)" }} />
                   <span>{item.label}</span>
                   {isActive && (
                     <div style={{
@@ -171,7 +173,7 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; on
                       width: "6px",
                       height: "6px",
                       borderRadius: "50%",
-                      background: "#ff6b00",
+                      background: "#FF6102",
                     }} />
                   )}
                 </Link>

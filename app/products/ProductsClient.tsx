@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
-import { Search, SlidersHorizontal, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, SlidersHorizontal, X, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { CategorySlugIcon } from "@/components/CategorySlugIcon";
 import { PRODUCT_CATEGORIES } from "@/lib/utils";
 
@@ -101,20 +101,60 @@ export default function ProductsClient({ initialProducts, initialTotal, initialP
             )}
           </div>
           <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-            <select
-              value={`${filters.sort}-${filters.order}`}
-              onChange={(e) => { const [sort, order] = e.target.value.split("-"); setFilters((f) => ({ ...f, sort, order, page: 1 })); }}
-              style={inputStyle}
-            >
-              {sortOptions.map((o) => <option key={o.label} value={`${o.sort}-${o.order}`}>{o.label}</option>)}
-            </select>
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              style={{ ...inputStyle, display: "flex", alignItems: "center", gap: "8px", border: sidebarOpen ? "1px solid var(--text-primary)" : "1px solid var(--border-default)", background: sidebarOpen ? "var(--text-primary)" : "var(--bg-card)", color: sidebarOpen ? "white" : "var(--text-primary)" }}
-            >
-              <SlidersHorizontal size={16} color="currentColor" /> Filters
-            </button>
+            <div style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
+              <select
+                value={`${filters.sort}-${filters.order}`}
+                onChange={(e) => { const [sort, order] = e.target.value.split("-"); setFilters((f) => ({ ...f, sort, order, page: 1 })); }}
+                style={{
+                  ...inputStyle,
+                  appearance: "none",
+                  WebkitAppearance: "none",
+                  MozAppearance: "none",
+                  paddingRight: "40px",
+                }}
+              >
+                {sortOptions.map((o) => <option key={o.label} value={`${o.sort}-${o.order}`}>{o.label}</option>)}
+              </select>
+              <span style={{ position: "absolute", right: "16px", pointerEvents: "none", display: "flex", alignItems: "center", color: "var(--color-icon)" }}>
+                <ChevronDown size={16} />
+              </span>
+            </div>
           </div>
+        </div>
+
+        {/* Category Pills (Beautiful Horizontal Scroll) */}
+        <div style={{ display: "flex", gap: "12px", overflowX: "auto", paddingBottom: "12px", marginBottom: "24px", scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}>
+          <button 
+            onClick={() => setFilters((f) => ({ ...f, category: "", page: 1 }))} 
+            style={{ 
+              whiteSpace: "nowrap", padding: "10px 24px", borderRadius: "100px", border: "1px solid",
+              borderColor: !filters.category ? "var(--text-primary)" : "var(--border-default)",
+              background: !filters.category ? "var(--text-primary)" : "var(--bg-card)",
+              color: !filters.category ? "white" : "var(--text-secondary)",
+              fontSize: "14px", fontWeight: 600, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              boxShadow: !filters.category ? "0 4px 14px rgba(0,0,0,0.15)" : "0 2px 5px rgba(0,0,0,0.02)"
+            }}
+          >
+            All Categories
+          </button>
+          {PRODUCT_CATEGORIES.map((cat) => (
+            <button 
+              key={cat.slug} 
+              onClick={() => setFilters((f) => ({ ...f, category: cat.slug, page: 1 }))} 
+              style={{ 
+                whiteSpace: "nowrap", padding: "10px 20px", borderRadius: "100px", border: "1px solid",
+                borderColor: filters.category === cat.slug ? "var(--text-primary)" : "var(--border-default)",
+                background: filters.category === cat.slug ? "var(--text-primary)" : "var(--bg-card)",
+                color: filters.category === cat.slug ? "white" : "var(--text-secondary)",
+                fontSize: "14px", fontWeight: 600, cursor: "pointer", transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)", 
+                display: "flex", alignItems: "center", gap: "8px",
+                boxShadow: filters.category === cat.slug ? "0 4px 14px rgba(0,0,0,0.15)" : "0 2px 5px rgba(0,0,0,0.02)"
+              }}
+            >
+              <CategorySlugIcon slug={cat.slug} size={16} color={filters.category === cat.slug ? "white" : "var(--color-icon)"} />
+              {cat.name}
+            </button>
+          ))}
         </div>
 
         {/* Active Tags */}
@@ -139,31 +179,9 @@ export default function ProductsClient({ initialProducts, initialTotal, initialP
           </div>
         )}
 
-        <div style={{ display: "flex", gap: "32px", alignItems: "flex-start" }}>
-          {/* Sidebar */}
-          {sidebarOpen && (
-            <div style={{ width: "240px", flexShrink: 0, background: "var(--bg-card)", border: "1px solid var(--border-default)", borderRadius: "var(--radius-lg)", padding: "24px", position: "sticky", top: "100px", boxShadow: "var(--shadow-md)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
-                <span style={{ fontWeight: 700, fontSize: "16px", color: "var(--text-primary)", fontFamily: "Outfit, sans-serif" }}>Filters</span>
-                <button onClick={() => setFilters((f) => ({ ...f, category: "", page: 1 }))} style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-secondary)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>Clear</button>
-              </div>
-              <div style={{ fontSize: "11px", color: "var(--text-secondary)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", marginBottom: "16px" }}>Category</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                <button onClick={() => setFilters((f) => ({ ...f, category: "", page: 1 }))} style={{ textAlign: "left", padding: "10px 14px", borderRadius: "8px", border: "none", background: !filters.category ? "var(--text-primary)" : "transparent", color: !filters.category ? "white" : "var(--text-secondary)", cursor: "pointer", fontSize: "14px", fontWeight: 500, transition: "all 0.2s ease" }}>All Categories</button>
-                {PRODUCT_CATEGORIES.map((cat) => (
-                  <button key={cat.slug} onClick={() => setFilters((f) => ({ ...f, category: cat.slug, page: 1 }))} style={{ textAlign: "left", padding: "10px 14px", borderRadius: "8px", border: "none", background: filters.category === cat.slug ? "var(--text-primary)" : "transparent", color: filters.category === cat.slug ? "white" : "var(--text-secondary)", cursor: "pointer", fontSize: "14px", fontWeight: 500, transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: "10px" }}>
-                    <span style={{ display: "inline-flex", alignItems: "center", flexShrink: 0 }}>
-                      <CategorySlugIcon slug={cat.slug} size={18} color={filters.category === cat.slug ? "white" : "var(--color-icon)"} />
-                    </span>{" "}
-                    {cat.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
+        <div>
           {/* Products */}
-          <div style={{ flex: 1 }}>
+          <div>
             {loading ? (
               <div style={{ display: "flex", justifyContent: "center", padding: "100px 0" }}>
                 <div className="spinner" />

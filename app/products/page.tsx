@@ -46,10 +46,7 @@ export default async function ProductsPage({
   const total = await Product.countDocuments(query);
   const pages = Math.ceil(total / limit);
 
-  const initialProducts = productsDocs.map((doc: any) => ({
-    ...doc,
-    _id: doc._id.toString(),
-  }));
+  const initialProducts = JSON.parse(JSON.stringify(productsDocs));
 
   return (
     <Suspense

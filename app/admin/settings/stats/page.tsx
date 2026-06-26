@@ -122,7 +122,7 @@ export default function StatsPage() {
   };
 
   return (
-    <div style={{ padding: "32px" }}>
+    <div className="admin-page-container">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
         <div>
           <h1 style={{ fontSize: "28px", fontWeight: 800 }}>Stats</h1>

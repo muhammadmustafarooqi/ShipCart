@@ -1,87 +1,58 @@
 "use client";
 
-import { useEffect, Suspense } from "react";
+import { useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useCart } from "@/components/CartProvider";
+import { useCart } from "./CartProvider";
 
-function AnalyticsTrackerContent() {
+export default function AnalyticsTracker() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { items } = useCart();
+  const isInitialized = useRef(false);
 
   useEffect(() => {
-    // Exclude administration dashboard and backend API endpoints
-    if (!pathname || pathname.startsWith("/admin") || pathname.startsWith("/api")) {
+    // Exclude admin panel and API routes from tracking
+    if (pathname.startsWith("/admin") || pathname.startsWith("/api")) {
       return;
     }
 
-    // Retrieve or initialize unique session ID in sessionStorage
+    // Get or create sessionId in sessionStorage (active during single browser tab lifespan)
     let sessionId = sessionStorage.getItem("allinone_session_id");
     if (!sessionId) {
-      sessionId = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+      sessionId = "sess_" + Math.random().toString(36).substring(2, 15) + "_" + Date.now();
       sessionStorage.setItem("allinone_session_id", sessionId);
     }
 
-    // Determine funnel milestone flags
     const hasCart = items.length > 0;
     const hasCheckout = pathname.startsWith("/checkout");
     const hasOrdered = pathname.startsWith("/order-success");
 
-    // Establish event categories matching milestones
-    let eventName = "page_view";
-    if (hasOrdered) {
-      eventName = "purchase";
-    } else if (hasCheckout) {
-      eventName = "initiate_checkout";
-    } else if (pathname === "/products") {
-      eventName = "view_item_list";
-    } else if (pathname.startsWith("/products/")) {
-      eventName = "view_item";
-    } else if (pathname === "/cart") {
-      eventName = "view_cart";
-    }
-
-    // Setup metadata payload
-    const metadata = {
-      cartCount: items.reduce((sum, item) => sum + item.quantity, 0),
-      cartSubtotal: items.reduce((sum, item) => sum + item.price * item.quantity, 0),
-      searchQuery: searchParams.get("search") || searchParams.get("q") || undefined,
+    const trackSession = async () => {
+      try {
+        await fetch("/api/analytics", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sessionId,
+            referrer: isInitialized.current ? "" : document.referrer || "Direct",
+            hasCart,
+            hasCheckout,
+            hasOrdered,
+            path: pathname,
+          }),
+        });
+        isInitialized.current = true;
+      } catch (err) {
+        console.error("Tracking error:", err);
+      }
     };
 
-    // Debounce state adjustments to avoid redundant calls during routing
-    const timer = setTimeout(() => {
-      const payload = {
-        sessionId,
-        path: `${pathname}${searchParams.toString() ? "?" + searchParams.toString() : ""}`,
-        referrer: document.referrer || "Direct",
-        hasCart,
-        hasCheckout,
-        hasOrdered,
-        eventName,
-        metadata,
-      };
-
-      fetch("/api/analytics", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      }).catch((err) => {
-        console.warn("Analytics transmission failed:", err);
-      });
-    }, 800);
-
+    // Debounce a little bit to avoid double-pings during fast state changes
+    const timer = setTimeout(trackSession, 300);
     return () => clearTimeout(timer);
   }, [pathname, searchParams, items]);
 
   return null;
-}
-
-export default function AnalyticsTracker() {
-  return (
-    <Suspense fallback={null}>
-      <AnalyticsTrackerContent />
-    </Suspense>
-  );
 }

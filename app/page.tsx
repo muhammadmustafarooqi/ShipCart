@@ -4,12 +4,14 @@ import HeroSlider from "@/components/HeroSlider";
 import ProductCard from "@/components/ProductCard";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import MarqueeBanner from "@/components/MarqueeBanner";
-import StatsSection from "@/components/StatsSection";
 import CategoryShowcase from "@/components/CategoryShowcase";
-import Testimonials from "@/components/Testimonials";
-import FAQ from "@/components/FAQ";
+import dynamic from "next/dynamic";
+
+const FAQ = dynamic(() => import("@/components/FAQ"));
+const StatsSection = dynamic(() => import("@/components/StatsSection"));
 import WhatsAppCTA from "@/components/WhatsAppCTA";
-import SpinnerBanner from "@/components/SpinnerBanner";
+import ScratchCardBanner from "@/components/ScratchCardBanner";
+import DeliveryProofWall from "@/components/DeliveryProofWall";
 import FeaturedCollection from "@/components/FeaturedCollection";
 import { LucideByName } from "@/components/LucideByName";
 import Link from "next/link";
@@ -67,87 +69,75 @@ export default async function HomePage() {
       <AnnouncementBar />
       <Navbar />
 
-      {/* Trust ticker — directly under header, above hero */}
-      <MarqueeBanner />
-
       {/* Hero */}
       <HeroSlider banners={banners} />
+
+      {/* Trust ticker — below hero */}
+      <MarqueeBanner />
 
       {/* Category Showcase */}
       <CategoryShowcase />
 
       <FeaturedCollection products={featuredProducts} />
 
-      {/* Spinner Banner */}
-      <SpinnerBanner />
+      {/* Scratch Card Banner */}
+      <ScratchCardBanner />
 
       {/* New Arrivals */}
-      <section style={{ padding: "80px 0", background: "var(--bg-primary)" }}>
+      <section style={{ padding: "120px 0", background: "var(--cream)" }}>
         <div className="page-container">
-          <div style={{ textAlign: "center", marginBottom: "48px" }}>
-            <div
-              className="section-tag"
-              style={{ display: "inline-flex", alignItems: "center", gap: "8px", justifyContent: "center" }}
-            >
-              <LucideByName name="zap" size={14} color="var(--color-icon)" />
-              Fresh Drops
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "48px" }}>
+            <div>
+              <h2 style={{ fontFamily: "var(--font-outfit), sans-serif", fontSize: "clamp(2rem, 3vw, 2.5rem)", fontWeight: 900, color: "var(--navy-deep)", margin: "0 0 12px", letterSpacing: "-0.02em" }}>
+                New Arrivals
+              </h2>
+              <div style={{ width: "60px", height: "4px", background: "var(--orange)", borderRadius: "4px", marginBottom: "16px" }} />
+              <p style={{ fontFamily: "var(--font-jakarta), sans-serif", fontSize: "1.1rem", color: "var(--slate)", margin: 0 }}>
+                The latest additions to our premium collection.
+              </p>
             </div>
-            <h2 className="section-title" style={{ marginTop: "10px" }}>
-              New Arrivals
-            </h2>
-            <p
-              style={{
-                color: "var(--text-secondary)",
-                fontSize: "15px",
-                marginTop: "8px",
-                fontWeight: 500,
-                maxWidth: "540px",
-                marginLeft: "auto",
-                marginRight: "auto",
-                lineHeight: 1.6,
-              }}
-            >
-              The latest additions to our premium collection
-            </p>
             <Link
               href="/products?newArrival=true"
+              className="view-all-link"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "8px",
-                marginTop: "22px",
-                fontSize: "14px",
-                color: "var(--color-brand)",
+                fontSize: "0.95rem",
+                color: "var(--orange)",
                 textDecoration: "none",
                 fontWeight: 700,
-                fontFamily: "Plus Jakarta Sans, sans-serif",
-                background: "var(--color-brand-dim)",
-                padding: "10px 20px",
-                borderRadius: "100px",
+                fontFamily: "var(--font-jakarta), sans-serif",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                paddingBottom: "4px",
+                borderBottom: "2px solid var(--orange)",
+                transition: "opacity 0.2s"
               }}
             >
-              View All →
+              View All Collection →
             </Link>
           </div>
+
           {newArrivals.length > 0 ? (
-            <div className="products-grid">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "32px 24px" }}>
               {newArrivals.map((p: Product) => (
                 <ProductCard key={p._id} product={p} />
               ))}
             </div>
           ) : (
-            <div style={{ textAlign: "center", padding: "80px 0", color: "var(--text-secondary)", background: "var(--bg-card)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--border-hover)" }}>
-              <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px", color: "var(--text-secondary)" }}>
-                <LucideByName name="sparkles" size={48} strokeWidth={1.75} />
+            <div style={{ textAlign: "center", padding: "80px 0", color: "var(--slate)", background: "var(--white)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--border-default)" }}>
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px", color: "var(--slate)" }}>
+                <LucideByName name="sparkles" size={48} strokeWidth={1.5} />
               </div>
-              <p style={{ fontSize: "16px", fontWeight: 600 }}>New arrivals coming soon!</p>
+              <p style={{ fontSize: "1.1rem", fontWeight: 600, fontFamily: "var(--font-outfit), sans-serif", color: "var(--navy)" }}>New arrivals dropping soon</p>
             </div>
           )}
         </div>
       </section>
 
-      {/* Testimonials */}
-      <Testimonials />
+      {/* Delivery Proof Wall */}
+      <DeliveryProofWall />
 
       {/* FAQ */}
       <FAQ />
