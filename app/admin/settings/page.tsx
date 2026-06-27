@@ -28,7 +28,7 @@ export default function AdminSettingsPage() {
         if (response.ok) {
           const data = await response.json();
           setForm({
-            storeName: data.storeName || "ALLInONE Store",
+            storeName: data.storeName || "ShipCart",
             whatsappNumber: data.whatsappNumber || "923713869780",
             deliveryFee: data.deliveryFee || 200,
             freeDeliveryAbove: data.freeDeliveryAbove || 3000,

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Admin Login",
-  description: "AllInOne Store Admin Portal.",
+  description: "ShipCart Admin Portal",
   robots: { index: false, follow: false },
 };
 

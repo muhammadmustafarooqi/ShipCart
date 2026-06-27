@@ -17,10 +17,10 @@ export default function AnalyticsTracker() {
     }
 
     // Get or create sessionId in sessionStorage (active during single browser tab lifespan)
-    let sessionId = sessionStorage.getItem("allinone_session_id");
+    let sessionId = sessionStorage.getItem("shipcart_session_id");
     if (!sessionId) {
       sessionId = "sess_" + Math.random().toString(36).substring(2, 15) + "_" + Date.now();
-      sessionStorage.setItem("allinone_session_id", sessionId);
+      sessionStorage.setItem("shipcart_session_id", sessionId);
     }
 
     const hasCart = items.length > 0;

@@ -35,18 +35,18 @@ export default function WishlistProvider({ children }: { children: React.ReactNo
   const [items, setItems] = useState<WishlistItem[]>([]);
 
   useEffect(() => {
-    const stored = localStorage.getItem("allinone_wishlist");
+    const stored = localStorage.getItem("shipcart_wishlist");
     if (stored) {
       try {
         setItems(JSON.parse(stored));
       } catch {
-        localStorage.removeItem("allinone_wishlist");
+        localStorage.removeItem("shipcart_wishlist");
       }
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("allinone_wishlist", JSON.stringify(items));
+    localStorage.setItem("shipcart_wishlist", JSON.stringify(items));
   }, [items]);
 
   const addItem = (item: WishlistItem) => {
@@ -76,7 +76,7 @@ export default function WishlistProvider({ children }: { children: React.ReactNo
 
   const clearWishlist = () => {
     setItems([]);
-    localStorage.removeItem("allinone_wishlist");
+    localStorage.removeItem("shipcart_wishlist");
   };
 
   const totalItems = items.length;

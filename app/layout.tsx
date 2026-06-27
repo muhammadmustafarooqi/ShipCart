@@ -23,13 +23,13 @@ const outfit = Outfit({
   variable: "--font-outfit"
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://allinonestore.pk";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://shipcartstore.pk";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "AllInOne Store — Premium Gadgets & Accessories Pakistan",
-    template: "%s | AllInOne Store",
+    default: "ShipCart — Premium Gadgets & Accessories Pakistan",
+    template: "%s | ShipCart",
   },
   description:
     "Shop premium gadgets, kitchen tools, personal care devices & tech accessories in Pakistan. Cash on Delivery. Free delivery above Rs. 3000. 100% Original Products.",
@@ -37,24 +37,24 @@ export const metadata: Metadata = {
     "online shopping Pakistan","gadgets Pakistan","smart gadgets","kitchen tools Pakistan",
     "personal care devices","electronics Pakistan","COD Pakistan","cash on delivery",
     "baby products Pakistan","fitness equipment Pakistan","home cleaning tools",
-    "AllInOne Store","buy online Pakistan",
+    "ShipCart","buy online Pakistan",
   ],
-  authors: [{ name: "AllInOne Store" }],
-  creator: "AllInOne Store",
-  publisher: "AllInOne Store",
+  authors: [{ name: "ShipCart" }],
+  creator: "ShipCart",
+  publisher: "ShipCart",
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   icons: { icon: FAVICON_URL, shortcut: FAVICON_URL },
   openGraph: {
-    title: "AllInOne Store — Premium Gadgets & Accessories Pakistan",
+    title: "ShipCart — Premium Gadgets & Accessories Pakistan",
     description: "Top quality gadgets for every home. Free delivery on orders above Rs. 3000. COD available.",
     type: "website",
     url: SITE_URL,
-    siteName: "AllInOne Store",
+    siteName: "ShipCart",
     locale: "en_PK",
   },
   twitter: {
     card: "summary_large_image",
-    title: "AllInOne Store — Premium Gadgets & Accessories Pakistan",
+    title: "ShipCart — Premium Gadgets & Accessories Pakistan",
     description: "Top quality gadgets, kitchen tools & personal care devices. COD available across Pakistan.",
   },
   alternates: { canonical: SITE_URL },

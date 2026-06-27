@@ -4,7 +4,7 @@ const req = http.request(
   {
     hostname: "localhost",
     port: 3000,
-    path: "/api/orders/AIO-1764",
+    path: "/api/orders/SHC-1764",
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",

@@ -10,7 +10,7 @@ export async function GET() {
     // If no settings exist, return defaults
     if (!settings) {
       const defaults = {
-        storeName: "ALLInONE Store",
+        storeName: "ShipCart",
         whatsappNumber: "923713869780",
         deliveryFee: 200,
         freeDeliveryAbove: 3000,
@@ -44,7 +44,7 @@ export async function GET() {
     console.error("Error fetching settings:", error);
     // Return defaults on error instead of error response
     return NextResponse.json({
-      storeName: "ALLInONE Store",
+      storeName: "ShipCart",
       whatsappNumber: "923713869780",
       deliveryFee: 200,
       freeDeliveryAbove: 3000,

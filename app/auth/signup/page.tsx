@@ -122,7 +122,7 @@ export default function SignupPage() {
               <BrandLogoMark size={68} tone="elevated" decorative />
             </Link>
             <div className="auth-mh-text">
-              <p className="auth-mh-eyebrow">AllInOne Store</p>
+              <p className="auth-mh-eyebrow">ShipCart</p>
               <h1 className="auth-mh-title">
                 {isLoginTab ? (
                   <>Welcome<br /><span className="auth-mh-gold">Back</span></>
@@ -149,7 +149,7 @@ export default function SignupPage() {
               <BrandLogoMark size={72} tone="elevated" decorative />
             </Link>
             <div className="auth-left-text">
-              <p className="auth-left-eyebrow">{isLoginTab ? "Welcome Back" : "Join AllInOne Store"}</p>
+              <p className="auth-left-eyebrow">{isLoginTab ? "Welcome Back" : "Join ShipCart"}</p>
               <h2 className="auth-left-headline">
                 {isLoginTab ? (
                   <>Your Premium<br /><span className="auth-headline-gold">Store Awaits</span></>

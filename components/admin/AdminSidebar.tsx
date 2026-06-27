@@ -84,8 +84,8 @@ export default function AdminSidebar({ isOpen, onClose }: { isOpen?: boolean; on
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <BrandLogoMark size={48} tone="elevated" decorative />
           <div>
-            <div style={{ fontWeight: 800, fontSize: "16px", color: "white" }}>
-              ALLIn<span style={{ color: "#FF6102" }}>ONE</span>
+            <div className="text-xl font-black tracking-tight leading-tight text-white flex flex-col">
+              <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">ShipCart</span>
             </div>
             <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)", letterSpacing: "1px" }}>
               ADMIN PANEL

@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
 
     // Look for user by phone number
     let user = await User.findOne({ phone: normalized });
-    const mockEmail = `phone_${normalized}@allinonestore.pk`;
+    const mockEmail = `phone_${normalized}@shipcartstore.pk`;
     const mockPassword = "phone_secret_password_2026";
     const hashedPassword = Buffer.from(mockPassword).toString("base64");
 

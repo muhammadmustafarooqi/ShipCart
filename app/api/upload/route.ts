@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
 
     const isVideo = file.type.startsWith("video/");
     const uploadOptions: any = {
-      folder: "allinonestore",
+      folder: "shipcart",
       resource_type: isVideo ? "video" : "image",
     };
 

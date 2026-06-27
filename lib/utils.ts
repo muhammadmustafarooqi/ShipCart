@@ -53,7 +53,7 @@ export function formatPrice(price: number): string {
 // Generate order ID
 export function generateOrderId(): string {
   const num = Math.floor(Math.random() * 9000) + 1000;
-  return `AIO-${num}`;
+  return `SHC-${num}`;
 }
 
 // Calculate shipping fee

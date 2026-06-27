@@ -52,7 +52,7 @@ export interface ISettings extends Document {
 
 const SettingsSchema = new Schema<ISettings>(
   {
-    storeName: { type: String, default: "ALLInONE Store" },
+    storeName: { type: String, default: "ShipCart" },
     whatsappNumber: {
       type: String,
       default: process.env.WHATSAPP_NUMBER || "923713869780",
@@ -151,7 +151,7 @@ const SettingsSchema = new Schema<ISettings>(
       },
       contactEmail: {
         type: String,
-        default: "support@allinonestore.pk",
+        default: "support@shipcartstore.pk",
       },
       contactPhone: {
         type: String,

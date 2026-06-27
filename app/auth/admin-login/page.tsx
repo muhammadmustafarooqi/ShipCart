@@ -64,7 +64,7 @@ export default function AdminLogin() {
               Secure Portal
             </div>
             <h1 className="admin-title">Admin Login</h1>
-            <p className="admin-subtitle">Sign in to manage your ALLInONE Store</p>
+            <p className="admin-subtitle">Sign in to manage your ShipCart Store</p>
           </div>
 
           {/* Form */}
@@ -80,7 +80,7 @@ export default function AdminLogin() {
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={() => setFocusedEmail(true)}
                   onBlur={() => setFocusedEmail(false)}
-                  placeholder="admin@allinonestore.pk"
+                  placeholder="admin@shipcartstore.pk"
                   required
                   className="admin-input"
                   autoComplete="email"
@@ -148,7 +148,7 @@ export default function AdminLogin() {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: linear-gradient(145deg, #0f0508 0%, #1a0a10 45%, #16213e 100%);
+          background: linear-gradient(145deg, var(--navy-deep) 0%, var(--navy) 45%, var(--navy-soft) 100%);
           padding: 24px;
           position: relative;
           overflow: hidden;
@@ -160,8 +160,8 @@ export default function AdminLogin() {
           position: absolute;
           inset: 0;
           background-image:
-            linear-gradient(rgba(201, 168, 76, 0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(201, 168, 76, 0.04) 1px, transparent 1px);
+            linear-gradient(rgba(255, 97, 2, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 97, 2, 0.04) 1px, transparent 1px);
           background-size: 40px 40px;
           pointer-events: none;
         }
@@ -175,13 +175,13 @@ export default function AdminLogin() {
         }
         .admin-orb-tl {
           width: 560px; height: 560px;
-          background: radial-gradient(circle, rgba(107,30,46,0.35) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(16,40,87,0.35) 0%, transparent 70%);
           top: -200px; left: -200px;
           animation: orbFloat1 12s ease-in-out infinite;
         }
         .admin-orb-br {
           width: 420px; height: 420px;
-          background: radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(255,97,2,0.15) 0%, transparent 70%);
           bottom: -150px; right: -100px;
           animation: orbFloat2 10s ease-in-out infinite;
         }
@@ -194,7 +194,7 @@ export default function AdminLogin() {
           width: 100%;
           max-width: 440px;
           background: rgba(255, 253, 249, 0.03);
-          border: 1px solid rgba(201, 168, 76, 0.2);
+          border: 1px solid rgba(255, 97, 2, 0.2);
           border-radius: 24px;
           padding: 48px 40px 40px;
           backdrop-filter: blur(24px);
@@ -202,7 +202,7 @@ export default function AdminLogin() {
           box-shadow:
             0 0 0 1px rgba(255,253,249,0.04) inset,
             0 40px 80px rgba(0,0,0,0.6),
-            0 0 80px rgba(107,30,46,0.15);
+            0 0 80px rgba(16,40,87,0.15);
           animation: cardIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
           overflow: hidden;
         }
@@ -216,7 +216,7 @@ export default function AdminLogin() {
           position: absolute;
           top: 0; left: 0; right: 0;
           height: 3px;
-          background: linear-gradient(90deg, #4A1020, #6B1E2E 30%, #C9A84C 50%, #6B1E2E 70%, #4A1020);
+          background: linear-gradient(90deg, var(--navy-deep), var(--navy) 30%, var(--orange) 50%, var(--navy) 70%, var(--navy-deep));
           background-size: 200%;
           animation: barShimmer 4s ease infinite;
         }
@@ -235,20 +235,20 @@ export default function AdminLogin() {
           width: 72px;
           height: 72px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #6B1E2E, #4A1020);
-          border: 2px solid rgba(201,168,76,0.4);
-          box-shadow: 0 0 40px rgba(107,30,46,0.5), 0 0 0 8px rgba(107,30,46,0.1);
+          background: linear-gradient(135deg, var(--navy), var(--navy-deep));
+          border: 2px solid rgba(255,97,2,0.4);
+          box-shadow: 0 0 40px rgba(16,40,87,0.5), 0 0 0 8px rgba(16,40,87,0.1);
           display: flex;
           align-items: center;
           justify-content: center;
           animation: pulse 3s ease-in-out infinite;
         }
         @keyframes pulse {
-          0%,100% { box-shadow: 0 0 40px rgba(107,30,46,0.5), 0 0 0 8px rgba(107,30,46,0.1); }
-          50% { box-shadow: 0 0 60px rgba(107,30,46,0.7), 0 0 0 12px rgba(107,30,46,0.08); }
+          0%,100% { box-shadow: 0 0 40px rgba(16,40,87,0.5), 0 0 0 8px rgba(16,40,87,0.1); }
+          50% { box-shadow: 0 0 60px rgba(16,40,87,0.7), 0 0 0 12px rgba(16,40,87,0.08); }
         }
         .admin-logo-inner {
-          color: #C9A84C;
+          color: var(--orange);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -267,9 +267,9 @@ export default function AdminLogin() {
           font-weight: 700;
           letter-spacing: 2.5px;
           text-transform: uppercase;
-          color: #C9A84C;
-          background: rgba(201,168,76,0.1);
-          border: 1px solid rgba(201,168,76,0.25);
+          color: var(--orange);
+          background: rgba(255,97,2,0.1);
+          border: 1px solid rgba(255,97,2,0.25);
           padding: 5px 14px;
           border-radius: 100px;
           margin-bottom: 14px;
@@ -278,8 +278,8 @@ export default function AdminLogin() {
         .admin-tag-dot {
           width: 6px; height: 6px;
           border-radius: 50%;
-          background: #C9A84C;
-          box-shadow: 0 0 8px #C9A84C;
+          background: var(--orange);
+          box-shadow: 0 0 8px var(--orange);
           animation: blinkDot 2s ease-in-out infinite;
         }
         @keyframes blinkDot {
@@ -315,7 +315,7 @@ export default function AdminLogin() {
           font-family: "Outfit", sans-serif;
           transition: color 0.2s;
         }
-        .admin-field.focused .admin-label { color: #C9A84C; }
+        .admin-field.focused .admin-label { color: var(--orange); }
 
         .admin-input-wrap { position: relative; display: flex; align-items: center; }
         .admin-input-icon {
@@ -326,7 +326,7 @@ export default function AdminLogin() {
           transition: color 0.2s;
           z-index: 1;
         }
-        .admin-field.focused .admin-input-icon { color: #C9A84C; }
+        .admin-field.focused .admin-input-icon { color: var(--orange); }
 
         .admin-input {
           width: 100%;
@@ -343,9 +343,9 @@ export default function AdminLogin() {
         }
         .admin-input::placeholder { color: rgba(255,253,249,0.25); }
         .admin-input:focus {
-          border-color: rgba(201,168,76,0.5);
+          border-color: rgba(255,97,2,0.5);
           background: rgba(255,253,249,0.06);
-          box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+          box-shadow: 0 0 0 3px rgba(255,97,2,0.1);
         }
 
         .admin-eye-btn {
@@ -361,14 +361,14 @@ export default function AdminLogin() {
           border-radius: 6px;
           transition: color 0.2s;
         }
-        .admin-eye-btn:hover { color: #C9A84C; }
+        .admin-eye-btn:hover { color: var(--orange); }
 
         /* Submit */
         .admin-submit-btn {
           width: 100%;
-          background: linear-gradient(135deg, #6B1E2E 0%, #4A1020 100%);
+          background: linear-gradient(135deg, var(--orange) 0%, var(--orange-deep) 100%);
           color: #FFFDF9;
-          border: 1px solid rgba(201,168,76,0.3);
+          border: 1px solid rgba(255,97,2,0.3);
           border-radius: 14px;
           padding: 17px;
           font-size: 15px;
@@ -381,7 +381,7 @@ export default function AdminLogin() {
           gap: 10px;
           margin-top: 4px;
           transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-          box-shadow: 0 10px 32px rgba(107,30,46,0.4), 0 0 0 1px rgba(201,168,76,0.12);
+          box-shadow: 0 10px 32px rgba(255,97,2,0.4), 0 0 0 1px rgba(255,97,2,0.12);
           letter-spacing: 0.3px;
           position: relative;
           overflow: hidden;
@@ -391,14 +391,14 @@ export default function AdminLogin() {
           position: absolute;
           top: 0; left: -100%;
           width: 100%; height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(201,168,76,0.1), transparent);
+          background: linear-gradient(90deg, transparent, rgba(255,97,2,0.1), transparent);
           transition: left 0.5s ease;
         }
         .admin-submit-btn:hover:not(:disabled)::before { left: 100%; }
         .admin-submit-btn:hover:not(:disabled) {
           transform: translateY(-3px);
-          box-shadow: 0 20px 48px rgba(107,30,46,0.55), 0 0 0 1px rgba(201,168,76,0.25);
-          border-color: rgba(201,168,76,0.5);
+          box-shadow: 0 20px 48px rgba(255,97,2,0.55), 0 0 0 1px rgba(255,97,2,0.25);
+          border-color: rgba(255,97,2,0.5);
         }
         .admin-submit-btn:active:not(:disabled) { transform: scale(0.97); }
         .admin-submit-btn:disabled { opacity: 0.65; cursor: not-allowed; }
@@ -428,7 +428,7 @@ export default function AdminLogin() {
           color: rgba(255,253,249,0.35);
           font-weight: 500;
         }
-        .admin-security-badge svg { color: rgba(201,168,76,0.6); flex-shrink: 0; }
+        .admin-security-badge svg { color: rgba(255,97,2,0.6); flex-shrink: 0; }
         .admin-back-link {
           font-size: 13px;
           color: rgba(255,253,249,0.4);
@@ -436,7 +436,7 @@ export default function AdminLogin() {
           font-weight: 600;
           transition: color 0.2s;
         }
-        .admin-back-link:hover { color: #C9A84C; }
+        .admin-back-link:hover { color: var(--orange); }
       `}</style>
     </>
   );

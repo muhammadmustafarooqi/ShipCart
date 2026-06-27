@@ -41,18 +41,18 @@ export default function CartProvider({
   const [items, setItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
-    const stored = localStorage.getItem("allinone_cart");
+    const stored = localStorage.getItem("shipcart_cart");
     if (stored) {
       try {
         setItems(JSON.parse(stored));
       } catch {
-        localStorage.removeItem("allinone_cart");
+        localStorage.removeItem("shipcart_cart");
       }
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("allinone_cart", JSON.stringify(items));
+    localStorage.setItem("shipcart_cart", JSON.stringify(items));
   }, [items]);
 
   const addItem = (item: CartItem) => {
@@ -94,7 +94,7 @@ export default function CartProvider({
 
   const clearCart = () => {
     setItems([]);
-    localStorage.removeItem("allinone_cart");
+    localStorage.removeItem("shipcart_cart");
   };
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);

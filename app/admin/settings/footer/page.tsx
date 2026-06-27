@@ -32,7 +32,7 @@ interface FooterConfig {
 
 const DEFAULT_FOOTER: FooterConfig = {
   description: "Pakistan's premier destination for ultra-premium tech, modern home appliances, and intelligent daily accessories.",
-  contactEmail: "support@allinonestore.pk",
+  contactEmail: "support@shipcartstore.pk",
   contactPhone: "923001234567",
   contactAddress: "Islamabad, Pakistan",
   socialLinks: [

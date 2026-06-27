@@ -10,14 +10,14 @@ export const metadata: Metadata = {
     "home cleaning tools", "cheap gadgets Pakistan", "COD gadgets",
   ],
   openGraph: {
-    title: "Premium Collection | AllInOne Store",
+    title: "Premium Collection | ShipCart",
     description: "Explore our curated selection of high-quality products. Filter by category, search, and shop with COD across Pakistan.",
     type: "website",
     url: "/products",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Premium Collection | AllInOne Store",
+    title: "Premium Collection | ShipCart",
     description: "Browse gadgets, kitchen tools, personal care & more. COD available across Pakistan.",
   },
   alternates: { canonical: "/products" },
