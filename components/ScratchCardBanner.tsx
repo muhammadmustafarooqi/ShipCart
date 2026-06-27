@@ -428,7 +428,7 @@ export default function ScratchCardBanner() {
                   </div>
                   
                   {/* Google Login */}
-                  <button type="button" onClick={handleGoogleSignIn} className="google-sign-in-btn">
+                  <button type="button" onClick={handleGoogleSignIn} className="scratch-google-sign-in-btn">
                     <svg className="google-logo" viewBox="0 0 24 24" width="18" height="18" style={{ marginRight: "10px", verticalAlign: "middle" }}>
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                       <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -632,21 +632,42 @@ export default function ScratchCardBanner() {
         .visitor-card h3, .auth-form-header h3, .ready-to-spin h3 { color: var(--white) !important; }
         .visitor-card p, .auth-form-header p, .ready-to-spin p { color: rgba(255, 255, 255, 0.7) !important; }
         
-        /* Auth styles Dark Mode */
+        /* Auth styles Dark Mode - Base + Theme */
         .auth-card { width: 100%; }
-        .auth-tabs { background: rgba(0, 0, 0, 0.2) !important; border: 1px solid rgba(255, 255, 255, 0.05) !important; }
-        .auth-tab { color: rgba(255, 255, 255, 0.5) !important; }
+        
+        .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; border-radius: 14px; margin-bottom: 24px; background: rgba(0, 0, 0, 0.2) !important; border: 1px solid rgba(255, 255, 255, 0.05) !important; }
+        .auth-tab { padding: 12px; font-family: "Outfit", sans-serif; font-size: 14px; font-weight: 700; border: none; background: none; cursor: pointer; border-radius: 10px; transition: all 0.2s ease; text-align: center; color: rgba(255, 255, 255, 0.5) !important; }
         .auth-tab.active { background: rgba(255, 255, 255, 0.1) !important; color: var(--white) !important; box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important; }
         
-        .auth-field label { color: rgba(255, 255, 255, 0.9) !important; letter-spacing: 1px; font-weight: 600; }
-        .auth-input-wrap input { background: rgba(0, 0, 0, 0.2) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: var(--white) !important; }
-        .auth-input-wrap input:focus { border-color: var(--orange) !important; box-shadow: 0 0 0 3px rgba(255, 97, 2, 0.1); }
-        .auth-input-icon, .auth-input-eye { color: rgba(255, 255, 255, 0.6) !important; }
+        .auth-field { display: flex; flex-direction: column; gap: 8px; }
+        .auth-field label { font-size: 12px; text-transform: uppercase; font-family: "Outfit", sans-serif; color: rgba(255, 255, 255, 0.9) !important; letter-spacing: 1px; font-weight: 600; }
         
-        .google-sign-in-btn { background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: var(--white) !important; transition: background 0.2s; }
-        .google-sign-in-btn:hover { background: rgba(255, 255, 255, 0.1) !important; }
+        .auth-input-wrap { position: relative; display: flex; align-items: center; }
+        .auth-card .auth-input-icon { position: absolute; left: 16px; pointer-events: none; z-index: 1; color: rgba(255, 255, 255, 0.6) !important; }
+        .auth-card .auth-input-eye { position: absolute; right: 14px; background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 4px; z-index: 2; color: rgba(255, 255, 255, 0.6) !important; }
+        
+        .country-prefix { position: absolute; left: 16px; display: flex; align-items: center; gap: 6px; font-weight: 700; color: rgba(255, 255, 255, 0.9); z-index: 1; pointer-events: none; }
+        .pk-flag { font-size: 16px; }
+        
+        .auth-card .auth-input-wrap input { width: 100%; padding: 15px 16px 15px 46px; border-radius: 14px; font-size: 15px; font-family: "Plus Jakarta Sans", sans-serif; font-weight: 500; outline: none; transition: border-color 0.25s, box-shadow 0.25s; background: rgba(0, 0, 0, 0.2) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: var(--white) !important; }
+        .auth-card .auth-input-wrap input[type="tel"] { padding-left: 90px; }
+        .auth-card .auth-input-wrap input:focus { border-color: var(--orange) !important; box-shadow: 0 0 0 3px rgba(255, 97, 2, 0.1); }
+        
+        .auth-submit-btn { width: 100%; padding: 17px; font-size: 15px; font-weight: 700; font-family: "Plus Jakarta Sans", sans-serif; border: none; border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, var(--orange) 0%, var(--orange-deep) 100%); color: var(--white); box-shadow: 0 10px 28px rgba(255, 97, 2, 0.32); transition: all 0.3s ease; }
+        .auth-submit-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 18px 40px rgba(255, 97, 2, 0.42); }
+        .auth-submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+        
+        .auth-spinner { width: 20px; height: 20px; border: 2.5px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .scratch-google-sign-in-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: 700; font-family: "Plus Jakarta Sans", sans-serif; cursor: pointer; background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: var(--white) !important; transition: background 0.2s; margin-bottom: 8px; }
+        .scratch-google-sign-in-btn:hover { background: rgba(255, 255, 255, 0.1) !important; }
+        
+        .auth-or-separator { display: flex; align-items: center; text-align: center; font-size: 12px; font-weight: 700; margin: 18px 0; }
         .auth-or-separator span { background: transparent; color: rgba(255, 255, 255, 0.5) !important; }
-        .auth-or-separator::before, .auth-or-separator::after { border-color: rgba(255, 255, 255, 0.1) !important; }
+        .auth-or-separator::before, .auth-or-separator::after { content: ''; flex: 1; border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important; }
+        .auth-or-separator:not(:empty)::before { margin-right: .5em; }
+        .auth-or-separator:not(:empty)::after { margin-left: .5em; }
         
         /* OTP Inputs */
         input[id^="otp-"] { background: rgba(0, 0, 0, 0.2) !important; border: 2px solid rgba(255, 255, 255, 0.1) !important; color: var(--white) !important; }
