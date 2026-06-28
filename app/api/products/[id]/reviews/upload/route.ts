@@ -57,7 +57,7 @@ export async function POST(
     const { url } = await uploadImageBuffer(
       buffer,
       file.type,
-      "shipcart/reviews"
+      "cartship/reviews"
     );
 
     return NextResponse.json({ url });

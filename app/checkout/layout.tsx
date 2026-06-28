@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Complete your order securely. Enter your delivery details and confirm your Cash on Delivery order. Fast delivery across Pakistan.",
   robots: { index: false, follow: false },
   openGraph: {
-    title: "Checkout | ShipCart",
+    title: "Checkout | CartShip",
     description: "Complete your order. COD available across Pakistan.",
     type: "website",
   },

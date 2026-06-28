@@ -32,7 +32,7 @@ export function NavLogo({
     >
       <Image
         src={LOGO_URL}
-        alt="ShipCart"
+        alt="CartShip"
         fill
         sizes={`${maxWidth}px`}
         style={{ objectFit: "contain", objectPosition: "left center" }}
@@ -111,7 +111,7 @@ export function BrandLogoMark({
     >
       <Image
         src={LOGO_URL}
-        alt={decorative ? "" : "ShipCart logo"}
+        alt={decorative ? "" : "CartShip logo"}
         width={Math.round(size * 2)}
         height={Math.round(size * 2)}
         sizes={`${size}px`}

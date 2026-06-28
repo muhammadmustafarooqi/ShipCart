@@ -1,12 +1,12 @@
-# ShipCart Project Overview
+# CartShip Project Overview
 
-This document serves as the single source of truth for the **ShipCart** (ShipCartstore) Next.js e-commerce project.
+This document serves as the single source of truth for the **CartShip** (CartShipstore) Next.js e-commerce project.
 
 ---
 
 ## 1. PROJECT SUMMARY
 
-- **Purpose & Target Users**: ShipCart is an ultra-premium, full-featured e-commerce web application targeted primarily at Pakistani consumers. It heavily features "Cash on Delivery" (COD) and utilizes a "Spin-to-Win" discount mechanic.
+- **Purpose & Target Users**: CartShip is an ultra-premium, full-featured e-commerce web application targeted primarily at Pakistani consumers. It heavily features "Cash on Delivery" (COD) and utilizes a "Spin-to-Win" discount mechanic.
 - **Tech Stack**:
   - **Framework**: Next.js 16.2.4 (App Router)
   - **UI Library**: React 19.2.4
@@ -35,7 +35,7 @@ This document serves as the single source of truth for the **ShipCart** (ShipCar
 
 ## 3. DATABASE
 
-ShipCart uses **MongoDB** with **Mongoose** as the ODM.
+CartShip uses **MongoDB** with **Mongoose** as the ODM.
 
 ### Models & Schemas
 

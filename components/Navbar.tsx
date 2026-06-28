@@ -96,7 +96,7 @@ export default function Navbar() {
             <Link
               href="/"
               className="logo-center nav-logo-link"
-              aria-label="ShipCart, home"
+              aria-label="CartShip, home"
               style={{ textDecoration: "none", display: "flex", alignItems: "center" }}
             >
               <NavLogo height={48} maxWidth={130} className="nav-logo-mobile" />
@@ -128,7 +128,7 @@ export default function Navbar() {
             {/* Logo only — no wordmark */}
             <Link
               href="/"
-              aria-label="ShipCart, home"
+              aria-label="CartShip, home"
               className="nav-logo-link"
             >
               <NavLogo height={64} maxWidth={220} />

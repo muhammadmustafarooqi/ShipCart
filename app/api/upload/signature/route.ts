@@ -21,11 +21,11 @@ export async function GET() {
     
     // We only sign the 'folder' parameter for security. No other params needed.
     const signature = cloudinary.utils.api_sign_request(
-      { timestamp, folder: "shipcart" },
+      { timestamp, folder: "cartship" },
       apiSecret
     );
 
-    return NextResponse.json({ timestamp, signature, cloudName, apiKey, folder: "shipcart" });
+    return NextResponse.json({ timestamp, signature, cloudName, apiKey, folder: "cartship" });
   } catch (error) {
     console.error("Signature error:", error);
     return NextResponse.json({ error: "Failed to generate signature" }, { status: 500 });

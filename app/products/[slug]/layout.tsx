@@ -8,13 +8,13 @@ export const metadata: Metadata = {
   description:
     "View product details, images, and pricing. Add to cart or buy now with Cash on Delivery across Pakistan. 100% original products with 7-day easy return policy.",
   openGraph: {
-    title: "Product Details | ShipCart",
+    title: "Product Details | CartShip",
     description: "View product details and buy with COD across Pakistan. Free delivery above Rs. 3000.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Product Details | ShipCart",
+    title: "Product Details | CartShip",
     description: "Buy online with Cash on Delivery. Free delivery above Rs. 3000.",
   },
   robots: { index: true, follow: true },

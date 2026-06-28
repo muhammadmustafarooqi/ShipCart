@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Order Confirmed!",
   description:
-    "Your order has been placed successfully. Our team will contact you to confirm delivery details. Thank you for shopping at ShipCart!",
+    "Your order has been placed successfully. Our team will contact you to confirm delivery details. Thank you for shopping at CartShip!",
   robots: { index: false, follow: false },
 };
 

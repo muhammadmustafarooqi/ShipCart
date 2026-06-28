@@ -28,7 +28,7 @@ export async function generateMetadata(
     const mainImage = product.images?.[0] || "";
 
     return {
-      title: `${product.name} | ShipCart`,
+      title: `${product.name} | CartShip`,
       description: product.shortDescription || product.description?.substring(0, 160),
       openGraph: {
         title: product.name,

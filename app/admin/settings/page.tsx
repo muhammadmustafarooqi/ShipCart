@@ -28,7 +28,7 @@ export default function AdminSettingsPage() {
         if (response.ok) {
           const data = await response.json();
           setForm({
-            storeName: data.storeName || "ShipCart",
+            storeName: data.storeName || "CartShip",
             whatsappNumber: data.whatsappNumber || "923713869780",
             deliveryFee: data.deliveryFee || 200,
             freeDeliveryAbove: data.freeDeliveryAbove || 3000,

@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://shipcartstore.pk';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cartshipstore.pk';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Try to fetch dynamic products to include them in the sitemap

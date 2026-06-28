@@ -1,6 +1,6 @@
 # Scratch Card Feature Documentation
 
-This document provides a comprehensive overview of the current implementation of the "Scratch Card" feature in the ShipCart project.
+This document provides a comprehensive overview of the current implementation of the "Scratch Card" feature in the CartShip project.
 
 ## 1. CONCEPT & PURPOSE
 

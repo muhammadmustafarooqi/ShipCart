@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Create Account",
-  description: "Create your ShipCart account to track orders, save your details, and enjoy faster checkout.",
+  description: "Create your CartShip account to track orders, save your details, and enjoy faster checkout.",
   robots: { index: false, follow: false },
 };
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Login",
-  description: "Sign in to your ShipCart account.",
+  description: "Sign in to your CartShip account.",
   robots: { index: false, follow: false },
 };
 

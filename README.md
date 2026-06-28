@@ -1,4 +1,4 @@
-# ShipCart Store - Pakistan
+# CartShip Store - Pakistan
 
 A full-stack modern e-commerce web application designed for the Pakistani market, featuring WhatsApp integration, Cash on Delivery (COD) functionality, user authentication, and a comprehensive admin panel.
 
@@ -83,8 +83,8 @@ A full-stack modern e-commerce web application designed for the Pakistani market
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/muhammadmustafarooqi/ShipCart.git
-cd ShipCart
+git clone https://github.com/muhammadmustafarooqi/CartShip.git
+cd CartShip
 ```
 
 ### 2. Install Dependencies
@@ -99,7 +99,7 @@ Create `.env.local` file in the root directory:
 
 ```env
 # Database
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/ShipCart
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/CartShip
 
 # NextAuth
 NEXTAUTH_SECRET=your-super-secret-key-min-32-characters
@@ -115,7 +115,7 @@ CLOUDINARY_API_KEY=your-api-key
 CLOUDINARY_API_SECRET=your-api-secret
 
 # Admin Credentials
-ADMIN_EMAIL=admin@ShipCartstore.pk
+ADMIN_EMAIL=admin@CartShipstore.pk
 ADMIN_PASSWORD=YourSecurePassword123!
 
 # WhatsApp
@@ -150,7 +150,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## 📁 Project Structure
 
 ```
-ShipCart/
+CartShip/
 ├── app/
 │   ├── admin/              # Admin dashboard pages
 │   ├── api/                # API routes

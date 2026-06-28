@@ -67,7 +67,7 @@ export default function Footer() {
               </li>
               <li>
                 <Mail size={18} className="contact-icon" />
-                <span>support@shipcart.pk</span>
+                <span>support@cartship.pk</span>
               </li>
             </ul>
           </div>
@@ -76,7 +76,7 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <p className="copyright">
-            &copy; {new Date().getFullYear()} ShipCart. All rights reserved.
+            &copy; {new Date().getFullYear()} CartShip. All rights reserved.
           </p>
           <div className="payment-methods">
             {/* Payment method icons placeholder */}

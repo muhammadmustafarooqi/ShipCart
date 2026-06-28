@@ -64,7 +64,7 @@ export default function AdminLogin() {
               Secure Portal
             </div>
             <h1 className="admin-title">Admin Login</h1>
-            <p className="admin-subtitle">Sign in to manage your ShipCart Store</p>
+            <p className="admin-subtitle">Sign in to manage your CartShip Store</p>
           </div>
 
           {/* Form */}
@@ -80,7 +80,7 @@ export default function AdminLogin() {
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={() => setFocusedEmail(true)}
                   onBlur={() => setFocusedEmail(false)}
-                  placeholder="admin@shipcartstore.pk"
+                  placeholder="admin@cartshipstore.pk"
                   required
                   className="admin-input"
                   autoComplete="email"

@@ -63,7 +63,7 @@ export default function AdminLogin() {
             Admin Portal
           </h1>
           <p style={{ color: "#6b7280", fontSize: "15px" }}>
-            Sign in to manage your ShipCart store
+            Sign in to manage your CartShip store
           </p>
         </div>
 
@@ -76,7 +76,7 @@ export default function AdminLogin() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@shipcartstore.pk"
+                placeholder="admin@cartshipstore.pk"
                 required
               />
             </div>
