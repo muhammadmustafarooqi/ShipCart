@@ -11,7 +11,7 @@ export default function Footer() {
           
           <div className="footer-col brand-col">
             <Link href="/" className="footer-logo">
-              Ship<span>Cart</span>.
+              <span>Cart</span>Ship.
             </Link>
             <p className="footer-desc">
               Your premium destination for modern lifestyle essentials, electronics, and smart home gadgets across Pakistan.
