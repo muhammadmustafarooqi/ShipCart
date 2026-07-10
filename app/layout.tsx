@@ -9,6 +9,7 @@ import WishlistProvider from "@/components/WishlistProvider";
 import MetaPixel from "@/components/MetaPixel";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import AppSessionProvider from "@/components/AppSessionProvider";
+import SocialSidebar from "@/components/SocialSidebar";
 import { FAVICON_URL } from "@/lib/site";
 
 const jakarta = Plus_Jakarta_Sans({ 
@@ -72,6 +73,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <AnalyticsTracker />
             </Suspense>
             {children}
+            <SocialSidebar />
             <WhatsAppFloat />
             <Toaster
               position="top-right"
