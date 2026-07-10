@@ -264,7 +264,25 @@ export default function AdminOrdersPage() {
                       </td>
                       <td style={{ fontSize: "13px" }}>{order.city}</td>
                       <td style={{ fontSize: "13px" }}>
-                        {order.items.length} items
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          {order.items[0]?.image && (
+                            <img 
+                              src={order.items[0].image} 
+                              alt="" 
+                              style={{ width: "32px", height: "32px", objectFit: "cover", borderRadius: "6px", border: "1px solid #e5e7eb", flexShrink: 0 }} 
+                            />
+                          )}
+                          <div style={{ display: "flex", flexDirection: "column" }}>
+                            <span style={{ fontWeight: 500, color: "#374151", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "150px" }} title={order.items[0]?.name}>
+                              {order.items[0]?.name}
+                            </span>
+                            {order.items.length > 1 && (
+                              <span style={{ fontSize: "11px", color: "#6b7280" }}>
+                                + {order.items.length - 1} more item(s)
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </td>
                       <td style={{ fontWeight: 700, color: "#1f2937" }}>
                         Rs. {order.total.toLocaleString()}
@@ -645,15 +663,26 @@ export default function AdminOrdersPage() {
               >
                 {selectedOrder.items.map((item, i) => (
                   <div key={i} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
-                      <span style={{ color: "#374151", display: "flex", alignItems: "center", gap: "6px" }}>
-                        {item.name} ×{item.quantity}
-                        {item.isGift && (
-                          <span style={{ background: "#fdf2f8", color: "#db2777", padding: "2px 6px", borderRadius: "4px", fontSize: "10px", fontWeight: 700 }}>
-                            🎁 Gift
-                          </span>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", alignItems: "flex-start", gap: "12px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        {item.image && (
+                          <img 
+                            src={item.image} 
+                            alt="" 
+                            style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "6px", border: "1px solid #e5e7eb", flexShrink: 0 }} 
+                          />
                         )}
-                      </span>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                          <span style={{ color: "#374151", fontWeight: 500 }}>
+                            {item.name} ×{item.quantity}
+                          </span>
+                          {item.isGift && (
+                            <span style={{ background: "#fdf2f8", color: "#db2777", padding: "2px 6px", borderRadius: "4px", fontSize: "10px", fontWeight: 700, alignSelf: "flex-start" }}>
+                              🎁 Gift
+                            </span>
+                          )}
+                        </div>
+                      </div>
                       <span style={{ fontWeight: 600, color: "#ff6b00" }}>
                         Rs. {(item.price * item.quantity).toLocaleString()}
                       </span>

@@ -15,7 +15,6 @@ const DEFAULT_LINKS = [
   { label: "Kitchen", href: "/products?category=kitchen-cooking" },
   { label: "Personal Care", href: "/products?category=personal-care-beauty" },
   { label: "Electronics", href: "/products?category=electronics-gadgets" },
-  { label: "Track Order", href: "/track-order" },
 ];
 
 export default function Navbar() {
