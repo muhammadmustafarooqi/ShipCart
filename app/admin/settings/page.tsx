@@ -7,7 +7,7 @@ export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(false);
   const [isLoadingSettings, setIsLoadingSettings] = useState(true);
   const [form, setForm] = useState({
-    storeName: "AllnOne Store",
+    storeName: "",
     whatsappNumber: "923713869780",
     deliveryFee: 200,
     freeDeliveryAbove: 3000,
