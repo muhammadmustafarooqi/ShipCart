@@ -74,11 +74,11 @@ interface AnalyticsData {
 }
 
 const CITY_ICONS: Record<string, string> = {
-  LHE: "🕌",
-  KHI: "🌊",
-  ISB: "⛰️",
-  FSD: "🏭",
-  MUX: "🏺",
+  LHE: "🇵🇰",
+  KHI: "🇵🇰",
+  ISB: "🇵🇰",
+  FSD: "🇵🇰",
+  MUX: "🇵🇰",
 };
 
 const OS_ICONS: Record<string, string> = {
