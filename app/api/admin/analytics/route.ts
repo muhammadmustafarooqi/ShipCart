@@ -181,11 +181,11 @@ function getGeo(sessionId: string) {
   const charSum = sessionId.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const percent = charSum % 100;
 
-  if (percent < 45) return { code: "US", name: "United States" };
-  if (percent < 75) return { code: "PK", name: "Pakistan" };
-  if (percent < 88) return { code: "CA", name: "Canada" };
-  if (percent < 95) return { code: "DE", name: "Germany" };
-  return { code: "FR", name: "France" };
+  if (percent < 40) return { code: "LHE", name: "Lahore" };
+  if (percent < 75) return { code: "KHI", name: "Karachi" };
+  if (percent < 88) return { code: "ISB", name: "Islamabad" };
+  if (percent < 95) return { code: "FSD", name: "Faisalabad" };
+  return { code: "MUX", name: "Multan" };
 }
 
 export async function GET() {

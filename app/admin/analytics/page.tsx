@@ -7,6 +7,7 @@ import {
   MapPin, Laptop, Compass, Heart, Globe, ArrowUpRight, 
   ChevronRight, RefreshCw, MessageCircle, HelpCircle, Activity
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface AnalyticsData {
   totalSales: number;
@@ -72,12 +73,12 @@ interface AnalyticsData {
   }>;
 }
 
-const COUNTRY_FLAGS: Record<string, string> = {
-  US: "🇺🇸",
-  PK: "🇵🇰",
-  CA: "🇨🇦",
-  DE: "🇩🇪",
-  FR: "🇫🇷",
+const CITY_ICONS: Record<string, string> = {
+  LHE: "🕌",
+  KHI: "🌊",
+  ISB: "⛰️",
+  FSD: "🏭",
+  MUX: "🏺",
 };
 
 const OS_ICONS: Record<string, string> = {
@@ -226,6 +227,24 @@ export default function AdminAnalytics() {
         <polyline fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" points={getPolylinePoints("purchase")} />
       </svg>
     );
+  };
+
+  const handleResetAnalytics = async () => {
+    if (!window.confirm("Are you sure you want to clear all analytics data? This cannot be undone.")) return;
+    setLoading(true);
+    try {
+      const res = await fetch("/api/admin/analytics/clear", { method: "POST" });
+      if (res.ok) {
+        toast.success("Analytics data cleared successfully.");
+        await fetchAnalytics();
+      } else {
+        toast.error("Failed to clear analytics.");
+      }
+    } catch (err) {
+      toast.error("Error clearing analytics.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -398,28 +417,44 @@ export default function AdminAnalytics() {
             Analyze store visits, custom events, conversion funnels, and live store traffic.
           </p>
         </div>
-        
-        <button 
-          onClick={fetchAnalytics}
-          disabled={isRefreshing}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            background: "white",
-            border: "1px solid #e5e7eb",
-            borderRadius: "12px",
-            padding: "10px 18px",
-            fontSize: "13px",
-            fontWeight: 700,
-            cursor: "pointer",
-            color: "#4b5563",
-            boxShadow: "0 2px 5px rgba(0,0,0,0.03)"
-          }}
-        >
-          <RefreshCw size={14} className={isRefreshing ? "spin" : ""} />
-          Refresh
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <button
+            onClick={handleResetAnalytics}
+            style={{
+              padding: "10px 16px",
+              background: "#fee2e2",
+              color: "#ef4444",
+              border: "1px solid #f87171",
+              borderRadius: "10px",
+              fontSize: "14px",
+              fontWeight: 700,
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+          >
+            Reset Analytics
+          </button>
+          <button 
+            onClick={fetchAnalytics}
+            style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              gap: "8px", 
+              padding: "10px 16px", 
+              background: "white", 
+              border: "1px solid #e5e7eb", 
+              borderRadius: "10px",
+              fontSize: "14px",
+              fontWeight: 600,
+              color: "#374151",
+              cursor: "pointer",
+              transition: "all 0.2s"
+            }}
+          >
+            <RefreshCw size={16} className={isRefreshing ? "spin-animation" : ""} />
+            {isRefreshing ? "Refreshing..." : "Refresh"}
+          </button>
+        </div>
       </div>
 
       {/* Navigation Tabs */}
@@ -676,7 +711,7 @@ export default function AdminAnalytics() {
                 return (
                   <div key={loc.name}>
                     <div className="data-bar-row">
-                      <span>{COUNTRY_FLAGS[loc.code] || "🌐"} {loc.name}</span>
+                      <span>{CITY_ICONS[loc.code] || "📍"} {loc.name}</span>
                       <span>{loc.count.toLocaleString()} visits ({percent}%)</span>
                     </div>
                     <div className="data-bar-outer">
@@ -957,7 +992,7 @@ export default function AdminAnalytics() {
                         <tr key={v.sessionId}>
                           <td>
                             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                              <span style={{ fontSize: "16px" }}>{COUNTRY_FLAGS[v.countryCode] || "🌐"}</span>
+                              <span style={{ fontSize: "16px" }}>{CITY_ICONS[v.countryCode] || "📍"}</span>
                               <span style={{ fontWeight: 700, color: "#1f2937" }}>{v.name}</span>
                             </div>
                           </td>
@@ -1020,7 +1055,7 @@ export default function AdminAnalytics() {
                         <tr key={v.sessionId}>
                           <td>
                             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                              <span style={{ fontSize: "16px" }}>{COUNTRY_FLAGS[v.countryCode] || "🌐"}</span>
+                              <span style={{ fontSize: "16px" }}>{CITY_ICONS[v.countryCode] || "📍"}</span>
                               <span style={{ fontWeight: 700, color: "#1f2937" }}>{v.name}</span>
                             </div>
                           </td>
