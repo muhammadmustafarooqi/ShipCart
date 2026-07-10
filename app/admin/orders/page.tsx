@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { MessageCircle, ChevronDown, Phone, MapPin, X, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { useSettings } from "@/lib/useSettings";
 
 interface Order {
   _id: string;
@@ -59,6 +60,7 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("All");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const { settings } = useSettings();
 
   const fetchOrders = useCallback(async () => {
     try {
@@ -132,7 +134,7 @@ export default function AdminOrdersPage() {
 
   const generateWhatsAppUrl = (order: Order) => {
     const whatsappNumber =
-      process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923713869780";
+      settings?.whatsappNumber || "923713869780";
     const customerPhone = order.phone.replace(/^0/, "92");
     const siteUrl =
       process.env.NEXT_PUBLIC_SITE_URL ||

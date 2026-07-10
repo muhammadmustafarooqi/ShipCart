@@ -302,7 +302,7 @@ export default function ProductClient({ initialProduct, initialRelated, initialP
   const discount = product.comparePrice && product.comparePrice > product.price
     ? Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100) : 0;
 
-  const waNum = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923713869780";
+  const waNum = settings?.whatsappNumber || "923713869780";
   const waMsg = `Hi! I want to order:\n*${product.name}*\nPrice: Rs. ${product.price.toLocaleString()}\n\nPlease confirm availability.`;
   const waUrl = `https://wa.me/${waNum}?text=${encodeURIComponent(waMsg)}`;
 

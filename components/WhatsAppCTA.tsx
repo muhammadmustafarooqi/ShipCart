@@ -1,6 +1,7 @@
 "use client";
 
 import { MessageCircle, Clock, Shield, Headphones, ArrowUpRight } from "lucide-react";
+import { useSettings } from "@/lib/useSettings";
 
 const features = [
   { icon: MessageCircle, title: "Fast replies", desc: "Often within minutes" },
@@ -18,7 +19,8 @@ function formatWaDisplay(num: string) {
 }
 
 export default function WhatsAppCTA() {
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923713869780";
+  const { settings } = useSettings();
+  const whatsappNumber = settings?.whatsappNumber || "923713869780";
   const message = "Hi! I'd like to know more about your products and latest offers.";
   const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 

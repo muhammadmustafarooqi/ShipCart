@@ -2,12 +2,15 @@
 
 import { fbq } from "@/lib/fpq";
 import { usePathname } from "next/navigation";
+import { useSettings } from "@/lib/useSettings";
 
 export default function WhatsAppFloat() {
   const pathname = usePathname();
+  const { settings } = useSettings();
+  
   if (pathname?.startsWith("/admin")) return null;
 
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923713869780";
+  const whatsappNumber = settings?.whatsappNumber || "923713869780";
   const message = "Hi! I'd like to know more about your products.";
   const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 

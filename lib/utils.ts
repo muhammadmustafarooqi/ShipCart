@@ -1,17 +1,18 @@
 // Generate WhatsApp URL for order confirmation
-export function generateWhatsAppOrderURL(order: {
-  orderId: string;
-  customerName: string;
-  phone: string;
-  city: string;
-  address: string;
-  items: Array<{ name: string; quantity: number; price: number }>;
-  total: number;
-  shippingFee: number;
-  paymentMethod: string;
-}): string {
-  const whatsappNumber = process.env.WHATSAPP_NUMBER || "923713869780";
-
+export function generateWhatsAppOrderURL(
+  order: {
+    orderId: string;
+    customerName: string;
+    phone: string;
+    city: string;
+    address: string;
+    items: Array<{ name: string; quantity: number; price: number }>;
+    total: number;
+    shippingFee: number;
+    paymentMethod: string;
+  },
+  whatsappNumber: string
+): string {
   const itemsList = order.items
     .map((item) => `• ${item.name} x${item.quantity} = Rs. ${(item.price * item.quantity).toLocaleString()}`)
     .join("\n");
@@ -36,11 +37,13 @@ Please confirm the order!`;
 }
 
 // Generate customer WhatsApp URL for product enquiry
-export function generateProductWhatsAppURL(product: {
-  name: string;
-  price: number;
-}): string {
-  const whatsappNumber = process.env.WHATSAPP_NUMBER || "923713869780";
+export function generateProductWhatsAppURL(
+  product: {
+    name: string;
+    price: number;
+  },
+  whatsappNumber: string
+): string {
   const message = `Hi! I'm interested in ordering:\n\n*${product.name}*\nPrice: Rs. ${product.price.toLocaleString()}\n\nPlease confirm availability.`;
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 }

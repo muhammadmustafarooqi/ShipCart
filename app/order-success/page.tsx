@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { CheckCircle, Package, Phone, Home, MessageCircle, PartyPopper, Banknote, Truck } from "lucide-react";
 import { fbq } from "@/lib/fpq";
+import { useSettings } from "@/lib/useSettings";
 
 interface Order {
   orderId: string;
@@ -73,6 +74,7 @@ function OrderSuccessContent() {
   const orderId = searchParams.get("orderId");
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
+  const { settings } = useSettings();
 
   useEffect(() => {
     if (orderId) {
@@ -91,7 +93,7 @@ function OrderSuccessContent() {
     }
   }, [orderId]);
 
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923713869780";
+  const whatsappNumber = settings?.whatsappNumber || "923713869780";
 
   const generateWhatsAppMessage = () => {
     if (!order) return "#";
