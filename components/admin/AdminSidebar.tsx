@@ -24,6 +24,8 @@ import {
   HelpCircle,
   TrendingUp,
   Sparkles,
+  MessageSquareQuote,
+  Shield,
 } from "lucide-react";
 
 const navItems = [
@@ -45,7 +47,8 @@ const settingsItems = [
   { label: "Banners", href: "/admin/settings/banners", icon: ImageIcon },
   { label: "Marquee Banner", href: "/admin/settings/marquee", icon: List },
   { label: "Offer Banner", href: "/admin/settings/offer-banner", icon: Tag },
-  { label: "Testimonials", href: "/admin/settings/testimonials", icon: MessageSquare },
+  { label: "Testimonials", href: "/admin/settings/testimonials", icon: MessageSquareQuote },
+  { label: "Security", href: "/admin/settings/security", icon: Shield },
   { label: "FAQs", href: "/admin/settings/faqs", icon: HelpCircle },
   { label: "Stats", href: "/admin/settings/stats", icon: TrendingUp },
 ];

@@ -47,6 +47,10 @@ export interface ISettings extends Document {
     codMessage: string;
   };
   adminEmail: string;
+  security: {
+    isTwoFactorEnabled: boolean;
+    twoFactorSecret: string;
+  };
   updatedAt: Date;
 }
 

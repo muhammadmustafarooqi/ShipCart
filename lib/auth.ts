@@ -3,6 +3,8 @@ import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import connectDB from "./mongodb";
 import User from "@/models/User";
+import Settings from "@/models/Settings";
+import { verify } from "otplib";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -15,6 +17,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        token: { label: "2FA Token", type: "text" },
       },
       async authorize(credentials) {
         const adminEmail = process.env.ADMIN_EMAIL;
@@ -31,6 +34,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           email === adminEmail &&
           password === adminPassword
         ) {
+          await connectDB();
+          const settings = await Settings.findOne();
+          
+          if (settings?.security?.isTwoFactorEnabled) {
+            const token = credentials.token ? String(credentials.token) : null;
+            if (!token) {
+              throw new Error("2FA_REQUIRED");
+            }
+            
+            const isValid = verify({ 
+              token, 
+              secret: settings.security.twoFactorSecret 
+            });
+            
+            if (!isValid) {
+              throw new Error("2FA_INVALID");
+            }
+          }
+
           return {
             id: "1",
             email: adminEmail,

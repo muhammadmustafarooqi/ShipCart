@@ -11,7 +11,7 @@ export default function WhatsAppFloat() {
   if (pathname?.startsWith("/admin")) return null;
 
   const whatsappNumber = settings?.whatsappNumber || "923713869780";
-  const message = "Hi! I'd like to know more about your products.";
+  const message = "Hi! CartShip Store I'd like to know more about your products.";
   const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
   return (
