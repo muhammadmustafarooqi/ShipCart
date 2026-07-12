@@ -7,10 +7,11 @@ import Page from "@/models/Page";
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
+  const { slug } = await params;
   await connectToDatabase();
-  const page = await Page.findOne({ slug: params.slug, isActive: true });
+  const page = await Page.findOne({ slug, isActive: true });
 
   if (!page) {
     return {
@@ -26,10 +27,11 @@ export async function generateMetadata({
 export default async function CustomPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params;
   await connectToDatabase();
-  const page = await Page.findOne({ slug: params.slug, isActive: true });
+  const page = await Page.findOne({ slug, isActive: true });
 
   if (!page) {
     notFound();

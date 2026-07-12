@@ -5,13 +5,14 @@ import { auth } from "@/lib/auth";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
+    const { slug } = await params;
     await connectToDatabase();
     
     // We can use this endpoint to fetch by slug or id, but slug is standard for public
-    const page = await Page.findOne({ slug: params.slug });
+    const page = await Page.findOne({ slug });
 
     if (!page) {
       return NextResponse.json(
@@ -31,9 +32,10 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { slug: string } } // slug here acts as the ID for admin updates, or we find by _id. Let's use _id for updates.
+  { params }: { params: Promise<{ slug: string }> } // slug here acts as the ID for admin updates, or we find by _id. Let's use _id for updates.
 ) {
   try {
+    const { slug } = await params;
     const session = await auth();
     if (!session?.user) {
       return NextResponse.json(
@@ -46,7 +48,7 @@ export async function PUT(
     const body = await req.json();
 
     // params.slug is actually the ID passed from admin panel since it's common practice to PUT to /api/resource/[id]
-    const updatedPage = await Page.findByIdAndUpdate(params.slug, body, {
+    const updatedPage = await Page.findByIdAndUpdate(slug, body, {
       new: true,
       runValidators: true,
     });
@@ -75,9 +77,10 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
+    const { slug } = await params;
     const session = await auth();
     if (!session?.user) {
       return NextResponse.json(
@@ -88,7 +91,7 @@ export async function DELETE(
 
     await connectToDatabase();
 
-    const deletedPage = await Page.findByIdAndDelete(params.slug);
+    const deletedPage = await Page.findByIdAndDelete(slug);
 
     if (!deletedPage) {
       return NextResponse.json(
