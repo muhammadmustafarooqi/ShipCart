@@ -80,7 +80,7 @@ export default function AdminLogin() {
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={() => setFocusedEmail(true)}
                   onBlur={() => setFocusedEmail(false)}
-                  placeholder="admin@cartshipstore.pk"
+                  placeholder="admin@cartship.pk"
                   required
                   className="admin-input"
                   autoComplete="email"

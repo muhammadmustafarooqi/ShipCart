@@ -114,7 +114,22 @@ export default function SocialSidebar() {
 
         @media (max-width: 768px) {
           .social-sidebar {
-            display: none;
+            top: auto;
+            bottom: 24px;
+            right: auto;
+            left: 24px;
+            transform: none;
+            flex-direction: row;
+            padding: 10px 14px;
+            gap: 12px;
+            z-index: 998;
+          }
+          .social-sidebar-link {
+            width: 36px;
+            height: 36px;
+          }
+          .social-sidebar-link:hover {
+            transform: scale(1.1) translateY(-4px);
           }
         }
       `}</style>

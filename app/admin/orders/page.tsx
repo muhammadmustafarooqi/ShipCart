@@ -138,7 +138,7 @@ export default function AdminOrdersPage() {
     const customerPhone = order.phone.replace(/^0/, "92");
     const siteUrl =
       process.env.NEXT_PUBLIC_SITE_URL ||
-      "https://www.cartshipstore.pk";
+      "https://www.cartship.pk";
     const msg = `Hi ${order.customerName}! Your order #${order.orderId} from CartShip is now *${order.status}*.\nTotal: Rs. ${order.total.toLocaleString()} (COD).\n\n📦 *Track your order live here:*\n${siteUrl}/track-order\n\nTo track your order, simply enter:\nOrder ID: *${order.orderId}*\nPhone: *${order.phone}*\n\nThank you for shopping with us!`;
     return `https://wa.me/${customerPhone}?text=${encodeURIComponent(msg)}`;
   };

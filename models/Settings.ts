@@ -151,7 +151,7 @@ const SettingsSchema = new Schema<ISettings>(
       },
       contactEmail: {
         type: String,
-        default: "support@cartshipstore.pk",
+        default: "support@cartship.pk",
       },
       contactPhone: {
         type: String,

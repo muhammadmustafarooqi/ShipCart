@@ -24,7 +24,7 @@ const outfit = Outfit({
   variable: "--font-outfit"
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://cartshipstore.pk";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://cartship.pk";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
