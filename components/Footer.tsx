@@ -2,8 +2,19 @@
 
 import Link from "next/link";
 import { MapPin, Mail, Phone } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function Footer() {
+  const [pages, setPages] = useState<{title: string, slug: string}[]>([]);
+
+  useEffect(() => {
+    fetch('/api/pages?activeOnly=true')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setPages(data.data);
+      })
+      .catch(console.error);
+  }, []);
   return (
     <footer className="site-footer">
       <div className="page-container">
@@ -34,9 +45,19 @@ export default function Footer() {
             <ul className="footer-links">
               <li><Link href="/contact">Contact Us</Link></li>
               <li><Link href="/faq">FAQs</Link></li>
-              <li><Link href="/returns">Returns & Exchanges</Link></li>
-              <li><Link href="/shipping">Shipping Policy</Link></li>
-              <li><Link href="/privacy">Privacy Policy</Link></li>
+              {pages.length > 0 ? (
+                pages.map(page => (
+                  <li key={page.slug}>
+                    <Link href={`/pages/${page.slug}`}>{page.title}</Link>
+                  </li>
+                ))
+              ) : (
+                <>
+                  <li><Link href="/pages/returns">Returns & Exchanges</Link></li>
+                  <li><Link href="/pages/shipping-policy">Shipping Policy</Link></li>
+                  <li><Link href="/pages/privacy-policy">Privacy Policy</Link></li>
+                </>
+              )}
             </ul>
           </div>
 

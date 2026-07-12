@@ -25,6 +25,7 @@ import {
   TrendingUp,
   Sparkles,
   MessageSquareQuote,
+  FileText,
 } from "lucide-react";
 
 const navItems = [
@@ -36,6 +37,7 @@ const navItems = [
   { label: "Spin Results", href: "/admin/spins", icon: Sparkles },
   { label: "Coupons", href: "/admin/coupons", icon: Tag },
   { label: "Bundles", href: "/admin/bundles", icon: Package },
+  { label: "Pages", href: "/admin/pages", icon: FileText },
 ];
 
 const settingsItems = [
