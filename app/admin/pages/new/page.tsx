@@ -54,80 +54,103 @@ export default function NewPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Create New Page</h1>
+    <div className="admin-page-container" style={{ maxWidth: "1000px", margin: "0 auto" }}>
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
+        <div>
+          <h1 style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937", fontFamily: "Outfit, sans-serif" }}>Create New Page</h1>
+          <p style={{ color: "#6b7280", marginTop: "4px", fontSize: "14px" }}>Add a new custom page to your store</p>
+        </div>
         <button
           onClick={() => router.push("/admin/pages")}
-          className="text-gray-600 hover:text-gray-900"
+          style={{
+            padding: "8px 16px",
+            borderRadius: "8px",
+            border: "1px solid #e5e7eb",
+            background: "white",
+            color: "#4b5563",
+            fontWeight: 600,
+            fontSize: "14px",
+            cursor: "pointer"
+          }}
         >
           Cancel
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow border border-gray-100">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Page Title
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.title}
-              onChange={handleTitleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[var(--orange)] focus:border-[var(--orange)] outline-none"
-              placeholder="e.g. Privacy Policy"
+      {/* Form Container */}
+      <div style={{ background: "white", borderRadius: "16px", padding: "32px", border: "1px solid #f0f0f0", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+            <div className="form-group" style={{ margin: 0 }}>
+              <label>Page Title</label>
+              <input
+                type="text"
+                required
+                value={formData.title}
+                onChange={handleTitleChange}
+                placeholder="e.g. Privacy Policy"
+              />
+            </div>
+            <div className="form-group" style={{ margin: 0 }}>
+              <label>URL Slug</label>
+              <input
+                type="text"
+                required
+                value={formData.slug}
+                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                placeholder="privacy-policy"
+              />
+            </div>
+          </div>
+
+          <div className="form-group" style={{ margin: 0 }}>
+            <label>Page Content</label>
+            <RichTextEditor
+              value={formData.content}
+              onChange={(content) => setFormData({ ...formData, content })}
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              URL Slug
-            </label>
+
+          <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: 600, fontSize: "14px", color: "#374151" }}>
             <input
-              type="text"
-              required
-              value={formData.slug}
-              onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[var(--orange)] focus:border-[var(--orange)] outline-none"
-              placeholder="privacy-policy"
+              type="checkbox"
+              id="isActive"
+              checked={formData.isActive}
+              onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+              style={{ width: "18px", height: "18px", accentColor: "#ff6b00", cursor: "pointer" }}
             />
-          </div>
-        </div>
-
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Page Content
-          </label>
-          <RichTextEditor
-            value={formData.content}
-            onChange={(content) => setFormData({ ...formData, content })}
-          />
-        </div>
-
-        <div className="mb-8 flex items-center gap-3">
-          <input
-            type="checkbox"
-            id="isActive"
-            checked={formData.isActive}
-            onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-            className="w-5 h-5 text-[var(--orange)] rounded border-gray-300 focus:ring-[var(--orange)]"
-          />
-          <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
             Publish Page (Active)
           </label>
-        </div>
 
-        <div className="flex justify-end pt-4 border-t border-gray-100">
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-[var(--orange)] text-white px-6 py-2 rounded-md hover:bg-orange-600 transition-colors disabled:opacity-50"
-          >
-            {loading ? "Saving..." : "Save Page"}
-          </button>
-        </div>
-      </form>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "16px", paddingTop: "24px", borderTop: "1px solid #f0f0f0" }}>
+            <button
+              type="button"
+              onClick={() => router.push("/admin/pages")}
+              style={{
+                padding: "10px 20px",
+                borderRadius: "8px",
+                border: "1px solid #e5e7eb",
+                background: "white",
+                color: "#4b5563",
+                fontWeight: 600,
+                fontSize: "14px",
+                cursor: "pointer"
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary"
+              style={{ minWidth: "120px", justifyContent: "center", opacity: loading ? 0.7 : 1 }}
+            >
+              {loading ? "Saving..." : "Save Page"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

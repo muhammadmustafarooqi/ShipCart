@@ -49,86 +49,81 @@ export default function AdminPages() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Custom Pages</h1>
-        <Link
-          href="/admin/pages/new"
-          className="flex items-center gap-2 bg-[var(--orange)] text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors"
-        >
-          <Plus size={18} />
-          <span>New Page</span>
+    <div className="admin-page-container" style={{ maxWidth: "1450px", margin: "0 auto" }}>
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", flexWrap: "wrap", gap: "16px" }}>
+        <div>
+          <h1 style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937", fontFamily: "Outfit, sans-serif" }}>Custom Pages</h1>
+          <p style={{ color: "#6b7280", marginTop: "4px", fontSize: "14px" }}>Manage informational and policy pages</p>
+        </div>
+        <Link href="/admin/pages/new" className="btn-primary" style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none" }}>
+          <Plus size={18} /> Add New Page
         </Link>
       </div>
 
-      <div className="bg-white shadow rounded-lg overflow-hidden border border-gray-100">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Title
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Slug
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {pages.length === 0 ? (
+      {/* Pages Card Table */}
+      <div style={{ background: "white", borderRadius: "16px", padding: "32px", border: "1px solid #f0f0f0", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+        <div style={{ overflowX: "auto" }}>
+          <table className="data-table">
+            <thead>
               <tr>
-                <td colSpan={4} className="px-6 py-8 text-center text-gray-500">
-                  No pages created yet. Click "New Page" to get started.
-                </td>
+                <th>Title</th>
+                <th>Slug</th>
+                <th>Status</th>
+                <th style={{ textAlign: "right" }}>Actions</th>
               </tr>
-            ) : (
-              pages.map((page) => (
-                <tr key={page._id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-gray-900">{page.title}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-500">
-                    /{page.slug}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {page.isActive ? (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        <CheckCircle size={12} /> Active
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                        <XCircle size={12} /> Draft
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div className="flex justify-end gap-3">
-                      <Link
-                        href={`/admin/pages/edit/${page.slug}`}
-                        className="text-blue-600 hover:text-blue-900"
-                        title="Edit"
-                      >
-                        <Edit size={18} />
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(page._id)}
-                        className="text-red-600 hover:text-red-900"
-                        title="Delete"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
+            </thead>
+            <tbody>
+              {pages.length === 0 ? (
+                <tr>
+                  <td colSpan={4} style={{ textAlign: "center", padding: "40px", color: "#9ca3af" }}>
+                    No pages created yet. Click "Add New Page" to get started.
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                pages.map((page) => (
+                  <tr key={page._id}>
+                    <td>
+                      <div style={{ fontWeight: 600, fontSize: "13px", color: "#1f2937" }}>{page.title}</div>
+                    </td>
+                    <td style={{ fontSize: "13px", color: "#9ca3af" }}>
+                      /{page.slug}
+                    </td>
+                    <td>
+                      {page.isActive ? (
+                        <span className="status-badge status-delivered">
+                          Active
+                        </span>
+                      ) : (
+                        <span className="status-badge status-pending">
+                          Draft
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      <div style={{ display: "flex", justifyContent: "flex-end", gap: "16px" }}>
+                        <Link
+                          href={`/admin/pages/edit/${page.slug}`}
+                          style={{ color: "#2563eb", display: "inline-flex", alignItems: "center" }}
+                          title="Edit"
+                        >
+                          <Edit size={18} />
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(page._id)}
+                          style={{ color: "#ef4444", background: "none", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", padding: 0 }}
+                          title="Delete"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
