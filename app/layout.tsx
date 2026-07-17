@@ -11,6 +11,8 @@ import AnalyticsTracker from "@/components/AnalyticsTracker";
 import AppSessionProvider from "@/components/AppSessionProvider";
 import SocialSidebar from "@/components/SocialSidebar";
 import { FAVICON_URL } from "@/lib/site";
+import Settings from "@/models/Settings";
+import connectDB from "@/lib/mongodb";
 
 const jakarta = Plus_Jakarta_Sans({ 
   subsets: ["latin"], 
@@ -26,40 +28,55 @@ const outfit = Outfit({
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://cartship.pk";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: "CartShip — Premium Gadgets & Accessories Pakistan",
-    template: "%s | CartShip",
-  },
-  description:
-    "Shop premium gadgets, kitchen tools, personal care devices & tech accessories in Pakistan. Cash on Delivery. Free delivery above Rs. 3000. 100% Original Products.",
-  keywords: [
-    "online shopping Pakistan","gadgets Pakistan","smart gadgets","kitchen tools Pakistan",
-    "personal care devices","electronics Pakistan","COD Pakistan","cash on delivery",
-    "baby products Pakistan","fitness equipment Pakistan","home cleaning tools",
-    "CartShip","buy online Pakistan",
-  ],
-  authors: [{ name: "CartShip" }],
-  creator: "CartShip",
-  publisher: "CartShip",
-  robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
-  icons: { icon: FAVICON_URL, shortcut: FAVICON_URL },
-  openGraph: {
-    title: "CartShip — Premium Gadgets & Accessories Pakistan",
-    description: "Top quality gadgets for every home. Free delivery on orders above Rs. 3000. COD available.",
-    type: "website",
-    url: SITE_URL,
-    siteName: "CartShip",
-    locale: "en_PK",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "CartShip — Premium Gadgets & Accessories Pakistan",
-    description: "Top quality gadgets, kitchen tools & personal care devices. COD available across Pakistan.",
-  },
-  alternates: { canonical: SITE_URL },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  let favicon = FAVICON_URL;
+  let storeName = "CartShip";
+  try {
+    await connectDB();
+    const settings = await Settings.findOne().lean();
+    if (settings) {
+      if (settings.faviconUrl) favicon = settings.faviconUrl;
+      if (settings.storeName) storeName = settings.storeName;
+    }
+  } catch (error) {
+    console.error("Error fetching settings for metadata:", error);
+  }
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: `${storeName} — Premium Gadgets & Accessories Pakistan`,
+      template: `%s | ${storeName}`,
+    },
+    description:
+      "Shop premium gadgets, kitchen tools, personal care devices & tech accessories in Pakistan. Cash on Delivery. Free delivery above Rs. 3000. 100% Original Products.",
+    keywords: [
+      "online shopping Pakistan","gadgets Pakistan","smart gadgets","kitchen tools Pakistan",
+      "personal care devices","electronics Pakistan","COD Pakistan","cash on delivery",
+      "baby products Pakistan","fitness equipment Pakistan","home cleaning tools",
+      storeName,"buy online Pakistan",
+    ],
+    authors: [{ name: storeName }],
+    creator: storeName,
+    publisher: storeName,
+    robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
+    icons: { icon: favicon, shortcut: favicon },
+    openGraph: {
+      title: `${storeName} — Premium Gadgets & Accessories Pakistan`,
+      description: "Top quality gadgets for every home. Free delivery on orders above Rs. 3000. COD available.",
+      type: "website",
+      url: SITE_URL,
+      siteName: storeName,
+      locale: "en_PK",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${storeName} — Premium Gadgets & Accessories Pakistan`,
+      description: "Top quality gadgets, kitchen tools & personal care devices. COD available across Pakistan.",
+    },
+    alternates: { canonical: SITE_URL },
+  };
+}
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

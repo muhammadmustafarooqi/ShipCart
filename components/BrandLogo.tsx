@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { LOGO_URL } from "@/lib/site";
+import { useSettings } from "@/lib/useSettings";
 
 /**
  * Wide navbar logo — preserves the wordmark's natural aspect ratio.
@@ -16,6 +17,9 @@ export function NavLogo({
   maxWidth?: number;
   className?: string;
 }) {
+  const { settings } = useSettings();
+  const src = settings?.logoUrl || LOGO_URL;
+
   return (
     <div
       className={className}
@@ -31,8 +35,8 @@ export function NavLogo({
       }}
     >
       <Image
-        src={LOGO_URL}
-        alt="CartShip"
+        src={src}
+        alt={settings?.storeName || "CartShip"}
         fill
         sizes={`${maxWidth}px`}
         style={{ objectFit: "contain", objectPosition: "left center" }}
@@ -86,6 +90,9 @@ export function BrandLogoMark({
   tone = "cream",
   decorative = false,
 }: BrandLogoMarkProps) {
+  const { settings } = useSettings();
+  const src = settings?.logoUrl || LOGO_URL;
+
   const t = tones[tone];
   const isNav = tone === "nav";
   const r = radius ?? (isNav ? Math.max(16, Math.round(size * 0.26)) : Math.max(14, Math.round(size * 0.24)));
@@ -110,8 +117,8 @@ export function BrandLogoMark({
       }}
     >
       <Image
-        src={LOGO_URL}
-        alt={decorative ? "" : "CartShip logo"}
+        src={src}
+        alt={decorative ? "" : (settings?.storeName || "CartShip logo")}
         width={Math.round(size * 2)}
         height={Math.round(size * 2)}
         sizes={`${size}px`}

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 interface Settings {
   storeName: string;
+  logoUrl?: string;
+  faviconUrl?: string;
   whatsappNumber: string;
   deliveryFee: number;
   freeDeliveryAbove: number;

@@ -19,9 +19,11 @@ export async function GET(request: NextRequest) {
     const sort = searchParams.get("sort") || "createdAt";
     const order = searchParams.get("order") || "desc";
 
+    const isAdmin = searchParams.get("admin") === "true";
+
     // Build query
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const query: any = { isActive: true };
+    const query: any = isAdmin ? {} : { isActive: true };
 
     if (category) query.category = category;
     if (featured === "true") query.isFeatured = true;

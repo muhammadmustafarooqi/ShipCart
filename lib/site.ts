@@ -6,3 +6,4 @@ export const FAVICON_URL = "/CartShip.png";
  * Set `NEXT_PUBLIC_LOGO_URL` (e.g. CDN with `?v=2`) to bust cache when you replace the file.
  */
 export const LOGO_URL = process.env.NEXT_PUBLIC_LOGO_URL?.trim() || "/CartShip.png";
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                

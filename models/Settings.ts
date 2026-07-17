@@ -2,6 +2,8 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface ISettings extends Document {
   storeName: string;
+  logoUrl?: string;
+  faviconUrl?: string;
   whatsappNumber: string;
   deliveryFee: number;
   freeDeliveryAbove: number;
@@ -53,6 +55,8 @@ export interface ISettings extends Document {
 const SettingsSchema = new Schema<ISettings>(
   {
     storeName: { type: String, default: "CartShip" },
+    logoUrl: { type: String, default: "" },
+    faviconUrl: { type: String, default: "" },
     whatsappNumber: {
       type: String,
       default: process.env.WHATSAPP_NUMBER || "923713869780",

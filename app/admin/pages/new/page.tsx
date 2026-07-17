@@ -54,7 +54,7 @@ export default function NewPage() {
   };
 
   return (
-    <div className="admin-page-container" style={{ maxWidth: "1000px", margin: "0 auto" }}>
+    <div className="admin-page-container" style={{ maxWidth: "1000px", margin: "0 auto", padding: "40px 20px" }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px" }}>
         <div>

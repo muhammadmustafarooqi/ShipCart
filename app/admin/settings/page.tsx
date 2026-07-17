@@ -8,6 +8,8 @@ export default function AdminSettingsPage() {
   const [isLoadingSettings, setIsLoadingSettings] = useState(true);
   const [form, setForm] = useState({
     storeName: "",
+    logoUrl: "",
+    faviconUrl: "",
     whatsappNumber: "923713869780",
     deliveryFee: 200,
     freeDeliveryAbove: 3000,
@@ -29,6 +31,8 @@ export default function AdminSettingsPage() {
           const data = await response.json();
           setForm({
             storeName: data.storeName || "CartShip",
+            logoUrl: data.logoUrl || "",
+            faviconUrl: data.faviconUrl || "",
             whatsappNumber: data.whatsappNumber || "923713869780",
             deliveryFee: data.deliveryFee || 200,
             freeDeliveryAbove: data.freeDeliveryAbove || 3000,
@@ -85,6 +89,34 @@ export default function AdminSettingsPage() {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: "logoUrl" | "faviconUrl") => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+
+    const toastId = toast.loading("Uploading image...");
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      
+      if (!res.ok) throw new Error("Upload failed");
+      const data = await res.json();
+      setForm(f => ({ ...f, [field]: data.url }));
+      toast.success("Image uploaded successfully!", { id: toastId });
+    } catch (error) {
+      toast.error("Failed to upload image", { id: toastId });
+    }
+  };
+
   return (
     <div className="admin-page-container" style={{ maxWidth: "800px" }}>
       <div style={{ marginBottom: "32px" }}>
@@ -115,6 +147,35 @@ export default function AdminSettingsPage() {
                   value={form.whatsappNumber} 
                   onChange={(e) => setForm(f => ({ ...f, whatsappNumber: e.target.value }))} 
                 />
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginTop: "16px" }}>
+              <div className="form-group" style={{ margin: 0 }}>
+                <label>Store Logo</label>
+                <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+                  {form.logoUrl && (
+                    <img src={form.logoUrl} alt="Logo" style={{ height: "40px", objectFit: "contain", borderRadius: "4px", background: "#f8f9fa", padding: "4px" }} />
+                  )}
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e, "logoUrl")} 
+                  />
+                </div>
+              </div>
+              <div className="form-group" style={{ margin: 0 }}>
+                <label>Favicon (32x32 recommended)</label>
+                <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
+                  {form.faviconUrl && (
+                    <img src={form.faviconUrl} alt="Favicon" style={{ height: "32px", width: "32px", objectFit: "contain", borderRadius: "4px", background: "#f8f9fa", padding: "4px" }} />
+                  )}
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e, "faviconUrl")} 
+                  />
+                </div>
               </div>
             </div>
           </div>

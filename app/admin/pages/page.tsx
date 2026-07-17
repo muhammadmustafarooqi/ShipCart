@@ -49,7 +49,7 @@ export default function AdminPages() {
   }
 
   return (
-    <div className="admin-page-container" style={{ maxWidth: "1450px", margin: "0 auto" }}>
+    <div className="admin-page-container" style={{ maxWidth: "1450px", margin: "0 auto", padding: "40px 20px" }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", flexWrap: "wrap", gap: "16px" }}>
         <div>

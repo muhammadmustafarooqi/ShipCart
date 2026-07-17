@@ -158,7 +158,7 @@ export default function AdminProductsPage() {
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/products?limit=100");
+      const res = await fetch("/api/products?limit=200&admin=true");
       const data = await res.json();
       setProducts(data.products || []);
     } catch (err) {
@@ -283,100 +283,136 @@ export default function AdminProductsPage() {
     }
   };
 
+  const activeProducts = products.filter((p) => p.isActive);
+  const inactiveProducts = products.filter((p) => !p.isActive);
+
+  const renderProductRow = (product: Product) => (
+    <tr key={product._id}>
+      <td>
+        <div style={{ width: "52px", height: "52px", borderRadius: "8px", overflow: "hidden", background: "#f5f5f5" }}>
+          {product.images[0] ? (
+            <Image src={product.images[0]} alt={product.name} width={52} height={52} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af" }}>
+              <Package size={22} strokeWidth={2} aria-hidden />
+            </div>
+          )}
+        </div>
+      </td>
+      <td>
+        <div style={{ fontWeight: 600, fontSize: "13px", maxWidth: "200px" }}>{product.name}</div>
+        <div style={{ fontSize: "11px", color: "#9ca3af" }}>{product.slug}</div>
+      </td>
+      <td style={{ fontSize: "13px" }}>{product.category}</td>
+      <td>
+        <div style={{ fontWeight: 700, color: "#ff6b00", fontSize: "13px" }}>Rs. {product.price.toLocaleString()}</div>
+        {product.comparePrice > 0 && (
+          <div style={{ fontSize: "11px", color: "#9ca3af", textDecoration: "line-through" }}>Rs. {product.comparePrice.toLocaleString()}</div>
+        )}
+      </td>
+      <td style={{ fontSize: "13px", fontWeight: product.stock <= 5 ? 700 : 400, color: product.stock <= 5 ? "#ef4444" : "#374151" }}>
+        {product.stock}
+      </td>
+      <td>
+        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+          {product.isFeatured && (
+            <span style={{ fontSize: "11px", background: "rgba(255,107,0,0.1)", color: "#ff6b00", padding: "2px 8px", borderRadius: "4px", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px" }}>
+              <Star size={12} aria-hidden /> Featured
+            </span>
+          )}
+          {product.isNewArrival && (
+            <span style={{ fontSize: "11px", background: "#d1fae5", color: "#065f46", padding: "2px 8px", borderRadius: "4px", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px" }}>
+              <Sparkles size={12} aria-hidden /> New
+            </span>
+          )}
+        </div>
+      </td>
+      <td>
+        <button
+          onClick={() => handleToggleActive(product)}
+          title={product.isActive ? "Click to deactivate" : "Click to activate"}
+          style={{ background: "none", border: "none", cursor: "pointer" }}
+        >
+          {product.isActive
+            ? <ToggleRight size={28} style={{ color: "#10b981" }} />
+            : <ToggleLeft size={28} style={{ color: "#9ca3af" }} />}
+        </button>
+      </td>
+      <td>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <button onClick={() => openEditForm(product)} style={{ background: "rgba(59,130,246,0.1)", border: "none", borderRadius: "6px", padding: "6px", cursor: "pointer", color: "#3b82f6" }}>
+            <Edit size={15} />
+          </button>
+          <button onClick={() => handleDelete(product._id)} style={{ background: "rgba(239,68,68,0.1)", border: "none", borderRadius: "6px", padding: "6px", cursor: "pointer", color: "#ef4444" }}>
+            <Trash2 size={15} />
+          </button>
+        </div>
+      </td>
+    </tr>
+  );
+
+  const renderTable = (list: Product[], emptyMsg: string) => (
+    <div style={{ overflowX: "auto" }}>
+      {list.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "40px", color: "#9ca3af", fontSize: "14px" }}>{emptyMsg}</div>
+      ) : (
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Flags</th>
+              <th>Active</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>{list.map(renderProductRow)}</tbody>
+        </table>
+      )}
+    </div>
+  );
+
   return (
     <div className="admin-page-container">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "28px", flexWrap: "wrap", gap: "16px" }}>
         <div>
           <h1 style={{ fontSize: "28px", fontWeight: 800, color: "#1f2937" }}>Products</h1>
-          <p style={{ color: "#6b7280", marginTop: "4px" }}>{products.length} products total</p>
+          <p style={{ color: "#6b7280", marginTop: "4px" }}>{activeProducts.length} active · {inactiveProducts.length} inactive</p>
         </div>
         <button onClick={openAddForm} className="btn-primary">
           <Plus size={18} /> Add New Product
         </button>
       </div>
 
-      {/* Products Table */}
       {loading ? (
         <div style={{ display: "flex", justifyContent: "center", padding: "60px" }}>
           <div className="spinner" />
         </div>
       ) : (
-        <div style={{ overflowX: "auto" }}>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Flags</th>
-                <th>Active</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product) => (
-                <tr key={product._id}>
-                  <td>
-                    <div style={{ width: "52px", height: "52px", borderRadius: "8px", overflow: "hidden", background: "#f5f5f5" }}>
-                      {product.images[0] ? (
-                        <Image src={product.images[0]} alt={product.name} width={52} height={52} style={{ width: "100%", height: "100%", objectFit: "cover" }}  />
-                      ) : (
-                        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af" }}>
-                          <Package size={22} strokeWidth={2} aria-hidden />
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                  <td>
-                    <div style={{ fontWeight: 600, fontSize: "13px", maxWidth: "200px" }}>{product.name}</div>
-                    <div style={{ fontSize: "11px", color: "#9ca3af" }}>{product.slug}</div>
-                  </td>
-                  <td style={{ fontSize: "13px" }}>{product.category}</td>
-                  <td>
-                    <div style={{ fontWeight: 700, color: "#ff6b00", fontSize: "13px" }}>Rs. {product.price.toLocaleString()}</div>
-                    {product.comparePrice > 0 && (
-                      <div style={{ fontSize: "11px", color: "#9ca3af", textDecoration: "line-through" }}>Rs. {product.comparePrice.toLocaleString()}</div>
-                    )}
-                  </td>
-                  <td style={{ fontSize: "13px", fontWeight: product.stock <= 5 ? 700 : 400, color: product.stock <= 5 ? "#ef4444" : "#374151" }}>
-                    {product.stock}
-                  </td>
-                  <td>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                      {product.isFeatured && (
-                        <span style={{ fontSize: "11px", background: "rgba(255,107,0,0.1)", color: "#ff6b00", padding: "2px 8px", borderRadius: "4px", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                          <Star size={12} aria-hidden /> Featured
-                        </span>
-                      )}
-                      {product.isNewArrival && (
-                        <span style={{ fontSize: "11px", background: "#d1fae5", color: "#065f46", padding: "2px 8px", borderRadius: "4px", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                          <Sparkles size={12} aria-hidden /> New
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td>
-                    <button onClick={() => handleToggleActive(product)} style={{ background: "none", border: "none", cursor: "pointer" }}>
-                      {product.isActive ? <ToggleRight size={28} style={{ color: "#10b981" }} /> : <ToggleLeft size={28} style={{ color: "#9ca3af" }} />}
-                    </button>
-                  </td>
-                  <td>
-                    <div style={{ display: "flex", gap: "8px" }}>
-                      <button onClick={() => openEditForm(product)} style={{ background: "rgba(59,130,246,0.1)", border: "none", borderRadius: "6px", padding: "6px", cursor: "pointer", color: "#3b82f6" }}>
-                        <Edit size={15} />
-                      </button>
-                      <button onClick={() => handleDelete(product._id)} style={{ background: "rgba(239,68,68,0.1)", border: "none", borderRadius: "6px", padding: "6px", cursor: "pointer", color: "#ef4444" }}>
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <>
+          {/* Active Products Section */}
+          <div style={{ marginBottom: "40px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+              <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#10b981" }} />
+              <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#1f2937" }}>Active Products</h2>
+              <span style={{ background: "#d1fae5", color: "#065f46", fontSize: "12px", fontWeight: 700, padding: "2px 10px", borderRadius: "20px" }}>{activeProducts.length}</span>
+            </div>
+            {renderTable(activeProducts, "No active products.")}
+          </div>
+
+          {/* Inactive Products Section */}
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+              <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#9ca3af" }} />
+              <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#6b7280" }}>Inactive Products</h2>
+              <span style={{ background: "#f3f4f6", color: "#6b7280", fontSize: "12px", fontWeight: 700, padding: "2px 10px", borderRadius: "20px" }}>{inactiveProducts.length}</span>
+            </div>
+            {renderTable(inactiveProducts, "No inactive products.")}
+          </div>
+        </>
       )}
 
       {/* Add/Edit Form Modal */}
