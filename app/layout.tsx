@@ -10,6 +10,7 @@ import MetaPixel from "@/components/MetaPixel";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import AppSessionProvider from "@/components/AppSessionProvider";
 import SocialSidebar from "@/components/SocialSidebar";
+import DynamicFavicon from "@/components/DynamicFavicon";
 import { FAVICON_URL } from "@/lib/site";
 import Settings from "@/models/Settings";
 import connectDB from "@/lib/mongodb";
@@ -86,6 +87,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <CartProvider>
             <WishlistProvider>
             <MetaPixel />
+            <DynamicFavicon />
             <Suspense fallback={null}>
               <AnalyticsTracker />
             </Suspense>

@@ -35,6 +35,7 @@ export function NavLogo({
       }}
     >
       <Image
+        key={src}
         src={src}
         alt={settings?.storeName || "CartShip"}
         fill
@@ -117,6 +118,7 @@ export function BrandLogoMark({
       }}
     >
       <Image
+        key={src}
         src={src}
         alt={decorative ? "" : (settings?.storeName || "CartShip logo")}
         width={Math.round(size * 2)}
